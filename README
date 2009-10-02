@@ -1,0 +1,6 @@
+Moo -- Mapping Objects to Objects
+
+It's not uncommon to need to do some mapping from one object model to another, whether that's
+data transfer objects, an anti-corruption layer, or something else.  Two projects I've been on
+have written code similar to this, and I thought it was time to start re-using rather than
+building from scratch.
