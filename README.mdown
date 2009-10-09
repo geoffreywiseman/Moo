@@ -18,4 +18,9 @@ do suggest you sit back and take some time to ask yourself, "Why do I need to co
 one set of objects to another set of objects?" "Do I really need parallel hierarchies?" "What problem
 am I solving, why do I have it, and is there a better way to go about it?"
 
+Think of it this way: in the same way that the multi-stage digestion of ruminants, like cows (who
+say 'moo') allows them to extract nutrients from food that many of us consider indigestible (grasses),
+Moo may help you to extract value from an architecture that you consider indigestible.  But if you
+can trade in your diet of grasses for something more pleasant and accessible, you probably should.
+
 If you've done that, and you still think that Moo is the right solution, then by all means.
