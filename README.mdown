@@ -8,3 +8,14 @@ building from scratch.
 Much of the credit for this is due to _Fuseboy_, who did the conceptualization of the framework on
 both past projects; although this is new code, it was influenced heavily by the experience of working
 with the previous two implementations.
+
+## Moo is a Code Smell
+
+Although I've used Moo before and I'll undoubtedly use it again, I think it's still safe to say that
+the use of Moo is usually a sign that you have problems in your code and/or your architecture.  Moo
+might be the best (most cost-effective, most palatable, etc.) solution to your problem, but I
+do suggest you sit back and take some time to ask yourself, "Why do I need to copy values from
+one set of objects to another set of objects?" "Do I really need parallel hierarchies?" "What problem
+am I solving, why do I have it, and is there a better way to go about it?"
+
+If you've done that, and you still think that Moo is the right solution, then by all means.
