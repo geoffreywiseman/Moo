@@ -15,7 +15,7 @@ public class BasicObjectPropertyTranslationTest {
 				Long.MAX_VALUE, Boolean.TRUE, Float.MAX_VALUE,
 				Double.MAX_VALUE, new BigDecimal("123456789.123456789"));
 
-		TestDto dto = Translate.to(TestDto.class).from(domain);
+		TestDto dto = new Moo().translate(TestDto.class,domain);
 		assertEquals(domain.getStringProperty(), dto.getStringProperty());
 		assertEquals(domain.getIntegerProperty(), dto.getIntegerProperty());
 		assertEquals(domain.getLongProperty(), dto.getLongProperty());
@@ -31,7 +31,7 @@ public class BasicObjectPropertyTranslationTest {
 		TestDomain domain = new TestDomain(null, null, null, null, null, null,
 				null);
 
-		TestDto dto = Translate.to(TestDto.class).from(domain);
+		TestDto dto = new Moo().translate(TestDto.class,domain);
 		assertNull(dto.getStringProperty());
 		assertNull(dto.getIntegerProperty());
 		assertNull(dto.getLongProperty());

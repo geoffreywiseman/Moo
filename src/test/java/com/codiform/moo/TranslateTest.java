@@ -15,19 +15,19 @@ public class TranslateTest {
 
 	@Test
 	public void testTranslateCreatesDestinationClass() {
-		TestDto dto = Translate.to( TestDto.class ).from( domain );
+		TestDto dto = new Moo().translate( TestDto.class, domain );
 		assertNotNull( dto );
 	}
 	
 	@Test
 	public void testTranslateUsesTranslationExpressions() {
-		TestDto dto = Translate.to( TestDto.class ).from( domain );
+		TestDto dto = new Moo().translate( TestDto.class, domain );
 		assertEquals( domain.getString().length(), dto.getStringLength() );
 	}
 		
 	@Test
 	public void testRecursiveTranslationDoesNotDuplicateTranslations() {
-		TestDto dto = Translate.to( TestDto.class ).from( domain );
+		TestDto dto = new Moo().translate( TestDto.class, domain );
 		assertSame( dto, dto.getSelf() );
 	}
 

@@ -21,8 +21,8 @@ public class CollectionPropertyTranslationTest {
 	@Test
 	public void testTranslateCopiesCollections() {
 		List<String> before = Arrays.asList("a", "b", "c");
-		TestDto dto = Translate.to(TestDto.class).from(
-				new StringsDomain(before));
+		TestDto dto = new Moo().translate(TestDto.class, new StringsDomain(
+				before));
 		Assert.assertEquals(before, dto.getStrings());
 		assertNotSame(before, dto.getStrings());
 		assertEquals(before, dto.getStrings());
@@ -34,22 +34,25 @@ public class CollectionPropertyTranslationTest {
 	@Test
 	public void testCopiesNullsInsideCollections() {
 		List<String> before = Arrays.asList("a", "b", null, "c");
-		TestDto dto = Translate.to(TestDto.class).from(
-				new StringsDomain(before));
+		TestDto dto = new Moo().translate(TestDto.class, new StringsDomain(
+				before));
 		Assert.assertEquals(before, dto.getStrings());
 	}
 
 	@Test
 	public void testTranslatesCollectionsOfTranslations() {
-		Ordinals ordinals = new Ordinals( new Ordinal( 1, "first" ), new Ordinal( 2, "second"), new Ordinal(3,"third"));
-		OrdinalsDto ordinalsDto = Translate.to(OrdinalsDto.class).from(ordinals);
-		Assert.assertNotNull( ordinalsDto.getOrdinals() );
-		Assert.assertEquals( ordinals.getOrdinals().size(), ordinalsDto.getOrdinals().size() );
-		for( int index = 0; index < ordinals.getOrdinals().size(); index++ ) {
+		Ordinals ordinals = new Ordinals(new Ordinal(1, "first"), new Ordinal(
+				2, "second"), new Ordinal(3, "third"));
+		OrdinalsDto ordinalsDto = new Moo().translate(OrdinalsDto.class,
+				ordinals);
+		Assert.assertNotNull(ordinalsDto.getOrdinals());
+		Assert.assertEquals(ordinals.getOrdinals().size(), ordinalsDto
+				.getOrdinals().size());
+		for (int index = 0; index < ordinals.getOrdinals().size(); index++) {
 			Ordinal ordinal = ordinals.getOrdinals().get(index);
 			Ordinal ordinalDto = ordinalsDto.getOrdinals().get(index);
-			Assert.assertEquals( ordinal.getRank(), ordinalDto.getRank() );
-			Assert.assertEquals( ordinal.getName(), ordinalDto.getName() );
+			Assert.assertEquals(ordinal.getRank(), ordinalDto.getRank());
+			Assert.assertEquals(ordinal.getName(), ordinalDto.getName());
 		}
 	}
 
