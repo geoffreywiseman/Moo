@@ -85,7 +85,7 @@ public class Translator<T> {
 
 	private void translate(Object source, T destination,
 			TranslationCache translationCache) {
-		Field[] fields = getFieldsToTranslate();
+		Set<Field> fields = getFieldsToTranslate();
 		for (Field item : fields) {
 			String expression = getTranslationExpression(item);
 			Object value = getValue(source, expression);
@@ -109,8 +109,8 @@ public class Translator<T> {
 						translationCache);
 			}
 		} else if (annotation != null) {
-			return translatorCache.getTranslator(item.getType()).getTranslation(
-					value, translationCache);
+			return translatorCache.getTranslator(item.getType())
+					.getTranslation(value, translationCache);
 		} else {
 			return value;
 		}
@@ -141,9 +141,16 @@ public class Translator<T> {
 			return translation.value();
 	}
 
-	private Field[] getFieldsToTranslate() {
-		// for now -- superclass, exclusions, cache, etc.
-		Field[] fields = destinationClass.getDeclaredFields();
+	private Set<Field> getFieldsToTranslate() {
+		Set<Field> fields = new HashSet<Field>();
+
+		Class<?> current = destinationClass;
+		while (current != null) {
+			for (Field item : current.getDeclaredFields()) {
+				fields.add(item);
+			}
+			current = current.getSuperclass();
+		}
 		return fields;
 	}
 
