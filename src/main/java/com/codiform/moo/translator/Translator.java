@@ -75,7 +75,7 @@ public class Translator<T> {
 		} catch (InstantiationException exception) {
 			throw new TranslationException(String.format(
 					"Error while instantiating %s", destinationClass),
-					exception.getCause());
+					exception);
 		} catch (IllegalAccessException exception) {
 			throw new TranslationException(String.format(
 					"Not allowed to instantiate %s", destinationClass),
