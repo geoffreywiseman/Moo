@@ -9,7 +9,7 @@ public class HierarchyTranslationTest {
 	@Test
 	public void testTranslateIncludesSuperclassFields() {
 		AthleteSource source = new AthleteSource("Geoffrey","Wiseman","Cycling");
-		AthleteDestination destination = new Moo().translate(AthleteDestination.class, source);
+		AthleteDestination destination = new Moo().translate(source, AthleteDestination.class);
 		assertEquals( "Geoffrey", destination.getFirstName());
 		assertEquals( "Wiseman", destination.getLastName());
 		assertEquals( "Cycling", destination.getSport());

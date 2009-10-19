@@ -11,7 +11,7 @@ public class PrimitivePropertyTranslationTest {
 
 	@Test
 	public void testTranslateCopiesObjectPropertyValuesFromSourceToDestination() {
-		TestDto dto = new Moo().translate(TestDto.class, domain);
+		TestDto dto = new Moo().translate(domain, TestDto.class);
 		Assert.assertEquals(domain.getIntegerProperty(), dto
 				.getIntegerProperty());
 		Assert.assertEquals(domain.getLongProperty(), dto.getLongProperty());

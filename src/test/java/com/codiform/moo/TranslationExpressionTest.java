@@ -27,38 +27,38 @@ public class TranslationExpressionTest {
 	@Test
 	public void testTranslationCanPerformNullsafeTraversal() {
 		Assert.assertEquals(Integer.valueOf(3), new Moo().translate(
-				OwnerLastNameLength.class, new Task(new User("Jane", "Doe")))
+				new Task(new User("Jane", "Doe")), OwnerLastNameLength.class)
 				.size());
 		Assert.assertEquals(null, new Moo().translate(
-				OwnerLastNameLength.class, new Task(new User("John",null))).size());
+				new Task(new User("John",null)), OwnerLastNameLength.class).size());
 		Assert.assertEquals(Integer.valueOf(3), new Moo().translate(
-				OwnerLastNameLength.class, new Task(new User("Jane", "Doe")))
+				new Task(new User("Jane", "Doe")), OwnerLastNameLength.class)
 				.size());
 	}
 
 	@Test
 	public void testTranslationCanAccessListMembersByIndex() {
 		Assert.assertEquals("The", new Moo().translate(
-				StringSetFirstItem.class,
-				new StringSet("The", "quick", "brown", "fox")).getFirst());
+				new StringSet("The", "quick", "brown", "fox"),
+				StringSetFirstItem.class).getFirst());
 		Assert.assertEquals("Too", new Moo().translate(
-				StringSetFirstItem.class, new StringSet("Too","late","to","think"))
+				new StringSet("Too","late","to","think"), StringSetFirstItem.class)
 				.getFirst());
 		Assert.assertEquals("Twas", new Moo().translate(
-				StringSetFirstItem.class, new StringSet("Twas", "brillig"))
+				new StringSet("Twas", "brillig"), StringSetFirstItem.class)
 				.getFirst());
 	}
 	
 	@Test
 	public void testTranslationCanAccessArrayByIndex() {
-		UserFirstRole ufr = new Moo().translate( UserFirstRole.class, new User("Geoffrey", "Wiseman", "ADMIN", "NEWBIE") );
+		UserFirstRole ufr = new Moo().translate( new User("Geoffrey", "Wiseman", "ADMIN", "NEWBIE"), UserFirstRole.class );
 		Assert.assertEquals( "ADMIN", ufr.getFirstRole() );
 	}
 	
 	@Test
 	public void testTranslationCanAccessSubProperty() {
 		Task task = new Task( new User( "Geoffrey", "Wiseman"));
-		OwnerLastName oln = new Moo().translate(OwnerLastName.class, task);
+		OwnerLastName oln = new Moo().translate(task, OwnerLastName.class);
 		Assert.assertEquals("Wiseman",oln.getOwnerLastName());
 	}
 	
@@ -67,13 +67,13 @@ public class TranslationExpressionTest {
 		Task task = new Task(new User("Geoffrey","Wiseman"));
 		Date now = new Date();
 		task.addAttribute( "createdDate", now);
-		TaskCreated tc = new Moo().translate(TaskCreated.class, task);
+		TaskCreated tc = new Moo().translate(task, TaskCreated.class);
 		Assert.assertEquals( now, tc.getCreatedDate());
 	}
 
 	private void assertStringSetSize(int expectedSize, String... strings) {
 		StringSet domain = new StringSet(strings);
-		StringSetSize size = new Moo().translate(StringSetSize.class, domain);
+		StringSetSize size = new Moo().translate(domain, StringSetSize.class);
 		Assert.assertEquals(expectedSize, size.getSize());
 	}
 

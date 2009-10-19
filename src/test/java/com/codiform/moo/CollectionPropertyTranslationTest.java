@@ -21,8 +21,8 @@ public class CollectionPropertyTranslationTest {
 	@Test
 	public void testTranslateCopiesCollections() {
 		List<String> before = Arrays.asList("a", "b", "c");
-		TestDto dto = new Moo().translate(TestDto.class, new StringsDomain(
-				before));
+		TestDto dto = new Moo().translate(new StringsDomain(
+				before), TestDto.class);
 		Assert.assertEquals(before, dto.getStrings());
 		assertNotSame(before, dto.getStrings());
 		assertEquals(before, dto.getStrings());
@@ -34,8 +34,8 @@ public class CollectionPropertyTranslationTest {
 	@Test
 	public void testCopiesNullsInsideCollections() {
 		List<String> before = Arrays.asList("a", "b", null, "c");
-		TestDto dto = new Moo().translate(TestDto.class, new StringsDomain(
-				before));
+		TestDto dto = new Moo().translate(new StringsDomain(
+				before), TestDto.class);
 		Assert.assertEquals(before, dto.getStrings());
 	}
 
@@ -43,8 +43,8 @@ public class CollectionPropertyTranslationTest {
 	public void testTranslatesCollectionsOfTranslations() {
 		Ordinals ordinals = new Ordinals(new Ordinal(1, "first"), new Ordinal(
 				2, "second"), new Ordinal(3, "third"));
-		OrdinalsDto ordinalsDto = new Moo().translate(OrdinalsDto.class,
-				ordinals);
+		OrdinalsDto ordinalsDto = new Moo().translate(ordinals,
+				OrdinalsDto.class);
 		Assert.assertNotNull(ordinalsDto.getOrdinals());
 		Assert.assertEquals(ordinals.getOrdinals().size(), ordinalsDto
 				.getOrdinals().size());

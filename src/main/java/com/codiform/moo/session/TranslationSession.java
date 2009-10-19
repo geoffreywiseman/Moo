@@ -24,29 +24,33 @@ public class TranslationSession {
 		this.configuration = configuration;
 	}
 
-	public <T> T translate(Class<T> destination, Object source) {
+	public <T> T translate(Object source, Class<T> destination) {
 		return getTranslator(destination).getTranslation(source,
 				translationCache);
+	}
+
+	public <T> List<T> translateEach(List<?> sources, Class<T> destination) {
+		return configuration.getTranslator(destination).getEachTranslation(
+				sources, translationCache);
+	}
+
+	public <T> Collection<T> translateEach(Collection<?> sources,
+			Class<T> destination) {
+		return configuration.getTranslator(destination).getEachTranslation(
+				sources, translationCache);
+	}
+
+	public <T> Set<T> translateEach(Set<?> sources, Class<T> destination) {
+		return configuration.getTranslator(destination).getEachTranslation(
+				sources, translationCache);
+	}
+
+	public void update(Object source, Object destination) {
+		configuration.getTranslator(destination.getClass()).update( source, destination, translationCache );
 	}
 
 	private <T> Translator<T> getTranslator(Class<T> destination) {
 		return configuration.getTranslator(destination);
 	}
-
-	public <T> List<T> translateEach(Class<T> destination, List<?> sources) {
-		return configuration.getTranslator(destination).getEachTranslation(
-				sources, translationCache);
-	}
-
-	public <T> Collection<T> translateEach(Class<T> destination,
-			Collection<?> sources) {
-		return configuration.getTranslator(destination).getEachTranslation(
-				sources, translationCache);
-	}
-
-	public <T> Set<T> translateEach(Class<T> destination, Set<?> sources) {
-		return configuration.getTranslator(destination).getEachTranslation(
-				sources, translationCache);
-	}
-
+	
 }

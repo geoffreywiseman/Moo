@@ -14,7 +14,7 @@ public class TranslationCycleTest {
 		Assert.assertSame(source, source.getSibling());
 
 		DestinationLoopItem destination = new Moo().translate(
-				DestinationLoopItem.class, source);
+				source, DestinationLoopItem.class);
 		Assert.assertSame(destination, destination.getSibling());
 	}
 
@@ -26,7 +26,7 @@ public class TranslationCycleTest {
 		Assert.assertSame(source, source.getSibling().getSibling());
 
 		DestinationLoopItem destination = new Moo().translate(
-				DestinationLoopItem.class, source);
+				source, DestinationLoopItem.class);
 		Assert.assertNotSame(destination, destination.getSibling());
 		Assert.assertSame(destination, destination.getSibling().getSibling());
 

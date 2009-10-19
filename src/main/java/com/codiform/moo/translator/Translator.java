@@ -154,4 +154,8 @@ public class Translator<T> {
 		return fields;
 	}
 
+	public void update(Object source, Object destination, TranslationCache cache) {
+		translate( source, destinationClass.cast( destination ), cache );
+	}
+
 }
