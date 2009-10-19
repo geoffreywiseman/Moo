@@ -1,6 +1,7 @@
 package com.codiform.moo.configuration;
 
 import com.codiform.moo.cache.TranslatorCache;
+import com.codiform.moo.translator.ArrayTranslator;
 import com.codiform.moo.translator.CollectionTranslator;
 import com.codiform.moo.translator.Translator;
 
@@ -13,9 +14,11 @@ import com.codiform.moo.translator.Translator;
 public class Configuration implements TranslatorCache {
 
 	private CollectionTranslator collectionTranslator;
+	private ArrayTranslator arrayTranslator;
 	
 	public Configuration() {
 		collectionTranslator = new CollectionTranslator(this);
+		arrayTranslator = new ArrayTranslator(this);
 	}
 	
 	@Override
@@ -26,6 +29,11 @@ public class Configuration implements TranslatorCache {
 	@Override
 	public CollectionTranslator getCollectionTranslator() {
 		return collectionTranslator;
+	}
+	
+	@Override
+	public ArrayTranslator getArrayTranslator() {
+		return arrayTranslator;
 	}
 	
 }

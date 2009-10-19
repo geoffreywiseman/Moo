@@ -100,19 +100,48 @@ public class Translator<T> {
 		com.codiform.moo.annotation.Translate annotation = item
 				.getAnnotation(com.codiform.moo.annotation.Translate.class);
 		if (value instanceof Collection) {
-			if (annotation != null) {
-				throw new TranslationException(
-						"Cannot use @Translate on a collection, use @TranslateCollection instead.");
-			} else {
-				return translatorCache.getCollectionTranslator().translate(
-						value, item.getAnnotation(TranslateCollection.class),
-						translationCache);
-			}
+			return transformCollection(value, item, translationCache,
+					annotation);
+		} else if (value.getClass().isArray()) {
+			return transformArray((Object[])value, item, translationCache);
 		} else if (annotation != null) {
 			return translatorCache.getTranslator(item.getType())
 					.getTranslation(value, translationCache);
 		} else {
 			return value;
+		}
+	}
+
+	private Object transformArray(Object[] value, Field field,
+			TranslationCache translationCache) {
+		Class<?> fieldType = field.getType();
+		Class<?> valueType = value.getClass();
+		ArrayTranslator translator = translatorCache.getArrayTranslator();
+		
+		if( valueType.isAssignableFrom( fieldType ) ) {
+			return translator.defensiveCopy( value );
+		}
+		else if( fieldType.isArray() ) {
+			if( valueType.isAssignableFrom( fieldType.getComponentType() ) ) {
+				return translator.copyTo( value, fieldType );
+			} else {
+				return translator.translate( value, fieldType.getComponentType(), translationCache);
+			}
+		} else {
+			throw new TranslationException( String.format( "Cannot translate from array type %s[] to non-array %s", valueType.getComponentType(), fieldType.getClass().getName() ) );
+		}
+	}
+
+	private Object transformCollection(Object value, Field item,
+			TranslationCache translationCache,
+			com.codiform.moo.annotation.Translate annotation) {
+		if (annotation != null) {
+			throw new TranslationException(
+					"Cannot use @Translate on a collection, use @TranslateCollection instead.");
+		} else {
+			return translatorCache.getCollectionTranslator().translate(value,
+					item.getAnnotation(TranslateCollection.class),
+					translationCache);
 		}
 	}
 
@@ -155,7 +184,7 @@ public class Translator<T> {
 	}
 
 	public void update(Object source, Object destination, TranslationCache cache) {
-		translate( source, destinationClass.cast( destination ), cache );
+		translate(source, destinationClass.cast(destination), cache);
 	}
 
 }

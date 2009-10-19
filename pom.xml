@@ -38,6 +38,14 @@
 			<artifactId>mvel2</artifactId>
 			<version>2.0.13</version>
 		</dependency>
+		
+		<!--  Mockito -->
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-core</artifactId>
+			<version>1.8.0</version>
+			<scope>test</scope>
+		</dependency>
 
 	</dependencies>
 
