@@ -1,4 +1,4 @@
-package com.codiform.moo.cache;
+package com.codiform.moo.source;
 
 import com.codiform.moo.translator.ArrayTranslator;
 import com.codiform.moo.translator.CollectionTranslator;
@@ -7,7 +7,7 @@ import com.codiform.moo.translator.Translator;
 /**
  * A source from which translators may be retrieved.
  */
-public interface TranslatorCache {
+public interface TranslatorSource {
 
 	<T> Translator<T> getTranslator(Class<T> destinationClass);
 

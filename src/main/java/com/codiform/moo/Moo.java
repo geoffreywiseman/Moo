@@ -50,19 +50,19 @@ public class Moo {
 	}
 
 	public <T> T translate( Object source, Class<T> destinationClass ) {
-		return newSession().translate( source, destinationClass );
+		return newSession().getTranslation( source, destinationClass );
 	}
 
 	public <T> List<T> translateEach( List<?> sources, Class<T> destinationClass ) {
-		return newSession().translateEach( sources, destinationClass );
+		return newSession().getEachTranslation( sources, destinationClass );
 	}
 
 	public <T> Collection<T> translateEach( Collection<?> sources, Class<T> destinationClass ) {
-		return newSession().translateEach( sources, destinationClass );
+		return newSession().getEachTranslation( sources, destinationClass );
 	}
 
 	public <T> Set<T> translateEach( Set<?> sources, Class<T> destinationClass ) {
-		return newSession().translateEach( sources, destinationClass );
+		return newSession().getEachTranslation( sources, destinationClass );
 	}
 
 }

@@ -14,20 +14,13 @@ import java.util.TreeSet;
 
 import com.codiform.moo.TranslationException;
 import com.codiform.moo.annotation.TranslateCollection;
-import com.codiform.moo.cache.TranslationCache;
-import com.codiform.moo.cache.TranslatorCache;
+import com.codiform.moo.source.TranslationSource;
 
 public class CollectionTranslator {
 
-	private TranslatorCache translatorCache;
-
-	public CollectionTranslator(TranslatorCache translatorSource) {
-		this.translatorCache = translatorSource;
-	}
-
 	@SuppressWarnings("unchecked")
 	public Object translate(Object value, TranslateCollection annotation,
-			TranslationCache cache) {
+			TranslationSource cache) {
 		if (value instanceof SortedSet<?>) {
 			return copySortedSet((SortedSet<?>) value, annotation);
 		} else if (value instanceof Set<?>) {
@@ -45,23 +38,22 @@ public class CollectionTranslator {
 
 	@SuppressWarnings("unchecked")
 	private Collection copyCollection(Collection value,
-			TranslateCollection annotation, TranslationCache cache) {
+			TranslateCollection annotation, TranslationSource translationSource) {
 		if (annotation == null) {
 			return new ArrayList(value);
 		} else {
-			return translatorCache.getTranslator(annotation.value())
-					.getEachTranslation(value, cache);
+			return translationSource
+					.getEachTranslation(value, annotation.value());
 		}
 	}
 
 	@SuppressWarnings("unchecked")
 	private List copyList(List value, TranslateCollection annotation,
-			TranslationCache cache) {
+			TranslationSource translationSource) {
 		if (annotation == null) {
 			return new ArrayList(value);
 		} else {
-			return translatorCache.getTranslator(annotation.value())
-					.getEachTranslation(value, cache);
+			return translationSource.getEachTranslation(value,annotation.value());
 		}
 	}
 
@@ -89,12 +81,12 @@ public class CollectionTranslator {
 	}
 
 	private Set<?> copySet(Set<?> value, TranslateCollection annotation,
-			TranslationCache cache) {
+			TranslationSource translationSource) {
 		if (annotation == null) {
 			return new HashSet<Object>(value);
 		} else {
-			return translatorCache.getTranslator(annotation.value())
-					.getEachTranslation(value, cache);
+			return translationSource
+					.getEachTranslation(value, annotation.value() );
 		}
 	}
 

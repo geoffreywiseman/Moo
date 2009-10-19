@@ -39,19 +39,19 @@ public class Translate<T> {
 	}
 	
 	public T from(Object source) {
-		return new TranslationSession(configuration).translate( source, destinationClass);
+		return new TranslationSession(configuration).getTranslation( source, destinationClass);
 	}
 	
 	public Collection<T> fromEach(Collection<?> source) {
-		return new TranslationSession(configuration).translateEach( source, destinationClass);
+		return new TranslationSession(configuration).getEachTranslation( source, destinationClass);
 	}
 	
 	public Set<T> fromEach(Set<?> source) {
-		return new TranslationSession(configuration).translateEach( source, destinationClass);
+		return new TranslationSession(configuration).getEachTranslation( source, destinationClass);
 	}
 	
 	public List<T> fromEach(List<?> source) {
-		return new TranslationSession(configuration).translateEach( source, destinationClass);
+		return new TranslationSession(configuration).getEachTranslation( source, destinationClass);
 	}
 	
 	public static <T> Translate<T> to( Class<T> destinationClass ) {

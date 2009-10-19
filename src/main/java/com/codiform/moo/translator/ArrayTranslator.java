@@ -2,26 +2,17 @@ package com.codiform.moo.translator;
 
 import java.lang.reflect.Array;
 
-import com.codiform.moo.cache.TranslationCache;
-import com.codiform.moo.cache.TranslatorCache;
+import com.codiform.moo.source.TranslationSource;
 
 public class ArrayTranslator {
 
-	TranslatorCache translatorCache;
-	
-	public ArrayTranslator(TranslatorCache cache) {
-		this.translatorCache = cache;
-	}
-
 	public <T> T[] translate(Object[] sourceArray, Class<T> destinationClass,
-			TranslationCache translationCache) {
-		Translator<T> translator = translatorCache
-				.getTranslator(destinationClass);
+			TranslationSource translationSource) {
 		T[] destinationArray = createDestinationArray(destinationClass,
 				sourceArray.length);
 		for (int index = 0; index < sourceArray.length; index++) {
-			destinationArray[index] = translator.getTranslation(
-					sourceArray[index], translationCache);
+			destinationArray[index] = translationSource.getTranslation(
+					sourceArray[index], destinationClass);
 		}
 		return destinationArray;
 	}

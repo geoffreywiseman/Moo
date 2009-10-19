@@ -1,12 +1,13 @@
 package com.codiform.moo.session;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import com.codiform.moo.cache.DefaultTranslationCache;
-import com.codiform.moo.cache.TranslationCache;
 import com.codiform.moo.configuration.Configuration;
+import com.codiform.moo.source.TranslationSource;
 import com.codiform.moo.translator.Translator;
 
 /**
@@ -14,43 +15,70 @@ import com.codiform.moo.translator.Translator;
  * invocation of the translator. It stores translations to avoid cycles, it may
  * store outside objects needed by translations.
  */
-public class TranslationSession {
+public class TranslationSession implements TranslationSource {
 
 	private TranslationCache translationCache;
 	private Configuration configuration;
 
 	public TranslationSession(Configuration configuration) {
-		translationCache = new DefaultTranslationCache();
+		translationCache = new TranslationCache();
 		this.configuration = configuration;
 	}
 
-	public <T> T translate(Object source, Class<T> destination) {
-		return getTranslator(destination).getTranslation(source,
-				translationCache);
+	public <T> T getTranslation(Object source, Class<T> destinationClass) {
+		T translated = translationCache
+				.getTranslation(source, destinationClass);
+		if (translated == null)
+			translated = translate(source, destinationClass);
+		return translated;
 	}
 
-	public <T> List<T> translateEach(List<?> sources, Class<T> destination) {
-		return configuration.getTranslator(destination).getEachTranslation(
-				sources, translationCache);
+	public <T> List<T> getEachTranslation(List<?> sources,
+			Class<T> destinationClass) {
+		List<T> results = new ArrayList<T>();
+		for (Object source : sources) {
+			results.add(getTranslation(source, destinationClass));
+		}
+		return results;
 	}
 
-	public <T> Collection<T> translateEach(Collection<?> sources,
-			Class<T> destination) {
-		return configuration.getTranslator(destination).getEachTranslation(
-				sources, translationCache);
+	public <T> Collection<T> getEachTranslation(Collection<?> sources,
+			Class<T> destinationClass) {
+		List<T> results = new ArrayList<T>();
+		for (Object source : sources) {
+			results.add(getTranslation(source, destinationClass));
+		}
+		return results;
 	}
 
-	public <T> Set<T> translateEach(Set<?> sources, Class<T> destination) {
-		return configuration.getTranslator(destination).getEachTranslation(
-				sources, translationCache);
+	public <T> Set<T> getEachTranslation(Set<?> sources,
+			Class<T> destinationClass) {
+		Set<T> results = new HashSet<T>();
+		for (Object source : sources) {
+			results.add(getTranslation(source, destinationClass));
+		}
+		return results;
 	}
 
-	public void update(Object source, Object destination) {
-		configuration.getTranslator(destination.getClass()).update( source, destination, translationCache );
+	private <T> T translate(Object source, Class<T> destinationClass) {
+		if (source == null) {
+			return null;
+		} else {
+			Translator<T> translator = getTranslator(destinationClass);
+			T translated = translator.create();
+			translationCache.putTranslation(source, translated);
+			translator.update(source, translated, this);
+			return translated;
+		}
+	}
+
+	public <T> void update(Object source, T destination) {
+		configuration.getTranslator(destination.getClass()).castAndUpdate(
+				source, destination, this);
 	}
 
 	private <T> Translator<T> getTranslator(Class<T> destination) {
 		return configuration.getTranslator(destination);
 	}
-	
+
 }
