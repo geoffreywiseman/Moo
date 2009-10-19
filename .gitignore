@@ -1,2 +1,5 @@
 # Target directory is derived
 target/
+.settings/
+.classpath
+.project
