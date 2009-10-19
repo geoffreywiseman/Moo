@@ -24,3 +24,13 @@ Moo may help you to extract value from an architecture that you consider indiges
 can trade in your diet of grasses for something more pleasant and accessible, you probably should.
 
 If you've done that, and you still think that Moo is the right solution, then by all means.
+
+## Data Transfer Objects
+
+One of the most common needs for object-to-object mapping is data transfer objects, whether these
+are being serialized directly over the wire or going through some kind of explicit representation-
+shift like JSON or XML.  
+
+As a design goal, Moo should support most of these cases without needing to mark up the domain objects
+themselves.  Configuration can be applied to the data transfer objects or to external configuration
+like Java or XML config.
