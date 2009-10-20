@@ -8,6 +8,6 @@ building from scratch.
 ## More Information
 
 You can find more information by reading one of the following:
- - the Moo [website](http://geoffreywiseman.github.com/Moo)
- - the [automated tests](http://github.com/geoffreywiseman/Moo/tree/master/src/test/java/com/codiform/moo/) for Moo 
+  *  the Moo [website](http://geoffreywiseman.github.com/Moo)
+  *  the [automated tests](http://github.com/geoffreywiseman/Moo/tree/master/src/test/java/com/codiform/moo/) for Moo 
 
