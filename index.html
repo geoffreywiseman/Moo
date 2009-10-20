@@ -1,80 +1,80 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+		<title>Moo: Mapping Objects to Objects</title>
+		<link rel="stylesheet" type="text/css" href="style.css" />	
+	</head>
+	<body>
+		<a href="http://github.com/geoffreywiseman/Moo"><img style="position: absolute; top: 0; right: 0; border: 0;" src="http://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub" /></a>
+		<div class="header">
+			<h1><a href="http://github.com/geoffreywiseman/Moo">Moo</a></h1>
+			<h2>Mapping Objects to Objects</h2>
+			<h2>by <a href="http://github.com/geoffreywiseman">Geoffrey Wiseman</a></h2>
+		</div>
+		<div id="container">
+			<span class="download">
+				<a href="http://github.com/geoffreywiseman/Moo/zipball/master">
+					<img border="0" width="90" src="http://github.com/images/modules/download/zip.png"></a>
+				<a href="http://github.com/geoffreywiseman/Moo/tarball/master">
+					<img border="0" width="90" src="http://github.com/images/modules/download/tar.png"></a>
+			</span>
+			<span class="description">
+				Moo maps an object or graph of objects to another object or set of objects while trying to stay as 
+				unintrusive as possible and easy-to-use.  Moo makes it possible to create quick copies and data
+				transfer objects.
+			</span>
+			<h2>Using Moo</h2>
+			<p>
+				There are a lot of ways you could use Moo -- to create data transfer objects, to work as an
+				anti-corruption layer, to help summarize an object graph before serializing to XML or JSON.
+				Examples of Moo at work can be found in the 
+				<a href="http://github.com/geoffreywiseman/Moo/tree/master/src/test/java/com/codiform/moo/">automated tests</a>.
+			</p>
+			<p>The simplest examples of how one might use Moo are:</p>
+			<pre>Translate.to( UserDto.class ).from( currentUser );
 
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<head>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+Translate.to( UserDto.class ).fromEach( selectedUsers );
 
-	<title>geoffreywiseman/Moo @ GitHub</title>
-	
-	<style type="text/css">
-		body {
-  		margin-top: 1.0em;
-  		background-color: #bec1df;
-		  font-family: "Helvetica,Arial,FreeSans"; 
-  		color: #000000;
-    }
-    #container {
-      margin: 0 auto;
-      width: 700px;
-    }
-		h1 { font-size: 3.8em; color: #413e20; margin-bottom: 3px; }
-		h1 .small { font-size: 0.4em; }
-		h1 a { text-decoration: none }
-		h2 { font-size: 1.5em; color: #413e20; }
-    h3 { text-align: center; color: #413e20; }
-    a { color: #413e20; }
-    .description { font-size: 1.2em; margin-bottom: 30px; margin-top: 30px; font-style: italic;}
-    .download { float: right; }
-		pre { background: #000; color: #fff; padding: 15px;}
-    hr { border: 0; width: 80%; border-bottom: 1px solid #aaa}
-    .footer { text-align:center; padding-top:30px; font-style: italic; }
-	</style>
-	
-</head>
+Update.from( userDto ).to( currentUser );</pre>
+			<h2>Getting Moo</h2>
+		    <p>
+		      You can download this project in either
+		      <a href="http://github.com/geoffreywiseman/Moo/zipball/master">zip</a> or
+		      <a href="http://github.com/geoffreywiseman/Moo/tarball/master">tar</a> formats.
+		    </p>
+		    <p>You can also clone the project with <a href="http://git-scm.com">Git</a>
+		      by running:
+		      <pre>$ git clone git://github.com/geoffreywiseman/Moo</pre>
+		    </p>
+		    
+			<h2>Moo is a Code Smell</h2>
+			<p>Although I've used Moo before and I'll undoubtedly use it again, I think it's 
+			still safe to say that the use of Moo is usually a sign that you have problems 
+			in your code and/or your architecture. Moo might be the best (most cost-effective, 
+			most palatable, etc.) solution to your problem, but I do suggest you sit back and 
+			take some time to ask yourself, "Why do I need to copy values from one set of objects 
+			to another set of objects?" "Do I really need parallel hierarchies?" "What problem 
+			am I solving, why do I have it, and is there a better way to go about it?"</p>
+			<p>Think of it this way: in the same way that the multi-stage digestion of ruminants, 
+			like cows (who say 'moo') allows them to extract nutrients from food that many of 
+			us consider indigestible (grasses), Moo may help you to extract value from an 
+			architecture that you consider indigestible. But if you can trade in your diet of 
+			grasses for something more pleasant and accessible, you probably should.</p>
+			<p>If you've evaluated your options, and you still think that Moo is the right 
+			solution, then by all means.</p>
+			
+			<h2>Design Goals</h2>
+			<p>As much as possible, Moo is designed to be unintrusive.  Although the current
+			configuration requires annotations, the goal is for these annotations be used
+			only within the lightweight summary objects you create for DTOs or for serialization.
+			Eventually, it may be possible to configure Moo without using annotations.</p>
+			
+			<h2>More Information</h2>
+			<p>The original concepts behind Moo were developed by Fuseboy first at Exchange Solutions, and then for The Syntegrity Group.
+			Although this code is entirely new, Moo owes some conceptual debt to those implementations.  Moo has been developed for
+			open-source by <a href="http://geoffreywiseman.github.com">Geoffrey Wiseman</a>.</p>
 
-<body>
-  <a href="http://github.com/geoffreywiseman/Moo"><img style="position: absolute; top: 0; right: 0; border: 0;" src="http://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub" /></a>
-  
-  <div id="container">
-
-    <div class="download">
-      <a href="http://github.com/geoffreywiseman/Moo/zipball/master">
-        <img border="0" width="90" src="http://github.com/images/modules/download/zip.png"></a>
-      <a href="http://github.com/geoffreywiseman/Moo/tarball/master">
-        <img border="0" width="90" src="http://github.com/images/modules/download/tar.png"></a>
-    </div>
-      
-    <h1><a href="http://github.com/geoffreywiseman/Moo">Moo</a> 
-      <span class="small">by <a href="http://github.com/geoffreywiseman">geoffreywiseman</a></span></h1>
-
-    <div class="description">
-      Mapping Objects to Objects
-    </div>
-
-    <p>Moo is for mapping objects to objects, typically useful either in data transfer objects or for summarizing objects before they're serialized.</p><h2>Authors</h2>
-<p>Geoffrey Wiseman (geoffrey.wiseman@gmail.com)<br/><br/>      </p>
-<h2>Contact</h2>
-<p>Geoffrey Wiseman (geoffrey.wiseman@gmail.com)<br/>      </p>
-
-
-    <h2>Download</h2>
-    <p>
-      You can download this project in either
-      <a href="http://github.com/geoffreywiseman/Moo/zipball/master">zip</a> or
-      <a href="http://github.com/geoffreywiseman/Moo/tarball/master">tar</a> formats.
-    </p>
-    <p>You can also clone the project with <a href="http://git-scm.com">Git</a>
-      by running:
-      <pre>$ git clone git://github.com/geoffreywiseman/Moo</pre>
-    </p>
-      
-    <div class="footer">
-      get the source code on GitHub : <a href="http://github.com/geoffreywiseman/Moo">geoffreywiseman/Moo</a>
-    </div>
-    
-  </div>
-
-  
-</body>
+		</div>
+	    
+	</body>
 </html>
