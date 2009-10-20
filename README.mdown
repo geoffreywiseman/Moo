@@ -9,7 +9,6 @@ building from scratch.
 
 You can find more information by reading one of the following:
 
-* the [website](http://geoffreywiseman.github.com/Moo) for Moo 
-
-* the [automated tests](http://github.com/geoffreywiseman/Moo/tree/master/src/test/java/com/codiform/moo/) for Moo 
+* the [website](http://geoffreywiseman.github.com/Moo) for Moo   
+* the [automated tests](http://github.com/geoffreywiseman/Moo/tree/master/src/test/java/com/codiform/moo/) for Moo  
 
