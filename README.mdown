@@ -5,32 +5,9 @@ _data transfer objects_, an _anti-corruption layer_, or something else.  Two pro
 have written code similar to this, and I thought it was time to start re-using rather than
 building from scratch.
 
-Much of the credit for this is due to _Fuseboy_, who did the conceptualization of the framework on
-both past projects; although this is new code, it was influenced heavily by the experience of working
-with the previous two implementations.
+## More Information
 
-## Moo is a Code Smell
+You can find more information by reading one of the following:
+ - the Moo [website](http://geoffreywiseman.github.com/Moo)
+ - the [automated tests](http://github.com/geoffreywiseman/Moo/tree/master/src/test/java/com/codiform/moo/) for Moo 
 
-Although I've used Moo before and I'll undoubtedly use it again, I think it's still safe to say that
-the use of Moo is usually a sign that you have problems in your code and/or your architecture.  Moo
-might be the best (most cost-effective, most palatable, etc.) solution to your problem, but I
-do suggest you sit back and take some time to ask yourself, "Why do I need to copy values from
-one set of objects to another set of objects?" "Do I really need parallel hierarchies?" "What problem
-am I solving, why do I have it, and is there a better way to go about it?"
-
-Think of it this way: in the same way that the multi-stage digestion of ruminants, like cows (who
-say 'moo') allows them to extract nutrients from food that many of us consider indigestible (grasses),
-Moo may help you to extract value from an architecture that you consider indigestible.  But if you
-can trade in your diet of grasses for something more pleasant and accessible, you probably should.
-
-If you've done that, and you still think that Moo is the right solution, then by all means.
-
-## Data Transfer Objects
-
-One of the most common needs for object-to-object mapping is data transfer objects, whether these
-are being serialized directly over the wire or going through some kind of explicit representation-
-shift like JSON or XML.  
-
-As a design goal, Moo should support most of these cases without needing to mark up the domain objects
-themselves.  Configuration can be applied to the data transfer objects or to external configuration
-like Java or XML config.
