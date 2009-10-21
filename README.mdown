@@ -12,3 +12,7 @@ You can find more information by reading one of the following:
 * the [website](http://geoffreywiseman.github.com/Moo) for Moo   
 * the [automated tests](http://github.com/geoffreywiseman/Moo/tree/master/src/test/java/com/codiform/moo/) for Moo  
 
+## License and Copyright
+
+More information on the copyright and license can be found in NOTICE and LICENSE respectively, but basically
+it's BSD licensed and Copyright (C) 2009, Geoffrey Wiseman.
