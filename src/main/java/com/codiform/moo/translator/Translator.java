@@ -7,23 +7,22 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.mvel2.MVEL;
+import org.mvel2.PropertyAccessException;
 
 import com.codiform.moo.TranslationException;
 import com.codiform.moo.annotation.TranslateCollection;
 import com.codiform.moo.annotation.Translation;
+import com.codiform.moo.configuration.Configuration;
 import com.codiform.moo.source.TranslationSource;
 
 public class Translator<T> {
 
 	private Class<T> destinationClass;
-	private ArrayTranslator arrayTranslator;
-	private CollectionTranslator collectionTranslator;
+	private Configuration configuration;
 
-	public Translator(Class<T> destination, ArrayTranslator arrayTranslator,
-			CollectionTranslator collectionTranslator) {
+	public Translator(Class<T> destination, Configuration configuration) {
 		this.destinationClass = destination;
-		this.arrayTranslator = arrayTranslator;
-		this.collectionTranslator = collectionTranslator;
+		this.configuration = configuration;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -31,10 +30,9 @@ public class Translator<T> {
 			TranslationSource translationSource) {
 		com.codiform.moo.annotation.Translate annotation = item
 				.getAnnotation(com.codiform.moo.annotation.Translate.class);
-		if( value == null ) {
+		if (value == null) {
 			return null;
-		}
-		else if (value instanceof Collection) {
+		} else if (value instanceof Collection) {
 			return transformCollection(value, item, translationSource,
 					annotation);
 		} else if (value.getClass().isArray()) {
@@ -52,12 +50,12 @@ public class Translator<T> {
 		Class<?> valueType = value.getClass();
 
 		if (valueType.isAssignableFrom(fieldType)) {
-			return arrayTranslator.defensiveCopy(value);
+			return configuration.getArrayTranslator().defensiveCopy(value);
 		} else if (fieldType.isArray()) {
 			if (valueType.isAssignableFrom(fieldType.getComponentType())) {
-				return arrayTranslator.copyTo(value, fieldType);
+				return configuration.getArrayTranslator().copyTo(value, fieldType);
 			} else {
-				return arrayTranslator.translate(value, fieldType
+				return configuration.getArrayTranslator().translate(value, fieldType
 						.getComponentType(), translationSource);
 			}
 		} else {
@@ -68,16 +66,16 @@ public class Translator<T> {
 		}
 	}
 
-	private Object transformCollection(Object value, Field item, TranslationSource translationSource,
+	private Object transformCollection(Object value, Field item,
+			TranslationSource translationSource,
 			com.codiform.moo.annotation.Translate annotation) {
 		if (annotation != null) {
 			throw new TranslationException(
 					"Cannot use @Translate on a collection (cannot determine internal type due to erasure); use @TranslateCollection instead.");
 		} else {
-			return collectionTranslator
-					.translate(value, item
-							.getAnnotation(TranslateCollection.class),
-							translationSource);
+			return configuration.getCollectionTranslator().translate(value, item
+					.getAnnotation(TranslateCollection.class),
+					translationSource);
 		}
 	}
 
@@ -113,7 +111,8 @@ public class Translator<T> {
 		while (current != null) {
 			for (Field item : current.getDeclaredFields()) {
 				int modifiers = item.getModifiers();
-				if( !Modifier.isFinal(modifiers) && !Modifier.isStatic(modifiers) )
+				if (!Modifier.isFinal(modifiers)
+						&& !Modifier.isStatic(modifiers))
 					fields.add(item);
 			}
 			current = current.getSuperclass();
@@ -125,10 +124,23 @@ public class Translator<T> {
 			TranslationSource translationSource) {
 		Set<Field> fields = getFieldsToTranslate();
 		for (Field item : fields) {
-			String expression = getTranslationExpression(item);
+			updateField(source, destination, translationSource, item);
+		}
+	}
+
+	private void updateField(Object source, T destination,
+			TranslationSource translationSource, Field item) {
+		String expression = getTranslationExpression(item);
+		try {
 			Object value = getValue(source, expression);
 			value = transform(value, item, translationSource);
 			setValue(destination, item, value);
+		} catch (PropertyAccessException exception) {
+			if( configuration.isSourcePropertyRequired()) {
+				throw new TranslationException(
+						"Could not find required source property for expression: "
+								+ expression, exception);
+			}
 		}
 	}
 
