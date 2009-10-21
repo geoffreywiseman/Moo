@@ -9,6 +9,7 @@
 	<version>1.0-SNAPSHOT</version>
 	<name>Moo</name>
 	<description>Mapping Objects to Objects</description>
+	<inceptionYear>2009</inceptionYear>
 
 	<dependencies>
 
@@ -83,5 +84,49 @@
 
 		</plugins>
 	</build>
+	
+	<contributors>
+		<contributor>
+			<name>Michael Prescott</name>
+			<email>michael.r.prescott@gmail.com</email>
+			<roles>
+				<role>conceptualizer</role>
+			</roles>
+		</contributor>
+	</contributors>
+	
+	<developers>
+		<developer>
+			<name>Geoffrey Wiseman</name>
+			<email>geoffrey.wiseman@gmail.com</email>
+			<organization>codiform</organization>
+			<url>http://www.geoffreywiseman.ca</url>
+			<roles>
+				<role>founder</role>
+				<role>author</role>
+			</roles>
+		</developer>
+	</developers>
+	
+	<issueManagement>
+		<system>GitHub</system>
+		<url>http://github.com/geoffreywiseman/Moo/issues</url>
+	</issueManagement>	
+	
+	<scm>
+		<url>http://github.com/geoffreywiseman/Moo</url>
+	</scm>
+	
+	<licenses>
+		<license>
+			<name>BSD</name>
+			<url>http://www.opensource.org/licenses/bsd-license.php</url>
+			<distribution>repo</distribution>
+			<comments>
+				Simple, permissive, not too much legalese.  Basically, use it how you like, we provide no warranty,
+				and give us credit.  See LICENSE and NOTICE.
+			</comments>
+		</license>
+	</licenses>
 
 </project>
