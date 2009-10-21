@@ -12,19 +12,37 @@ import com.codiform.moo.translator.Translator;
 
 /**
  * A translation session contains information relevant to a particular
- * invocation of the translator. It stores translations to avoid cycles, it may
- * store outside objects needed by translations.
+ * translation pass.  This typically corresponds to a single invocation
+ * of the translator, although you could retain a translation session
+ * if you wished to re-use it.
+ * 
+ * <p>The TranslationSession is not intended to be thread-safe; it is
+ * a stateful construct, and several threads running on it at once would
+ * have an undefined effect.</p>
  */
 public class TranslationSession implements TranslationSource {
 
 	private TranslationCache translationCache;
 	private Configuration configuration;
 
+	/**
+	 * Creates a translation session with a known configuration.
+	 * 
+	 * @param configuration the {@link Configuration} of the translation session
+	 */
 	public TranslationSession(Configuration configuration) {
 		translationCache = new TranslationCache();
 		this.configuration = configuration;
 	}
 
+	/**
+	 * Gets a translation to a specified class from the translation session.  Attempts to load from cache,
+	 * but if not present, performs a translation using a translator.
+	 * 
+	 * @param source the source object to be translated
+	 * @param destinationClass the class to which the translation should be performed
+	 * @param <T> the type that binds the return value to the destination class
+	 */
 	public <T> T getTranslation(Object source, Class<T> destinationClass) {
 		T translated = translationCache
 				.getTranslation(source, destinationClass);
@@ -33,6 +51,14 @@ public class TranslationSession implements TranslationSource {
 		return translated;
 	}
 
+	/**
+	 * Creates a list of translations from a list of source objects, first checking the
+	 * cache and then, if needed, creating the translation.
+	 * 
+	 * @param sources the source objects to be translated
+	 * @param destinationClass the class to which the translation should be performed
+	 * @param <T> the type that binds the return values to the destination class
+	 */
 	public <T> List<T> getEachTranslation(List<?> sources,
 			Class<T> destinationClass) {
 		List<T> results = new ArrayList<T>();
@@ -42,6 +68,14 @@ public class TranslationSession implements TranslationSource {
 		return results;
 	}
 
+	/**
+	 * Creates a collection of translations from a collection of source objects, first checking the
+	 * cache and then, if needed, creating the translation.
+	 * 
+	 * @param sources the source objects to be translated
+	 * @param destinationClass the class to which the translation should be performed
+	 * @param <T> the type that binds the return values to the destination class
+	 */
 	public <T> Collection<T> getEachTranslation(Collection<?> sources,
 			Class<T> destinationClass) {
 		List<T> results = new ArrayList<T>();
@@ -51,6 +85,14 @@ public class TranslationSession implements TranslationSource {
 		return results;
 	}
 
+	/**
+	 * Creates a set of translations from a set of source objects, first checking the
+	 * cache and then, if needed, creating the translation.
+	 * 
+	 * @param sources the source objects to be translated
+	 * @param destinationClass the class to which the translation should be performed
+	 * @param <T> the type that binds the return values to the destination class
+	 */
 	public <T> Set<T> getEachTranslation(Set<?> sources,
 			Class<T> destinationClass) {
 		Set<T> results = new HashSet<T>();
@@ -58,6 +100,18 @@ public class TranslationSession implements TranslationSource {
 			results.add(getTranslation(source, destinationClass));
 		}
 		return results;
+	}
+
+	/**
+	 * Updates an object from a source object, performing any necessary translations
+	 * along the way.
+	 * 
+	 * @param source the object from which the values should be retrieved (and, if necessary, translated)
+	 * @param destination the object to which the values should be applied
+	 */
+	public void update(Object source, Object destination) {
+		configuration.getTranslator(destination.getClass()).castAndUpdate(
+				source, destination, this);
 	}
 
 	private <T> T translate(Object source, Class<T> destinationClass) {
@@ -72,13 +126,12 @@ public class TranslationSession implements TranslationSource {
 		}
 	}
 
-	public <T> void update(Object source, T destination) {
-		configuration.getTranslator(destination.getClass()).castAndUpdate(
-				source, destination, this);
-	}
-
 	private <T> Translator<T> getTranslator(Class<T> destination) {
 		return configuration.getTranslator(destination);
+	}
+
+	/*package*/ void setTranslationCache(TranslationCache cache) {
+		this.translationCache = cache;
 	}
 
 }
