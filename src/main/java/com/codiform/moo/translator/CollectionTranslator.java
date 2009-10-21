@@ -14,9 +14,16 @@ import java.util.TreeSet;
 
 import com.codiform.moo.TranslationException;
 import com.codiform.moo.annotation.TranslateCollection;
+import com.codiform.moo.configuration.Configuration;
 import com.codiform.moo.source.TranslationSource;
 
 public class CollectionTranslator {
+
+	private Configuration configuration;
+
+	public CollectionTranslator(Configuration configuration) {
+		this.configuration = configuration;
+	}
 
 	@SuppressWarnings("unchecked")
 	public Object translate(Object value, TranslateCollection annotation,
@@ -40,10 +47,11 @@ public class CollectionTranslator {
 	private Collection copyCollection(Collection value,
 			TranslateCollection annotation, TranslationSource translationSource) {
 		if (annotation == null) {
-			return new ArrayList(value);
+			return configuration.isPerformingDefensiveCopies() ? new ArrayList(
+					value) : value;
 		} else {
-			return translationSource
-					.getEachTranslation(value, annotation.value());
+			return translationSource.getEachTranslation(value, annotation
+					.value());
 		}
 	}
 
@@ -51,16 +59,19 @@ public class CollectionTranslator {
 	private List copyList(List value, TranslateCollection annotation,
 			TranslationSource translationSource) {
 		if (annotation == null) {
-			return new ArrayList(value);
+			return configuration.isPerformingDefensiveCopies() ? new ArrayList(
+					value) : value;
 		} else {
-			return translationSource.getEachTranslation(value,annotation.value());
+			return translationSource.getEachTranslation(value, annotation
+					.value());
 		}
 	}
 
 	@SuppressWarnings("unchecked")
 	private Map copyMap(Map value, TranslateCollection annotation) {
 		if (annotation == null) {
-			return new HashMap(value);
+			return configuration.isPerformingDefensiveCopies() ? new HashMap(
+					value) : value;
 		} else {
 			throw new TranslationException(
 					"Support for translated maps not yet built.");
@@ -71,9 +82,13 @@ public class CollectionTranslator {
 	private SortedMap copySortedMap(SortedMap value,
 			TranslateCollection annotation) {
 		if (annotation == null) {
-			SortedMap map = new TreeMap<Object, Object>(value.comparator());
-			map.putAll(value);
-			return map;
+			if (configuration.isPerformingDefensiveCopies()) {
+				SortedMap map = new TreeMap<Object, Object>(value.comparator());
+				map.putAll(value);
+				return map;
+			} else {
+				return value;
+			}
 		} else {
 			throw new TranslationException(
 					"Support for translated sorted maps not yet built");
@@ -83,20 +98,26 @@ public class CollectionTranslator {
 	private Set<?> copySet(Set<?> value, TranslateCollection annotation,
 			TranslationSource translationSource) {
 		if (annotation == null) {
-			return new HashSet<Object>(value);
+			return configuration.isPerformingDefensiveCopies() ? new HashSet<Object>(
+					value)
+					: value;
 		} else {
-			return translationSource
-					.getEachTranslation(value, annotation.value() );
+			return translationSource.getEachTranslation(value, annotation
+					.value());
 		}
 	}
 
 	@SuppressWarnings("unchecked")
-	private SortedSet<Object> copySortedSet(SortedSet<?> value,
+	private SortedSet<?> copySortedSet(SortedSet<?> value,
 			TranslateCollection annotation) {
 		if (annotation == null) {
-			SortedSet result = new TreeSet(value.comparator());
-			result.addAll(value);
-			return result;
+			if (configuration.isPerformingDefensiveCopies()) {
+				SortedSet result = new TreeSet(value.comparator());
+				result.addAll(value);
+				return result;
+			} else {
+				return value;
+			}
 		} else {
 			throw new TranslationException(
 					"Support for translated sorted sets not yet built");

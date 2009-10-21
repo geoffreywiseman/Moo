@@ -2,9 +2,16 @@ package com.codiform.moo.translator;
 
 import java.lang.reflect.Array;
 
+import com.codiform.moo.configuration.Configuration;
 import com.codiform.moo.source.TranslationSource;
 
 public class ArrayTranslator {
+
+	private Configuration configuration;
+
+	public ArrayTranslator(Configuration configuration) {
+		this.configuration = configuration;
+	}
 
 	public <T> T[] translate(Object[] sourceArray, Class<T> destinationClass,
 			TranslationSource translationSource) {
@@ -28,8 +35,23 @@ public class ArrayTranslator {
 		return (T[]) Array.newInstance(destinationClass, length);
 	}
 
+	/**
+	 * Perform a defensive copy (if configured to do so).
+	 * 
+	 * @param <T>
+	 *            a type to link the resulting array to the supplied array
+	 * @param value
+	 *            the original array
+	 * @return the copy, or the original array, depending on the configuration
+	 * @see Configuration#setPerformingDefensiveCopies(boolean)
+	 * @see Configuration#isPerformingDefensiveCopies()
+	 */
 	public <T> T[] defensiveCopy(T[] value) {
-		return value.clone();
+		if (configuration.isPerformingDefensiveCopies()) {
+			return value.clone();
+		} else {
+			return value;
+		}
 	}
 
 	public <T> T[] copyTo(Object[] sourceArray, Class<T> destinationClass) {
