@@ -35,14 +35,7 @@ public class TranslationSession implements TranslationSource {
 		this.configuration = configuration;
 	}
 
-	/**
-	 * Gets a translation to a specified class from the translation session.  Attempts to load from cache,
-	 * but if not present, performs a translation using a translator.
-	 * 
-	 * @param source the source object to be translated
-	 * @param destinationClass the class to which the translation should be performed
-	 * @param <T> the type that binds the return value to the destination class
-	 */
+	@Override
 	public <T> T getTranslation(Object source, Class<T> destinationClass) {
 		T translated = translationCache
 				.getTranslation(source, destinationClass);
@@ -51,14 +44,7 @@ public class TranslationSession implements TranslationSource {
 		return translated;
 	}
 
-	/**
-	 * Creates a list of translations from a list of source objects, first checking the
-	 * cache and then, if needed, creating the translation.
-	 * 
-	 * @param sources the source objects to be translated
-	 * @param destinationClass the class to which the translation should be performed
-	 * @param <T> the type that binds the return values to the destination class
-	 */
+	@Override
 	public <T> List<T> getEachTranslation(List<?> sources,
 			Class<T> destinationClass) {
 		List<T> results = new ArrayList<T>();
@@ -68,14 +54,7 @@ public class TranslationSession implements TranslationSource {
 		return results;
 	}
 
-	/**
-	 * Creates a collection of translations from a collection of source objects, first checking the
-	 * cache and then, if needed, creating the translation.
-	 * 
-	 * @param sources the source objects to be translated
-	 * @param destinationClass the class to which the translation should be performed
-	 * @param <T> the type that binds the return values to the destination class
-	 */
+	@Override
 	public <T> Collection<T> getEachTranslation(Collection<?> sources,
 			Class<T> destinationClass) {
 		List<T> results = new ArrayList<T>();
@@ -85,14 +64,7 @@ public class TranslationSession implements TranslationSource {
 		return results;
 	}
 
-	/**
-	 * Creates a set of translations from a set of source objects, first checking the
-	 * cache and then, if needed, creating the translation.
-	 * 
-	 * @param sources the source objects to be translated
-	 * @param destinationClass the class to which the translation should be performed
-	 * @param <T> the type that binds the return values to the destination class
-	 */
+	@Override
 	public <T> Set<T> getEachTranslation(Set<?> sources,
 			Class<T> destinationClass) {
 		Set<T> results = new HashSet<T>();
