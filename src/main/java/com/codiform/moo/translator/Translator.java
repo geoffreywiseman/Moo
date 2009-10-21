@@ -1,6 +1,7 @@
 package com.codiform.moo.translator;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -111,7 +112,9 @@ public class Translator<T> {
 		Class<?> current = destinationClass;
 		while (current != null) {
 			for (Field item : current.getDeclaredFields()) {
-				fields.add(item);
+				int modifiers = item.getModifiers();
+				if( !Modifier.isFinal(modifiers) && !Modifier.isStatic(modifiers) )
+					fields.add(item);
 			}
 			current = current.getSuperclass();
 		}
