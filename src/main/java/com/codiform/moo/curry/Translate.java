@@ -38,22 +38,54 @@ public class Translate<T> {
 		this.destinationClass = destinationClass;
 	}
 	
+	/**
+	 * Translates from the given source object to an instance of the destination class.
+	 * 
+	 * @param source the object from which values should be retried
+	 * @return the translated instance of the destination class
+	 */
 	public T from(Object source) {
 		return new TranslationSession(configuration).getTranslation( source, destinationClass);
 	}
 	
+	/**
+	 * Translates from the given source objects to instances of the destination class.
+	 * 
+	 * @param source the collection of objects from which values should be retried
+	 * @return the translated instances of the destination class
+	 */
 	public Collection<T> fromEach(Collection<?> source) {
 		return new TranslationSession(configuration).getEachTranslation( source, destinationClass);
 	}
 	
+	/**
+	 * Translates from the given source objects to instances of the destination class.
+	 * 
+	 * @param source the set of objects from which values should be retried
+	 * @return the translated instances of the destination class
+	 */
 	public Set<T> fromEach(Set<?> source) {
 		return new TranslationSession(configuration).getEachTranslation( source, destinationClass);
 	}
 	
+	/**
+	 * Translates from the given source objects to instances of the destination class.
+	 * 
+	 * @param source the list of objects from which values should be retried
+	 * @return the translated instances of the destination class
+	 */
 	public List<T> fromEach(List<?> source) {
 		return new TranslationSession(configuration).getEachTranslation( source, destinationClass);
 	}
 	
+	/**
+	 * A common entry point for translate, if you're not invoking it from within {@link Moo}.  This
+	 * allows you to start up a translate with a default moo configuration in a very DSL-like way.
+	 * 
+	 * @param <T> links the supplied class to the curried translate to ensure that the latter returns the former
+	 * @param destinationClass a class representing the type to which translation should be performed
+	 * @return a 'curried' translate instance
+	 */
 	public static <T> Translate<T> to( Class<T> destinationClass ) {
 		return new Translate<T>( new Configuration(), destinationClass );
 	}
