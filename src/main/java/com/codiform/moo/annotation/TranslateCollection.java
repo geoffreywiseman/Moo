@@ -6,9 +6,9 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-
 /**
- * Marker annotation that implies the value should be translated rather than simply copied.
+ * Configuration annotation to tell Moo that the values within the collection should be translated
+ * to a the class specified in {@link #value()}.
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)

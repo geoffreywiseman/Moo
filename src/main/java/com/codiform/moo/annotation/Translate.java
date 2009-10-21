@@ -8,7 +8,7 @@ import java.lang.annotation.Target;
 
 
 /**
- * Marker annotation that implies the value should be translated rather than simply copied.
+ * Configuration annotation that tells Moo that the marked value should be translated rather than simply copied.
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
