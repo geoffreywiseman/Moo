@@ -11,7 +11,20 @@
 	<description>Mapping Objects to Objects</description>
 	<inceptionYear>2009</inceptionYear>
 
-	<dependencies>
+	<distributionManagement>
+        <repository>
+            <id>codiform-releases</id>
+            <name>Staging Repository for Codiform Open-Source</name>
+            <url>http://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+        <snapshotRepository>
+            <id>codiform-snapshots</id>
+            <name>Snapshot Repository for Codiform Open-Source</name>
+            <url>http://oss.sonatype.org/content/repositories/codiform-snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
+    
+    <dependencies>
 
 		<!-- Testing -->
 		<dependency>
