@@ -23,7 +23,7 @@
             <url>http://oss.sonatype.org/content/repositories/codiform-snapshots</url>
         </snapshotRepository>
     </distributionManagement>
-    
+
     <dependencies>
 
 		<!-- Testing -->
@@ -52,7 +52,7 @@
 			<artifactId>mvel2</artifactId>
 			<version>2.0.13</version>
 		</dependency>
-		
+
 		<!--  Mockito -->
 		<dependency>
 			<groupId>org.mockito</groupId>
@@ -66,7 +66,6 @@
 	<build>
 		<plugins>
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>2.0.2</version>
 				<configuration>
@@ -76,22 +75,11 @@
 			</plugin>
 
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-eclipse-plugin</artifactId>
 				<version>2.7</version>
 				<configuration>
 					<downloadSources>true</downloadSources>
 					<downloadJavadocs>false</downloadJavadocs>
-				</configuration>
-			</plugin>
-
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<configuration>
-					<includes>
-						<include>**/*Test.java</include>
-					</includes>
 				</configuration>
 			</plugin>
 
@@ -121,7 +109,7 @@
             </plugin>
 		</plugins>
 	</build>
-	
+
 	<contributors>
 		<contributor>
 			<name>Michael Prescott</name>
@@ -131,7 +119,7 @@
 			</roles>
 		</contributor>
 	</contributors>
-	
+
 	<developers>
 		<developer>
 			<name>Geoffrey Wiseman</name>
@@ -144,16 +132,16 @@
 			</roles>
 		</developer>
 	</developers>
-	
+
 	<issueManagement>
 		<system>GitHub</system>
 		<url>http://github.com/geoffreywiseman/Moo/issues</url>
-	</issueManagement>	
-	
+	</issueManagement>
+
 	<scm>
 		<url>http://github.com/geoffreywiseman/Moo</url>
 	</scm>
-	
+
 	<licenses>
 		<license>
 			<name>BSD</name>
