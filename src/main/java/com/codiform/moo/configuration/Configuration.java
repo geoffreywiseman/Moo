@@ -16,6 +16,7 @@ public class Configuration implements TranslatorSource {
 	private CollectionTranslator collectionTranslator;
 	private ArrayTranslator arrayTranslator;
 	private boolean performingDefensiveCopies = true;
+	private boolean sourcePropertyRequired = false;
 	
 	/**
 	 * Creates a default configuration.
@@ -54,8 +55,7 @@ public class Configuration implements TranslatorSource {
 
 	@Override
 	public <T> Translator<T> getTranslator(Class<T> destinationClass) {
-		return new Translator<T>(destinationClass, arrayTranslator,
-				collectionTranslator);
+		return new Translator<T>(destinationClass, this);
 	}
 
 	@Override
@@ -66,6 +66,29 @@ public class Configuration implements TranslatorSource {
 	@Override
 	public ArrayTranslator getArrayTranslator() {
 		return arrayTranslator;
+	}
+
+	/**
+	 * Controls whether a source property is required for a translation to succeed.  If
+	 * you wish translation to fail with a {@link TranslationException} when a property
+	 * in the source object cannot be found to correspond to a destination property,
+	 * set this value to true.
+	 *
+	 * @param sourcePropertyRequired true if a source property is required for each destination property
+	 */
+	public void setSourcePropertiesRequired(boolean sourcePropertyRequired) {
+		this.sourcePropertyRequired = sourcePropertyRequired;
+	}
+	
+	/**
+	 * Indicates if source properties are required for translation to succeed.  The default value, false,
+	 * allows the translation to continue even if source properties can't be found to match all of the 
+	 * destination fields.
+	 * 
+	 * @return true if source properties are required, false otherwise
+	 */
+	public boolean isSourcePropertyRequired() {
+		return sourcePropertyRequired;
 	}
 
 }
