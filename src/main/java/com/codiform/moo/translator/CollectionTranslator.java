@@ -17,14 +17,43 @@ import com.codiform.moo.annotation.TranslateCollection;
 import com.codiform.moo.configuration.Configuration;
 import com.codiform.moo.source.TranslationSource;
 
+/**
+ * A translator for handling issues specific to collections.  In particular,
+ * this handles defensive copying of collections that don't need to be 
+ * transformed, but also deals with making a copy of a collection that matches
+ * the original collection type (set, list, etc.) but where each item in
+ * the collection has been translated. 
+ * 
+ * <p>This approach has limitations; it can't change the type of the collection,
+ * and it can't currently handle sorted sets with translation (where does the 
+ * comparator for the translated objects come from?), maps,  or allow you to select
+ * the implementation class for the collection (LinkedList vs. ArrayList).
+ * </p>  
+ */
 public class CollectionTranslator {
 
 	private Configuration configuration;
 
+	/**
+	 * Create a collection translator with a known configuration.
+	 * 
+	 * @param configuration
+	 */
 	public CollectionTranslator(Configuration configuration) {
 		this.configuration = configuration;
 	}
 
+	/**
+	 * Translate a collection.  Make a defensive copy if need be.  
+	 * If the element is annotated with the TranslateCollection element,
+	 * then create an entirely new collection and translate each element
+	 * of the contents of the source collection.
+	 * 
+	 * @param value the source collection
+	 * @param annotation the {@link TranslateCollection} annotation, if present
+	 * @param cache the translation cache of previously-translated elements
+	 * @return the translated collection
+	 */
 	@SuppressWarnings("unchecked")
 	public Object translate(Object value, TranslateCollection annotation,
 			TranslationSource cache) {
