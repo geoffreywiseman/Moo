@@ -60,9 +60,8 @@ public class Translator<T> {
 			}
 		} else {
 			throw new TranslationException(String.format(
-					"Cannot translate from array type %s[] to non-array %s",
-					valueType.getComponentType(), fieldType.getClass()
-							.getName()));
+					"Cannot translate from source array type %s[] to destination type %s",
+					valueType.getComponentType(), fieldType.getName()));
 		}
 	}
 
