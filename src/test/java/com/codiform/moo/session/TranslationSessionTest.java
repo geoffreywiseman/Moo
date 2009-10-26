@@ -52,6 +52,7 @@ public class TranslationSessionTest {
 		Mockito.verify(cache).putTranslation("One", translation);
 	}
 
+	@Test
 	public void testGetTranslationReturnsTranslatedValue() {
 		Integer translation = Integer.valueOf(1);
 		Translator<Integer> translator = mockTranslator(Integer.class);

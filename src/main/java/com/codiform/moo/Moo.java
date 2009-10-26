@@ -114,7 +114,7 @@ public class Moo {
 		return newSession().getEachTranslation( sources, destinationClass );
 	}
 
-	private TranslationSession newSession() {
+	protected TranslationSession newSession() {
 		return new TranslationSession(configuration);
 	}
 	
