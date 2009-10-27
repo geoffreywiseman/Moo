@@ -15,14 +15,73 @@ import com.codiform.moo.annotation.Translation;
 import com.codiform.moo.configuration.Configuration;
 import com.codiform.moo.source.TranslationSource;
 
+/**
+ * The workhorse class of Moo that does the actual work of creating and populating translated instances.
+ * 
+ * @param <T> the destination type for the translator, the type to which all source objects will be translated
+ */
 public class Translator<T> {
 
 	private Class<T> destinationClass;
+	
 	private Configuration configuration;
 
+	/**
+	 * Create a translator that will translate objects to the specified destination type,
+	 * using the specified configuration. 
+	 * 
+	 * @param destination the destination type
+	 * @param configuration the configuration used during translation
+	 */
 	public Translator(Class<T> destination, Configuration configuration) {
 		this.destinationClass = destination;
 		this.configuration = configuration;
+	}
+
+	/**
+	 * Update a destination instance from the source instance.  This is the actual transfer
+	 * of property values from source to destination. 
+	 * 
+	 * @param source the object from which the property values will be retrieved
+	 * @param destination the object to which the property values will be stored
+	 * @param translationSource if any of the sub-properties need to be translated, this will provide those translations
+	 */
+	public void update(Object source, T destination,
+			TranslationSource translationSource) {
+		Set<Field> fields = getFieldsToTranslate();
+		for (Field item : fields) {
+			updateField(source, destination, translationSource, item);
+		}
+	}
+	
+	/**
+	 * It seems like this shouldn't be necessary, but ... sometimes generics defeats me.  If anyone can figure out how to
+	 * remove this method, send me a patch.
+	 * 
+	 * @see #update
+	 */
+	public void castAndUpdate(Object source, Object from,
+			TranslationSource translationSource) {
+		update(source, destinationClass.cast(from), translationSource);
+	}
+
+	/**
+	 * Create a new instance of the destination class; this is the first step in creating a new translation.
+	 * 
+	 * @return the new instance
+	 */
+	public T create() {
+		try {
+			return destinationClass.newInstance();
+		} catch (InstantiationException exception) {
+			throw new TranslationException(String.format(
+					"Error while instantiating %s", destinationClass),
+					exception);
+		} catch (IllegalAccessException exception) {
+			throw new TranslationException(String.format(
+					"Not allowed to instantiate %s", destinationClass),
+					exception);
+		}
 	}
 
 	@SuppressWarnings("unchecked")
@@ -119,14 +178,6 @@ public class Translator<T> {
 		return fields;
 	}
 
-	public void update(Object source, T destination,
-			TranslationSource translationSource) {
-		Set<Field> fields = getFieldsToTranslate();
-		for (Field item : fields) {
-			updateField(source, destination, translationSource, item);
-		}
-	}
-
 	private void updateField(Object source, T destination,
 			TranslationSource translationSource, Field item) {
 		String expression = getTranslationExpression(item);
@@ -140,25 +191,6 @@ public class Translator<T> {
 						"Could not find required source property for expression: "
 								+ expression, exception);
 			}
-		}
-	}
-
-	public void castAndUpdate(Object source, Object from,
-			TranslationSource translationSource) {
-		update(source, destinationClass.cast(from), translationSource);
-	}
-
-	public T create() {
-		try {
-			return destinationClass.newInstance();
-		} catch (InstantiationException exception) {
-			throw new TranslationException(String.format(
-					"Error while instantiating %s", destinationClass),
-					exception);
-		} catch (IllegalAccessException exception) {
-			throw new TranslationException(String.format(
-					"Not allowed to instantiate %s", destinationClass),
-					exception);
 		}
 	}
 
