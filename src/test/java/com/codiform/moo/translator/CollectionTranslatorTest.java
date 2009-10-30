@@ -100,12 +100,10 @@ public class CollectionTranslatorTest {
 
 		TranslateCollection annotation = new TranslateCollection() {
 
-			@Override
 			public Class<? extends Annotation> annotationType() {
 				return TranslateCollection.class;
 			}
 
-			@Override
 			public Class<?> value() {
 				return Bar.class;
 			}

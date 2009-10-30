@@ -35,7 +35,6 @@ public class TranslationSession implements TranslationSource {
 		this.configuration = configuration;
 	}
 
-	@Override
 	public <T> T getTranslation(Object source, Class<T> destinationClass) {
 		T translated = translationCache
 				.getTranslation(source, destinationClass);
@@ -44,7 +43,6 @@ public class TranslationSession implements TranslationSource {
 		return translated;
 	}
 
-	@Override
 	public <T> List<T> getEachTranslation(List<?> sources,
 			Class<T> destinationClass) {
 		List<T> results = new ArrayList<T>();
@@ -54,7 +52,6 @@ public class TranslationSession implements TranslationSource {
 		return results;
 	}
 
-	@Override
 	public <T> Collection<T> getEachTranslation(Collection<?> sources,
 			Class<T> destinationClass) {
 		List<T> results = new ArrayList<T>();
@@ -64,7 +61,6 @@ public class TranslationSession implements TranslationSource {
 		return results;
 	}
 
-	@Override
 	public <T> Set<T> getEachTranslation(Set<?> sources,
 			Class<T> destinationClass) {
 		Set<T> results = new HashSet<T>();

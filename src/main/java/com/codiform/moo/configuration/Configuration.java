@@ -53,17 +53,14 @@ public class Configuration implements TranslatorSource {
 		return this.performingDefensiveCopies;
 	}
 
-	@Override
 	public <T> Translator<T> getTranslator(Class<T> destinationClass) {
 		return new Translator<T>(destinationClass, this);
 	}
 
-	@Override
 	public CollectionTranslator getCollectionTranslator() {
 		return collectionTranslator;
 	}
 
-	@Override
 	public ArrayTranslator getArrayTranslator() {
 		return arrayTranslator;
 	}
