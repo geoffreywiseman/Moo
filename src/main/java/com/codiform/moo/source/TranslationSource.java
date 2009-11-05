@@ -18,7 +18,7 @@ public interface TranslationSource {
 	 * @param destinationClass the class to which the translation should be performed
 	 * @param <T> the type that binds the return value to the destination class
 	 */
-	public <T> T getTranslation( Object source, Class<T> destination );
+	public <T> T getTranslation( Object source, Class<T> destinationClass );
 	
 	/**
 	 * Creates a list of translations from a list of source objects, first checking the
@@ -28,7 +28,7 @@ public interface TranslationSource {
 	 * @param destinationClass the class to which the translation should be performed
 	 * @param <T> the type that binds the return values to the destination class
 	 */
-	public <T> List<T> getEachTranslation( List<?> source, Class<T> destinationClass );
+	public <T> List<T> getEachTranslation( List<?> sources, Class<T> destinationClass );
 	
 	/**
 	 * Creates a set of translations from a set of source objects, first checking the
@@ -38,7 +38,7 @@ public interface TranslationSource {
 	 * @param destinationClass the class to which the translation should be performed
 	 * @param <T> the type that binds the return values to the destination class
 	 */
-	public <T> Set<T> getEachTranslation( Set<?> source, Class<T> destinationClass );
+	public <T> Set<T> getEachTranslation( Set<?> sources, Class<T> destinationClass );
 	
 	/**
 	 * Creates a collection of translations from a collection of source objects, first checking the
@@ -48,6 +48,6 @@ public interface TranslationSource {
 	 * @param destinationClass the class to which the translation should be performed
 	 * @param <T> the type that binds the return values to the destination class
 	 */
-	public <T> Collection<T> getEachTranslation( Collection<?> source, Class<T> destinationClass );
+	public <T> Collection<T> getEachTranslation( Collection<?> sources, Class<T> destinationClass );
 	
 }

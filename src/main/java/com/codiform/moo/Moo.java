@@ -4,7 +4,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
-import com.codiform.moo.annotation.TranslateCollection;
+import com.codiform.moo.curry.Update;
+
 import com.codiform.moo.configuration.Configuration;
 import com.codiform.moo.curry.Translate;
 import com.codiform.moo.session.TranslationSession;
@@ -26,7 +27,8 @@ import com.codiform.moo.session.TranslationSession;
  * 
  * <p>
  * Moo supports a limited amount of configuration through annotations, in 
- * particular {@link Translation}, {@link Translate} and {@link TranslateCollection}.
+ * particular {@link com.codiform.moo.annotation.Translation}, {@link com.codiform.moo.curry.Translate} 
+ * and {@link com.codiform.moo.annotation.TranslateCollection}.
  * </p>
  * 
  * <p>

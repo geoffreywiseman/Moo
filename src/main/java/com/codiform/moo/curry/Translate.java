@@ -6,13 +6,12 @@ import java.util.Set;
 
 import com.codiform.moo.configuration.Configuration;
 import com.codiform.moo.session.TranslationSession;
-import com.codiform.moo.translator.Translator;
 
 /**
  * This class represents a curried translation, where the destination class has been
  * selected but no source classes have yet been supplied.
  * 
- * <p>Practically speaking, this could also be implemented through the {@link Translator} 
+ * <p>Practically speaking, this could also be implemented through the {@link com.codiform.moo.translator.Translator} 
  * class, but this is a higher-level facade class.  The translator class is internal
  * implementation and much more subject to change.</p>
  *
@@ -79,7 +78,7 @@ public class Translate<T> {
 	}
 	
 	/**
-	 * A common entry point for translate, if you're not invoking it from within {@link Moo}.  This
+	 * A common entry point for translate, if you're not invoking it from within {@link com.codiform.moo.Moo}.  This
 	 * allows you to start up a translate with a default moo configuration in a very DSL-like way.
 	 * 
 	 * @param <T> links the supplied class to the curried translate to ensure that the latter returns the former
