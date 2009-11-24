@@ -30,32 +30,20 @@ public class MismatchedTranslationTest {
 	 * Results in a Translation Exception containing an Illegal Argument
 	 * Exception.
 	 */
-	@Test()
+	@Test(expected = IncompatibleTypeTranslationException.class)
 	public void testTranslationOfListToStringFails() {
-		try {
-			ListValue source = new ListValue("one", "two");
-			Translate.to(StringValue.class).from(source);
-		} catch (TranslationException exception) {
-			Assert.assertNotNull(exception.getCause());
-			Assert.assertEquals(IllegalArgumentException.class, exception
-					.getCause().getClass());
-		}
+		ListValue source = new ListValue("one", "two");
+		Translate.to(StringValue.class).from(source);
 	}
 
 	/**
 	 * Results in a Translation Exception containing an Illegal Argument
 	 * Exception.
 	 */
-	@Test()
+	@Test(expected = IncompatibleTypeTranslationException.class)
 	public void testTranslationOfIntegerToStringFails() {
-		try {
-			IntegerValue source = new IntegerValue(1);
-			Translate.to(StringValue.class).from(source);
-		} catch (TranslationException exception) {
-			Assert.assertNotNull(exception.getCause());
-			Assert.assertEquals(IllegalArgumentException.class, exception
-					.getCause().getClass());
-		}
+		IntegerValue source = new IntegerValue(1);
+		Translate.to(StringValue.class).from(source);
 	}
 
 	public static class ArrayValue {
