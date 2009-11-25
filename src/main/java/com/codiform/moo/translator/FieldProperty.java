@@ -6,7 +6,6 @@ import java.lang.reflect.Modifier;
 
 import com.codiform.moo.TranslationException;
 import com.codiform.moo.annotation.AccessMode;
-import com.codiform.moo.annotation.Translate;
 import com.codiform.moo.annotation.Translation;
 
 public class FieldProperty extends AbstractProperty {
@@ -57,10 +56,6 @@ public class FieldProperty extends AbstractProperty {
 					"Cannot set value for field property " + getName(),
 					exception);
 		}
-	}
-
-	public boolean shouldBeTranslated() {
-		return getAnnotation(Translate.class) != null;
 	}
 
 	/* package */boolean isProperty(AccessMode mode) {

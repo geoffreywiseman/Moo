@@ -7,7 +7,6 @@ import java.lang.reflect.Modifier;
 
 import com.codiform.moo.TranslationException;
 import com.codiform.moo.annotation.AccessMode;
-import com.codiform.moo.annotation.Translate;
 import com.codiform.moo.annotation.Translation;
 
 public class MethodProperty extends AbstractProperty implements Property {
@@ -101,10 +100,6 @@ public class MethodProperty extends AbstractProperty implements Property {
 			throw new TranslationException("Cannot for method property "
 					+ getName(), exception);
 		}
-	}
-
-	public boolean shouldBeTranslated() {
-		return getAnnotation(Translate.class) == null;
 	}
 
 }

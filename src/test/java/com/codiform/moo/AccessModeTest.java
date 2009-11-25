@@ -2,8 +2,9 @@ package com.codiform.moo;
 
 import static org.junit.Assert.assertEquals;
 
-import org.junit.Ignore;
 import org.junit.Test;
+
+import com.codiform.moo.annotation.Property;
 
 import com.codiform.moo.annotation.Access;
 import com.codiform.moo.annotation.AccessMode;
@@ -19,7 +20,6 @@ public class AccessModeTest {
 		assertEquals(source.getInteger(), dest.getIntegerValue());
 	}
 	
-	@Ignore("This is new, get it working second.")
 	@Test
 	public void testPropertyAccess() {
 		Source source = new Source("One",1);
@@ -28,10 +28,12 @@ public class AccessModeTest {
 		assertEquals(source.getInteger(), dest.getInteger());
 	}
 	
-	@Ignore
 	@Test
 	public void testMixedAccess() {
-		
+		Source source = new Source("One",1);
+		MixedDestination dest = Translate.to(MixedDestination.class).from(source);
+		assertEquals(source.getString(), dest.getString());
+		assertEquals(source.getInteger(), dest.getInteger());
 	}
 
 	public static class Source {
@@ -83,6 +85,24 @@ public class AccessModeTest {
 			this.stringValue = string;
 		}
 		
+		public void setInteger( Integer integer ) {
+			this.integerValue = integer;
+		}
+	}
+
+	public static class MixedDestination {
+		private String string;
+		private Integer integerValue;
+		
+		public String getString() {
+			return string;
+		}
+		
+		public Integer getInteger() {
+			return integerValue;
+		}
+		
+		@Property
 		public void setInteger( Integer integer ) {
 			this.integerValue = integer;
 		}

@@ -2,6 +2,7 @@ package com.codiform.moo.translator;
 
 import com.codiform.moo.IncompatibleTypeTranslationException;
 import com.codiform.moo.TranslationException;
+import com.codiform.moo.annotation.Translate;
 
 public abstract class AbstractProperty implements Property {
 
@@ -27,7 +28,10 @@ public abstract class AbstractProperty implements Property {
 		} else if (!getType().isAssignableFrom(value.getClass())) {
 			throw new IncompatibleTypeTranslationException( value, getName(), getType() );
 		}
-
 	}
 
+	public boolean shouldBeTranslated() {
+		return getAnnotation(Translate.class) != null;
+	}
+	
 }
