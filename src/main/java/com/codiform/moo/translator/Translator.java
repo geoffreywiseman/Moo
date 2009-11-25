@@ -9,6 +9,7 @@ import java.util.Set;
 import org.mvel2.MVEL;
 import org.mvel2.PropertyAccessException;
 
+import com.codiform.moo.NothingToTranslateException;
 import com.codiform.moo.TranslationException;
 import com.codiform.moo.annotation.Access;
 import com.codiform.moo.annotation.AccessMode;
@@ -58,9 +59,15 @@ public class Translator<T> {
 	 */
 	public void update(Object source, T destination,
 			TranslationSource translationSource) {
+		boolean updated = false;
 		Set<Property> properties = getProperties(destination);
 		for (Property item : properties) {
-			updateProperty(source, destination, translationSource, item);
+			if( updateProperty(source, destination, translationSource, item) ) {
+				updated = true;
+			}
+		}
+		if( updated == false ) {
+			throw new NothingToTranslateException( source.getClass(), destination.getClass() );
 		}
 	}
 
@@ -156,13 +163,13 @@ public class Translator<T> {
 		Set<Property> fields = new HashSet<Property>();
 		Class<?> current = destinationClass;
 		while (current != null) {
-			fields.addAll(getDestinationsForClass(destination, current));
+			fields.addAll(getPropertiesForClass(destination, current));
 			current = current.getSuperclass();
 		}
 		return fields;
 	}
 
-	private Set<? extends Property> getDestinationsForClass(T destination,
+	private Set<? extends Property> getPropertiesForClass(T destination,
 			Class<?> clazz) {
 		Set<Property> properties = new HashSet<Property>();
 		Access access = clazz.getAnnotation(Access.class);
@@ -182,18 +189,20 @@ public class Translator<T> {
 		return properties;
 	}
 
-	private <V> void updateProperty(Object source, T destination,
+	private <V> boolean updateProperty(Object source, T destination,
 			TranslationSource translationSource, Property property) {
 		try {
 			Object value = getValue(source, property.getTranslationExpression());
 			value = transform(value, property, translationSource);
 			property.setValue( destination, value );
+			return true;
 		} catch (PropertyAccessException exception) {
 			if (configuration.isSourcePropertyRequired()) {
 				throw new TranslationException(
 						"Could not find required source property for expression: "
 								+ property.getTranslationExpression(), exception);
 			}
+			return false;
 		}
 	}
 

@@ -10,6 +10,13 @@ import com.codiform.moo.curry.Translate;
 
 public class MismatchedTranslationTest {
 
+	@Test(expected=NothingToTranslateException.class)
+	public void testThrowsExceptionIfNoCommonProperties() {
+		StringValue source = new StringValue( "Source" );
+		Translate.to(OtherValue.class).from(source); 
+	}
+	
+	
 	/**
 	 * Should fail, but should fail with an error message that makes the
 	 * solution somewhat more obvious.
@@ -72,9 +79,25 @@ public class MismatchedTranslationTest {
 
 	public static class StringValue {
 		private String value;
+		
+		public StringValue() {
+			// do nothing
+		}
+
+		public StringValue(String value) {
+			this.value = value;
+		}
 
 		public String getValue() {
 			return value;
+		}
+	}
+
+	public static class OtherValue {
+		private String otherValue;
+
+		public String getOtherValue() {
+			return otherValue;
 		}
 	}
 

@@ -115,6 +115,26 @@ public class Moo {
 	public <T> Set<T> translateEach( Set<?> sources, Class<T> destinationClass ) {
 		return newSession().getEachTranslation( sources, destinationClass );
 	}
+	
+	/**
+	 * Update the destination object with values from the source object.
+	 * 
+	 * @param source the source object, from which properties will be read
+	 * @param destination the destination object, to which properties will be written
+	 */
+	public void update( Object source, Object destination ) {
+		newSession().update(source, destination);
+	}
+
+	/**
+	 * Create a curried update from a source object which could then be applied to several destination objects.
+	 * 
+	 * @param source the source object, from which properties will be read
+	 * @param destination the destination object, to which properties will be written
+	 */
+	public Update update( Object source ) {
+		return new Update(configuration, source);
+	}
 
 	protected TranslationSession newSession() {
 		return new TranslationSession(configuration);
