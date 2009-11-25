@@ -57,10 +57,6 @@ public class MethodProperty extends AbstractProperty implements Property {
 		}
 	}
 
-	public AccessMode getAccessMode() {
-		return AccessMode.METHOD;
-	}
-
 	public <A extends Annotation> A getAnnotation(Class<A> annotationClass) {
 		return method.getAnnotation(annotationClass);
 	}

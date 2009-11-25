@@ -16,10 +16,6 @@ public class FieldProperty extends AbstractProperty {
 		this.field = field;
 	}
 
-	public AccessMode getAccessMode() {
-		return AccessMode.FIELD;
-	}
-
 	public <A extends Annotation> A getAnnotation(Class<A> annotationClass) {
 		return field.getAnnotation(annotationClass);
 	}
