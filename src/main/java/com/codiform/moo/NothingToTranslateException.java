@@ -16,7 +16,7 @@ public class NothingToTranslateException extends TranslationException {
 		this.sourceClass = sourceClass;
 		this.destinationClass = destinationClass;
 	}
-
+	
 	public Class<?> getSourceClass() {
 		return sourceClass;
 	}

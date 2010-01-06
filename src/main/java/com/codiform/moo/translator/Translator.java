@@ -9,6 +9,7 @@ import java.util.Set;
 import org.mvel2.MVEL;
 import org.mvel2.PropertyAccessException;
 
+import com.codiform.moo.NoSourceException;
 import com.codiform.moo.NothingToTranslateException;
 import com.codiform.moo.TranslationException;
 import com.codiform.moo.annotation.Access;
@@ -59,15 +60,23 @@ public class Translator<T> {
 	 */
 	public void update(Object source, T destination,
 			TranslationSource translationSource) {
+		assureSource(source);
 		boolean updated = false;
 		Set<Property> properties = getProperties(destination);
 		for (Property item : properties) {
-			if( updateProperty(source, destination, translationSource, item) ) {
+			if (updateProperty(source, destination, translationSource, item)) {
 				updated = true;
 			}
 		}
-		if( updated == false ) {
-			throw new NothingToTranslateException( source.getClass(), destination.getClass() );
+		if (updated == false) {
+			throw new NothingToTranslateException(source.getClass(),
+					destination.getClass());
+		}
+	}
+
+	private void assureSource(Object source) {
+		if (source == null) {
+			throw new NoSourceException();
 		}
 	}
 
@@ -194,13 +203,14 @@ public class Translator<T> {
 		try {
 			Object value = getValue(source, property.getTranslationExpression());
 			value = transform(value, property, translationSource);
-			property.setValue( destination, value );
+			property.setValue(destination, value);
 			return true;
 		} catch (PropertyAccessException exception) {
 			if (configuration.isSourcePropertyRequired()) {
 				throw new TranslationException(
 						"Could not find required source property for expression: "
-								+ property.getTranslationExpression(), exception);
+								+ property.getTranslationExpression(),
+						exception);
 			}
 			return false;
 		}

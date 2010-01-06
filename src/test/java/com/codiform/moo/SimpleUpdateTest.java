@@ -9,13 +9,17 @@ import com.codiform.moo.curry.Update;
 /**
  * A test for the simple cases of update.
  * 
- * <p>There are lots of ugly edge cases in update; it might be best to simply suggest that you stay
- * away from update except in simple cases, rather than attempt to handle all the ugly possibilities.<p>
+ * <p>
+ * There are lots of ugly edge cases in update; it might be best to simply
+ * suggest that you stay away from update except in simple cases, rather than
+ * attempt to handle all the ugly possibilities.
+ * <p>
  */
 public class SimpleUpdateTest {
 
 	/**
-	 * Can update instance values on an instance; this is pure reflection, not taking Translation into account yet.
+	 * Can update instance values on an instance; this is pure reflection, not
+	 * taking Translation into account yet.
 	 */
 	@Test
 	public void testCanUpdateInstanceValues() {
@@ -27,6 +31,16 @@ public class SimpleUpdateTest {
 		Update.from(dto).to(ordinal);
 		Assert.assertEquals(2, ordinal.getRank());
 		Assert.assertEquals("Second", ordinal.getName());
+	}
+
+	@Test(expected=NoSourceException.class)
+	public void testExceptionIfUpdateFromNullObject() {
+		Update.from(null).to(new Ordinal());
+	}
+
+	@Test(expected=NoDestinationException.class)
+	public void testExceptionIfUpdateToNullObject() {
+		Update.from(new Ordinal(1, "First")).to(null);
 	}
 
 	public static class OrdinalDto {
@@ -54,6 +68,10 @@ public class SimpleUpdateTest {
 		public Ordinal(int rank, String name) {
 			this.rank = rank;
 			this.name = name;
+		}
+
+		public Ordinal() {
+			// TODO Auto-generated constructor stub
 		}
 
 		public int getRank() {
