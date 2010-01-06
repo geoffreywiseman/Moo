@@ -5,6 +5,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
+import com.codiform.moo.InvalidPropertyException;
 import com.codiform.moo.TranslationException;
 import com.codiform.moo.annotation.AccessMode;
 import com.codiform.moo.annotation.Translation;
@@ -15,21 +16,27 @@ public class MethodProperty extends AbstractProperty implements Property {
 	private boolean isProperty = false;
 	private Class<?> type;
 	private String name;
+	private String propertyFailure;
 
 	public MethodProperty(Method method) {
 		this.method = method;
 		name = convertName(method.getName());
-		if (name == null)
+		if (name == null) {
+			propertyFailure = "Method %s (in %s) is marked with @Property but does not follow the 'set<Name>' pattern required of a method property.";
 			return;
+		}
 
-		if (method.getParameterTypes().length != 1)
+		if (method.getParameterTypes().length != 1) {
+			propertyFailure = "Method %s (in %s) is marked with @Property but is not a single-parameter method.";
 			return;
-		else
+		} else
 			type = method.getParameterTypes()[0];
 
 		int modifiers = method.getModifiers();
-		if (Modifier.isStatic(modifiers) || Modifier.isAbstract(modifiers))
+		if (Modifier.isStatic(modifiers)) {
+			propertyFailure = "Method %s (in %s) is marked with @Property but is static; Moo doesn't support static methods as properties.";
 			return;
+		}
 
 		// past all guards
 		isProperty = true;
@@ -40,8 +47,14 @@ public class MethodProperty extends AbstractProperty implements Property {
 		case METHOD:
 			return isProperty;
 		case FIELD:
-			return isProperty
-					&& getAnnotation(com.codiform.moo.annotation.Property.class) != null;
+			if (getAnnotation(com.codiform.moo.annotation.Property.class) != null) {
+				if (isProperty) {
+					return true;
+				} else {
+					throw new InvalidPropertyException(this, propertyFailure);
+				}
+			} else
+				return false;
 		default:
 			throw new IllegalStateException(
 					"I have no idea how to deal with access mode: " + mode);
@@ -79,7 +92,7 @@ public class MethodProperty extends AbstractProperty implements Property {
 	}
 
 	public void setValue(Object instance, Object value) {
-		checkValue( value );
+		checkValue(value);
 		try {
 			if (!method.isAccessible())
 				method.setAccessible(true);
@@ -96,6 +109,10 @@ public class MethodProperty extends AbstractProperty implements Property {
 			throw new TranslationException("Cannot for method property "
 					+ getName(), exception);
 		}
+	}
+
+	public Class<?> getDeclaringClass() {
+		return method.getDeclaringClass();
 	}
 
 }

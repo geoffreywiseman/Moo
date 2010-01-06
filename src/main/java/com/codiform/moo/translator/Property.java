@@ -31,6 +31,11 @@ public interface Property {
 	 * @return the type
 	 */
 	Class<?> getType();
+	
+	/**
+	 * Gets the class in which this property is declared.
+	 */
+	Class<?> getDeclaringClass();
 
 	/**
 	 * Gets the translation expression used to find this property on another

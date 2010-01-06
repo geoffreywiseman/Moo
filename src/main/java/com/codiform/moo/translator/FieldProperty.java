@@ -4,6 +4,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
+import com.codiform.moo.InvalidPropertyException;
 import com.codiform.moo.TranslationException;
 import com.codiform.moo.annotation.AccessMode;
 import com.codiform.moo.annotation.Translation;
@@ -57,9 +58,13 @@ public class FieldProperty extends AbstractProperty {
 	/* package */boolean isProperty(AccessMode mode) {
 		switch (mode) {
 		case FIELD:
-			return isAcceptableField();
+			if (getAnnotation(com.codiform.moo.annotation.Property.class) != null) {
+				return isAcceptableField(true);
+			} else {
+				return isAcceptableField(false);
+			}
 		case METHOD:
-			return isAcceptableField()
+			return isAcceptableField(true)
 					&& getAnnotation(com.codiform.moo.annotation.Property.class) != null;
 		default:
 			throw new IllegalStateException(
@@ -67,18 +72,34 @@ public class FieldProperty extends AbstractProperty {
 		}
 	}
 
-	private boolean isAcceptableField() {
+	private boolean isAcceptableField(boolean throwException) {
 		int modifiers = field.getModifiers();
-		if (Modifier.isStatic(modifiers))
-			return false;
-		else if (Modifier.isFinal(modifiers))
-			return false;
-		else
+		if (Modifier.isStatic(modifiers)) {
+			if (throwException) {
+				throw new InvalidPropertyException(
+						this,
+						"%s (%s) is annotated with @Property, but is static.  Moo does not support static fields as properties.");
+			} else {
+				return false;
+			}
+		} else if (Modifier.isFinal(modifiers)) {
+			if (throwException) {
+				throw new InvalidPropertyException(
+						this,
+						"%s (%s) is annotated with @Property, but is final.  Moo cannot write to final fields as properties.");
+			} else {
+				return false;
+			}
+		} else
 			return true;
 	}
 
 	public boolean canSupportNull() {
 		return !getType().isPrimitive();
+	}
+
+	public Class<?> getDeclaringClass() {
+		return field.getDeclaringClass();
 	}
 
 }
