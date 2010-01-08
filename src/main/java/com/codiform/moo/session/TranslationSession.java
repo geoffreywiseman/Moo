@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import com.codiform.moo.NoDestinationException;
@@ -27,6 +28,7 @@ public class TranslationSession implements TranslationSource {
 
 	private TranslationCache translationCache;
 	private Configuration configuration;
+	private Map<String, Object> variables;
 
 	/**
 	 * Creates a translation session with a known configuration.
@@ -37,6 +39,22 @@ public class TranslationSession implements TranslationSource {
 	public TranslationSession(Configuration configuration) {
 		translationCache = new TranslationCache();
 		this.configuration = configuration;
+	}
+
+	/**
+	 * Creates a translation session with a known configuration and with context
+	 * variables.
+	 * 
+	 * @param configuration
+	 *            the {@link Configuration} of the translation session
+	 * @param variables
+	 *            variables which can be used by translations to get external
+	 *            data or perform external logic
+	 */
+	public TranslationSession(Configuration configuration,
+			Map<String, Object> variables) {
+		this(configuration);
+		this.variables = variables;
 	}
 
 	public <T> T getTranslation(Object source, Class<T> destinationClass) {
@@ -87,7 +105,7 @@ public class TranslationSession implements TranslationSource {
 	public void update(Object source, Object destination) {
 		assureDestination(destination);
 		configuration.getTranslator(destination.getClass()).castAndUpdate(
-				source, destination, this);
+				source, destination, this, variables);
 	}
 
 	private void assureDestination(Object destination) {
@@ -103,7 +121,7 @@ public class TranslationSession implements TranslationSource {
 			Translator<T> translator = getTranslator(destinationClass);
 			T translated = translator.create();
 			translationCache.putTranslation(source, translated);
-			translator.update(source, translated, this);
+			translator.update(source, translated, this, variables);
 			return translated;
 		}
 	}

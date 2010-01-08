@@ -4,6 +4,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import org.mvel2.MVEL;
@@ -59,12 +60,12 @@ public class Translator<T> {
 	 *            provide those translations
 	 */
 	public void update(Object source, T destination,
-			TranslationSource translationSource) {
+			TranslationSource translationSource, Map<String,Object> variables ) {
 		assureSource(source);
 		boolean updated = false;
 		Set<Property> properties = getProperties(destination);
 		for (Property item : properties) {
-			if (updateProperty(source, destination, translationSource, item)) {
+			if (updateProperty(source, destination, translationSource, item, variables)) {
 				updated = true;
 			}
 		}
@@ -88,8 +89,8 @@ public class Translator<T> {
 	 * @see #update
 	 */
 	public void castAndUpdate(Object source, Object from,
-			TranslationSource translationSource) {
-		update(source, destinationClass.cast(from), translationSource);
+			TranslationSource translationSource, Map<String,Object> variables) {
+		update(source, destinationClass.cast(from), translationSource, variables);
 	}
 
 	/**
@@ -164,8 +165,12 @@ public class Translator<T> {
 				translationSource);
 	}
 
-	private Object getValue(Object source, String expression) {
-		return MVEL.eval(expression, source);
+	private Object getValue(Object source, String expression, Map<String,Object> variables ) {
+		if( variables == null || variables.isEmpty() ) {
+			return MVEL.eval(expression, source);
+		} else {
+			return MVEL.eval( expression, source, variables );
+		}
 	}
 
 	private Set<Property> getProperties(T destination) {
@@ -199,9 +204,9 @@ public class Translator<T> {
 	}
 
 	private <V> boolean updateProperty(Object source, T destination,
-			TranslationSource translationSource, Property property) {
+			TranslationSource translationSource, Property property, Map<String,Object> variables) {
 		try {
-			Object value = getValue(source, property.getTranslationExpression());
+			Object value = getValue(source, property.getTranslationExpression(), variables );
 			value = transform(value, property, translationSource);
 			property.setValue(destination, value);
 			return true;

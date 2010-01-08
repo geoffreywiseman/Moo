@@ -25,7 +25,7 @@ public class TranslatorTest {
 	public void testUpdate() {
 		Source source = new Source( "TranslatorTest" );
 		Destination destination = new Destination();
-		translator.update( source, destination, translationSource );
+		translator.update( source, destination, translationSource, null );
 		
 		Assert.assertEquals( "TranslatorTest", destination.getValue() );
 	}
@@ -34,7 +34,7 @@ public class TranslatorTest {
 	public void testCastAndUpdate() {
 		Source source = new Source( "TranslatorTest" );
 		Destination destination = new Destination();
-		translator.update( source, destination, translationSource );
+		translator.update( source, destination, translationSource, null );
 		
 		Assert.assertEquals( "TranslatorTest", destination.getValue() );
 	}
