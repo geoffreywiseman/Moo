@@ -12,9 +12,11 @@ import com.codiform.moo.annotation.Translation;
 public class FieldProperty extends AbstractProperty {
 
 	private Field field;
+	private boolean explicit;
 
 	public FieldProperty(Field field) {
 		this.field = field;
+		explicit = getAnnotation(com.codiform.moo.annotation.Property.class) != null;
 	}
 
 	public <A extends Annotation> A getAnnotation(Class<A> annotationClass) {
@@ -58,7 +60,7 @@ public class FieldProperty extends AbstractProperty {
 	/* package */boolean isProperty(AccessMode mode) {
 		switch (mode) {
 		case FIELD:
-			if (getAnnotation(com.codiform.moo.annotation.Property.class) != null) {
+			if (explicit) {
 				return isAcceptableField(true);
 			} else {
 				return isAcceptableField(false);
@@ -100,6 +102,10 @@ public class FieldProperty extends AbstractProperty {
 
 	public Class<?> getDeclaringClass() {
 		return field.getDeclaringClass();
+	}
+	
+	public boolean isExplicit() {
+		return explicit;
 	}
 
 }

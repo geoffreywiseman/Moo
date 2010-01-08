@@ -3,6 +3,7 @@ package com.codiform.moo.translator;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -10,6 +11,7 @@ import java.util.Set;
 import org.mvel2.MVEL;
 import org.mvel2.PropertyAccessException;
 
+import com.codiform.moo.InvalidPropertyException;
 import com.codiform.moo.NoSourceException;
 import com.codiform.moo.NothingToTranslateException;
 import com.codiform.moo.TranslationException;
@@ -60,12 +62,13 @@ public class Translator<T> {
 	 *            provide those translations
 	 */
 	public void update(Object source, T destination,
-			TranslationSource translationSource, Map<String,Object> variables ) {
+			TranslationSource translationSource, Map<String, Object> variables) {
 		assureSource(source);
 		boolean updated = false;
-		Set<Property> properties = getProperties(destination);
+		Set<Property> properties = getProperties(destinationClass);
 		for (Property item : properties) {
-			if (updateProperty(source, destination, translationSource, item, variables)) {
+			if (updateProperty(source, destination, translationSource, item,
+					variables)) {
 				updated = true;
 			}
 		}
@@ -89,8 +92,9 @@ public class Translator<T> {
 	 * @see #update
 	 */
 	public void castAndUpdate(Object source, Object from,
-			TranslationSource translationSource, Map<String,Object> variables) {
-		update(source, destinationClass.cast(from), translationSource, variables);
+			TranslationSource translationSource, Map<String, Object> variables) {
+		update(source, destinationClass.cast(from), translationSource,
+				variables);
 	}
 
 	/**
@@ -165,48 +169,74 @@ public class Translator<T> {
 				translationSource);
 	}
 
-	private Object getValue(Object source, String expression, Map<String,Object> variables ) {
-		if( variables == null || variables.isEmpty() ) {
+	private Object getValue(Object source, String expression,
+			Map<String, Object> variables) {
+		if (variables == null || variables.isEmpty()) {
 			return MVEL.eval(expression, source);
 		} else {
-			return MVEL.eval( expression, source, variables );
+			return MVEL.eval(expression, source, variables);
 		}
 	}
 
-	private Set<Property> getProperties(T destination) {
-		Set<Property> fields = new HashSet<Property>();
+	/* package */ Set<Property> getProperties(Class<T> destinationClass) {
+		Map<String, Property> properties = new HashMap<String, Property>();
 		Class<?> current = destinationClass;
 		while (current != null) {
-			fields.addAll(getPropertiesForClass(destination, current));
+			merge(properties, getPropertiesForClass(current));
 			current = current.getSuperclass();
 		}
-		return fields;
+		return new HashSet<Property>(properties.values());
 	}
 
-	private Set<? extends Property> getPropertiesForClass(T destination,
-			Class<?> clazz) {
-		Set<Property> properties = new HashSet<Property>();
+	private void merge(Map<String, Property> currentProperties,
+			Set<Property> superclassProperties) {
+		for (Property item : superclassProperties) {
+			if (currentProperties.containsKey(item.getName())) {
+				if (item.isExplicit()) {
+					if (!currentProperties.get(item.getName()).isExplicit()) {
+						currentProperties.put(item.getName(), item);
+					}
+				}
+			} else {
+				currentProperties.put(item.getName(), item);
+			}
+		}
+	}
+
+	private Set<Property> getPropertiesForClass(Class<?> clazz) {
+		Map<String,Property> properties = new HashMap<String,Property>();
 		Access access = clazz.getAnnotation(Access.class);
 		AccessMode mode = access == null ? AccessMode.FIELD : access.value();
 		for (Field item : clazz.getDeclaredFields()) {
 			FieldProperty property = new FieldProperty(item);
 			if (property.isProperty(mode)) {
-				properties.add(property);
+				properties.put(property.getName(),property);
 			}
 		}
 		for (Method item : clazz.getDeclaredMethods()) {
 			MethodProperty property = new MethodProperty(item);
 			if (property.isProperty(mode)) {
-				properties.add(property);
+				if( properties.containsKey( property.getName() ) ) {
+					Property current = properties.get( property.getName() );
+					if( current.isExplicit() && property.isExplicit() ) {
+						throw new InvalidPropertyException(property, "Property %s (in %s) is explicitly defined with @Property as both field and method properties; Moo expects no more than one annotation per property name per class." );
+					} else if( !current.isExplicit() && property.isExplicit() ) {
+						properties.put( property.getName(), property);
+					}
+				} else {
+					properties.put(property.getName(),property);
+				}
 			}
 		}
-		return properties;
+		return new HashSet<Property>( properties.values() );
 	}
 
 	private <V> boolean updateProperty(Object source, T destination,
-			TranslationSource translationSource, Property property, Map<String,Object> variables) {
+			TranslationSource translationSource, Property property,
+			Map<String, Object> variables) {
 		try {
-			Object value = getValue(source, property.getTranslationExpression(), variables );
+			Object value = getValue(source,
+					property.getTranslationExpression(), variables);
 			value = transform(value, property, translationSource);
 			property.setValue(destination, value);
 			return true;

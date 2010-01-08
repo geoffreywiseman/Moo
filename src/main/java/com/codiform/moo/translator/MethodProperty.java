@@ -17,10 +17,12 @@ public class MethodProperty extends AbstractProperty implements Property {
 	private Class<?> type;
 	private String name;
 	private String propertyFailure;
+	private boolean explicit;
 
 	public MethodProperty(Method method) {
 		this.method = method;
 		name = convertName(method.getName());
+		explicit = getAnnotation(com.codiform.moo.annotation.Property.class) != null;
 		if (name == null) {
 			propertyFailure = "Method %s (in %s) is marked with @Property but does not follow the 'set<Name>' pattern required of a method property.";
 			return;
@@ -47,7 +49,7 @@ public class MethodProperty extends AbstractProperty implements Property {
 		case METHOD:
 			return isProperty;
 		case FIELD:
-			if (getAnnotation(com.codiform.moo.annotation.Property.class) != null) {
+			if (isExplicit()) {
 				if (isProperty) {
 					return true;
 				} else {
@@ -113,6 +115,10 @@ public class MethodProperty extends AbstractProperty implements Property {
 
 	public Class<?> getDeclaringClass() {
 		return method.getDeclaringClass();
+	}
+
+	public boolean isExplicit() {
+		return explicit;
 	}
 
 }

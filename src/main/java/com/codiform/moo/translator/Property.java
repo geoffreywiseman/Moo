@@ -64,5 +64,18 @@ public interface Property {
 	 */
 	<A extends Annotation> A getAnnotation(Class<A> annotationClass);
 
+	/**
+	 * Indicates if the property supports a null value (e.g. can store and retrieve one).
+	 * 
+	 * @return true if a null value is supported; false otherwise
+	 */
 	boolean canSupportNull();
+	
+	/**
+	 * Indicates if the property was explicitly defined using @Property or if it was implicitly 
+	 * defined by the presence of a field or method matching the access mode and other criteria.
+	 * 
+	 * @return true if the property was explicitly defined
+	 */
+	boolean isExplicit();
 }
