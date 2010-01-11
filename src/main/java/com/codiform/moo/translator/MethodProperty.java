@@ -45,18 +45,14 @@ public class MethodProperty extends AbstractProperty implements Property {
 	}
 
 	/* package */boolean isProperty(AccessMode mode) {
+		if (isExplicit() && !isProperty) {
+			throw new InvalidPropertyException(this, propertyFailure);
+		}
 		switch (mode) {
 		case METHOD:
 			return isProperty;
 		case FIELD:
-			if (isExplicit()) {
-				if (isProperty) {
-					return true;
-				} else {
-					throw new InvalidPropertyException(this, propertyFailure);
-				}
-			} else
-				return false;
+			return isExplicit() && isProperty;
 		default:
 			throw new IllegalStateException(
 					"I have no idea how to deal with access mode: " + mode);

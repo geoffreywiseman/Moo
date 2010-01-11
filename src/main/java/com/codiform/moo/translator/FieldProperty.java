@@ -66,8 +66,7 @@ public class FieldProperty extends AbstractProperty {
 				return isAcceptableField(false);
 			}
 		case METHOD:
-			return isAcceptableField(true)
-					&& getAnnotation(com.codiform.moo.annotation.Property.class) != null;
+			return getAnnotation(com.codiform.moo.annotation.Property.class) != null && isAcceptableField(true);
 		default:
 			throw new IllegalStateException(
 					"I have no idea how to deal with access mode: " + mode);
