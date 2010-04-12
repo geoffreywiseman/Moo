@@ -3,7 +3,7 @@ package com.codiform.moo;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.codiform.moo.annotation.Translate;
+import com.codiform.moo.annotation.Property;
 
 public class TranslationCycleTest {
 
@@ -27,6 +27,7 @@ public class TranslationCycleTest {
 
 		DestinationLoopItem destination = new Moo().translate(
 				source, DestinationLoopItem.class);
+		Assert.assertNotNull( destination.getSibling() );
 		Assert.assertNotSame(destination, destination.getSibling());
 		Assert.assertSame(destination, destination.getSibling().getSibling());
 
@@ -57,7 +58,7 @@ public class TranslationCycleTest {
 
 	public static class DestinationLoopItem {
 
-		@Translate
+		@Property(translate=true)
 		private DestinationLoopItem sibling;
 
 		public DestinationLoopItem() {

@@ -4,7 +4,6 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import com.codiform.moo.annotation.Property;
-import com.codiform.moo.annotation.Translate;
 
 /**
  * Make sure that translating the same domain object to two different
@@ -52,12 +51,10 @@ public class TwinTranslationTest {
 
 	public static class PersonViews {
 
-		@Translate
-		@Property(translation="self")
+		@Property(translation="self", translate=true)
 		private PersonDetails details;
 
-		@Translate
-		@Property(translation="self")
+		@Property(translation="self", translate=true)
 		private PersonSummary summary;
 
 		public PersonDetails getDetails() {
@@ -74,8 +71,7 @@ public class TwinTranslationTest {
 		
 		private String name;
 		
-		@Translate
-		@Property(translation="self")
+		@Property(translation="self",translate=true)
 		private PersonDetails details;
 
 		public String getName() {
@@ -89,8 +85,7 @@ public class TwinTranslationTest {
 
 	public static class PersonDetails {
 		
-		@Translate
-		@Property(translation="self")
+		@Property(translation="self",translate=true)
 		private PersonSummary summary;
 		
 		private String name;

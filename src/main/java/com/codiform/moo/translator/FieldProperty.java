@@ -28,7 +28,7 @@ public class FieldProperty extends AbstractProperty {
 
 	public String getTranslationExpression() {
 		com.codiform.moo.annotation.Property property = getAnnotation(com.codiform.moo.annotation.Property.class);
-		if( property == null || property.translation() == "" ) {
+		if( property == null || property.translation() == null || property.translation().length() == 0 ) {
 			return field.getName();
 		} else {
 			return property.translation();
