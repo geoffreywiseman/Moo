@@ -10,7 +10,7 @@ import java.util.TreeSet;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.codiform.moo.annotation.Translation;
+import com.codiform.moo.annotation.Property;
 
 public class TranslationExpressionTest {
 
@@ -94,7 +94,7 @@ public class TranslationExpressionTest {
 
 	public static class StringSetSize {
 
-		@Translation("strings.size()")
+		@Property(translation="strings.size()")
 		private int size;
 
 		public int getSize() {
@@ -104,7 +104,7 @@ public class TranslationExpressionTest {
 
 	public static class StringSetFirstItem {
 
-		@Translation("strings[0]")
+		@Property(translation="strings[0]")
 		private String first;
 
 		public String getFirst() {
@@ -159,7 +159,7 @@ public class TranslationExpressionTest {
 	}
 
 	public static class OwnerLastNameLength {
-		@Translation("owner.?lastName.length()")
+		@Property(translation="owner.?lastName.length()")
 		private Integer size;
 
 		public Integer size() {
@@ -168,7 +168,7 @@ public class TranslationExpressionTest {
 	}
 	
 	public static class OwnerLastName {
-		@Translation("owner.lastName")
+		@Property(translation="owner.lastName")
 		private String ownerLastName;
 		
 		public String getOwnerLastName() {
@@ -177,7 +177,7 @@ public class TranslationExpressionTest {
 	}
 	
 	public static class UserFirstRole {
-		@Translation("roles[0]")
+		@Property(translation="roles[0]")
 		public String firstRole;
 		
 		public String getFirstRole() {
@@ -186,7 +186,7 @@ public class TranslationExpressionTest {
 	}
 	
 	public static class TaskCreated {
-		@Translation("attributes['createdDate']")
+		@Property(translation="attributes['createdDate']")
 		private Date createdDate;
 		
 		public Date getCreatedDate() {

@@ -130,7 +130,6 @@ public class Moo {
 	 * Create a curried update from a source object which could then be applied to several destination objects.
 	 * 
 	 * @param source the source object, from which properties will be read
-	 * @param destination the destination object, to which properties will be written
 	 */
 	public Update update( Object source ) {
 		return new Update(configuration, source);

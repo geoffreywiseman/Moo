@@ -7,7 +7,6 @@ import java.lang.reflect.Modifier;
 import com.codiform.moo.InvalidPropertyException;
 import com.codiform.moo.TranslationException;
 import com.codiform.moo.annotation.AccessMode;
-import com.codiform.moo.annotation.Translation;
 
 public class FieldProperty extends AbstractProperty {
 
@@ -28,11 +27,11 @@ public class FieldProperty extends AbstractProperty {
 	}
 
 	public String getTranslationExpression() {
-		Translation translationAnnotation = getAnnotation(Translation.class);
-		if (translationAnnotation != null) {
-			return translationAnnotation.value();
-		} else {
+		com.codiform.moo.annotation.Property property = getAnnotation(com.codiform.moo.annotation.Property.class);
+		if( property == null || property.translation() == "" ) {
 			return field.getName();
+		} else {
+			return property.translation();
 		}
 	}
 

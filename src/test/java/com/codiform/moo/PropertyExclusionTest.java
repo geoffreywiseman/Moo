@@ -3,67 +3,70 @@ package com.codiform.moo;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.codiform.moo.annotation.Translation;
 import com.codiform.moo.curry.Translate;
 
 public class PropertyExclusionTest {
 
 	@Test
 	public void testDoesNotPopulateStaticFields() {
-		Source source = new Source( "No Static" );
+		Source source = new Source( "Alpha", "No Static" );
 		DestinationWithStatic destination = Translate.to(DestinationWithStatic.class).from(source);
 		
-		Assert.assertEquals( "No Static",  destination.getValue() );
-		Assert.assertNull( "Translator should not have populated static field.", DestinationWithStatic.getStaticValue() );
+		Assert.assertEquals( "Alpha",  destination.getAlpha() );
+		Assert.assertNull( "Translator should not have populated static field.", DestinationWithStatic.getBeta() );
 	}
 
 	@Test
 	public void testDoesNotPopulateFinalFields() {
-		Source source = new Source( "No Static" );
+		Source source = new Source( "Alpha", "No Static" );
 		DestinationWithFinal destination = Translate.to(DestinationWithFinal.class).from(source);
 		
-		Assert.assertEquals( "No Static",  destination.getValue() );
-		Assert.assertNull( "Translator should not have populated final field.", destination.getFinalValue() );
+		Assert.assertEquals( "Alpha",  destination.getAlpha() );
+		Assert.assertNull( "Translator should not have populated final field.", destination.getBeta() );
 
 	}
 
 	public static class Source {
-		private String value;
+		private String alpha;
+		private String beta;
 
-		public Source(String value) {
-			this.value = value;
+		public Source(String alpha, String beta) {
+			this.alpha = alpha;
+			this.beta = beta;
 		}
 
-		public String getValue() {
-			return value;
+		public String getAlpha() {
+			return alpha;
+		}
+		
+		public String getBeta() {
+			return beta;
 		}
 	}
 	
 	public static class DestinationWithStatic {
-		@Translation("value")
-		private static String staticValue;
-		private String value;
+		private static String beta;
+		private String alpha;
 		
-		public String getValue() {
-			return value;
+		public String getAlpha() {
+			return alpha;
 		}
 		
-		public static String getStaticValue() {
-			return staticValue;
+		public static String getBeta() {
+			return beta;
 		}
 	}
 
 	public static class DestinationWithFinal {
-		@Translation("value")
-		private final String finalValue = null;
-		private String value;
+		private final String beta = null;
+		private String alpha;
 		
-		public String getValue() {
-			return value;
+		public String getAlpha() {
+			return alpha;
 		}
 		
-		public String getFinalValue() {
-			return finalValue;
+		public String getBeta() {
+			return beta;
 		}
 	}
 

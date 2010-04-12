@@ -4,7 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-import com.codiform.moo.annotation.Translation;
+import com.codiform.moo.annotation.Property;
 import com.codiform.moo.curry.Translate;
 import com.codiform.moo.curry.Update;
 
@@ -63,7 +63,7 @@ public class VariablesTest {
 	public static class DestinationWithScore {
 		private String value;
 
-		@Translation("score")
+		@Property(translation="score")
 		private int score;
 
 		public DestinationWithScore() {
@@ -87,7 +87,7 @@ public class VariablesTest {
 	public static class DestinationWithCount {
 		private String value;
 
-		@Translation("counter.getCount(value)")
+		@Property(translation="counter.getCount(value)")
 		private int count;
 
 		public DestinationWithCount() {

@@ -46,9 +46,9 @@ public interface Property {
 	String getTranslationExpression();
 
 	/**
-	 * Gets the
+	 * Indicates if the property should be translated (has a @Translate annotation)
 	 * 
-	 * @return
+	 * @return boolean if the property should be translated
 	 */
 	boolean shouldBeTranslated();
 
