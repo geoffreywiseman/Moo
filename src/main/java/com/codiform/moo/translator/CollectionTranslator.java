@@ -18,17 +18,19 @@ import com.codiform.moo.configuration.Configuration;
 import com.codiform.moo.source.TranslationSource;
 
 /**
- * A translator for handling issues specific to collections.  In particular,
- * this handles defensive copying of collections that don't need to be 
- * transformed, but also deals with making a copy of a collection that matches
- * the original collection type (set, list, etc.) but where each item in
- * the collection has been translated. 
+ * A translator for handling issues specific to collections. In particular, this
+ * handles defensive copying of collections that don't need to be transformed,
+ * but also deals with making a copy of a collection that matches the original
+ * collection type (set, list, etc.) but where each item in the collection has
+ * been translated.
  * 
- * <p>This approach has limitations; it can't change the type of the collection,
- * and it can't currently handle sorted sets with translation (where does the 
- * comparator for the translated objects come from?), maps,  or allow you to select
- * the implementation class for the collection (LinkedList vs. ArrayList).
- * </p>  
+ * <p>
+ * This approach has limitations; it can't change the type of the collection,
+ * and it can't currently handle sorted sets with translation (where does the
+ * comparator for the translated objects come from?), maps, or allow you to
+ * select the implementation class for the collection (LinkedList vs.
+ * ArrayList).
+ * </p>
  */
 public class CollectionTranslator {
 
@@ -44,112 +46,127 @@ public class CollectionTranslator {
 	}
 
 	/**
-	 * Translate a collection.  Make a defensive copy if need be.  
-	 * If the element is annotated with the TranslateCollection element,
-	 * then create an entirely new collection and translate each element
-	 * of the contents of the source collection.
+	 * Translate a collection. Make a defensive copy if need be. If the element
+	 * is annotated with the TranslateCollection element, then create an
+	 * entirely new collection and translate each element of the contents of the
+	 * source collection.
 	 * 
-	 * @param value the source collection
-	 * @param annotation the {@link TranslateCollection} annotation, if present
-	 * @param cache the translation cache of previously-translated elements
+	 * @param value
+	 *            the source collection
+	 * @param annotation
+	 *            the {@link TranslateCollection} annotation, if present
+	 * @param cache
+	 *            the translation cache of previously-translated elements
 	 * @return the translated collection
 	 */
 	@SuppressWarnings("unchecked")
 	public Object translate(Object value, TranslateCollection annotation,
 			TranslationSource cache) {
-		if (value instanceof SortedSet<?>) {
-			return copySortedSet((SortedSet<?>) value, annotation);
-		} else if (value instanceof Set<?>) {
-			return copySet((Set<?>) value, annotation, cache);
-		} else if (value instanceof SortedMap) {
-			return copySortedMap((SortedMap) value, annotation);
-		} else if (value instanceof Map) {
-			return copyMap((Map) value, annotation);
-		} else if (value instanceof List) {
-			return (List) copyList((List) value, annotation, cache);
+		if( value instanceof SortedSet<?> ) {
+			return copySortedSet( (SortedSet<?>) value, annotation, cache );
+		} else if( value instanceof Set<?> ) {
+			return copySet( (Set<?>) value, annotation, cache );
+		} else if( value instanceof SortedMap ) {
+			return copySortedMap( (SortedMap) value, annotation );
+		} else if( value instanceof Map ) {
+			return copyMap( (Map) value, annotation );
+		} else if( value instanceof List ) {
+			return (List) copyList( (List) value, annotation, cache );
 		} else {
-			return copyCollection((Collection) value, annotation, cache);
+			return copyCollection( (Collection) value, annotation, cache );
 		}
 	}
 
 	@SuppressWarnings("unchecked")
 	private Collection copyCollection(Collection value,
 			TranslateCollection annotation, TranslationSource translationSource) {
-		if (annotation == null) {
+		if( annotation == null ) {
 			return configuration.isPerformingDefensiveCopies() ? new ArrayList(
-					value) : value;
+					value ) : value;
 		} else {
-			return translationSource.getEachTranslation(value, annotation
-					.value());
+			return translationSource.getEachTranslation( value, annotation
+					.value() );
 		}
 	}
 
 	@SuppressWarnings("unchecked")
 	private List copyList(List value, TranslateCollection annotation,
 			TranslationSource translationSource) {
-		if (annotation == null) {
+		if( annotation == null ) {
 			return configuration.isPerformingDefensiveCopies() ? new ArrayList(
-					value) : value;
+					value ) : value;
 		} else {
-			return translationSource.getEachTranslation(value, annotation
-					.value());
+			return translationSource.getEachTranslation( value, annotation
+					.value() );
 		}
 	}
 
 	@SuppressWarnings("unchecked")
 	private Map copyMap(Map value, TranslateCollection annotation) {
-		if (annotation == null) {
+		if( annotation == null ) {
 			return configuration.isPerformingDefensiveCopies() ? new HashMap(
-					value) : value;
+					value ) : value;
 		} else {
 			throw new TranslationException(
-					"Support for translated maps not yet built.");
+					"Support for translated maps not yet built." );
 		}
 	}
 
 	@SuppressWarnings("unchecked")
 	private SortedMap copySortedMap(SortedMap value,
 			TranslateCollection annotation) {
-		if (annotation == null) {
-			if (configuration.isPerformingDefensiveCopies()) {
-				SortedMap map = new TreeMap<Object, Object>(value.comparator());
-				map.putAll(value);
+		if( annotation == null ) {
+			if( configuration.isPerformingDefensiveCopies() ) {
+				SortedMap map = new TreeMap<Object, Object>( value.comparator() );
+				map.putAll( value );
 				return map;
 			} else {
 				return value;
 			}
 		} else {
 			throw new TranslationException(
-					"Support for translated sorted maps not yet built");
+					"Support for translated sorted maps not yet built" );
 		}
 	}
 
 	private Set<?> copySet(Set<?> value, TranslateCollection annotation,
 			TranslationSource translationSource) {
-		if (annotation == null) {
+		if( annotation == null ) {
 			return configuration.isPerformingDefensiveCopies() ? new HashSet<Object>(
-					value)
+					value )
 					: value;
 		} else {
-			return translationSource.getEachTranslation(value, annotation
-					.value());
+			return translationSource.getEachTranslation( value, annotation
+					.value() );
 		}
 	}
 
 	@SuppressWarnings("unchecked")
 	private SortedSet<?> copySortedSet(SortedSet<?> value,
-			TranslateCollection annotation) {
-		if (annotation == null) {
-			if (configuration.isPerformingDefensiveCopies()) {
-				SortedSet result = new TreeSet(value.comparator());
-				result.addAll(value);
+			TranslateCollection annotation, TranslationSource translationSource) {
+		if( annotation == null ) {
+			if( configuration.isPerformingDefensiveCopies() ) {
+				SortedSet result = new TreeSet( value.comparator() );
+				result.addAll( value );
 				return result;
 			} else {
 				return value;
 			}
+		} else if( value.comparator() == null ) {
+			if( Comparable.class.isAssignableFrom( annotation.value() ) ) {
+				Set<?> translated = translationSource.getEachTranslation(
+						value,
+						annotation.value() );
+				SortedSet<?> result = new TreeSet( translated );
+				return result;
+			} else {
+				throw new TranslationException(
+						"Naturally sorted set cannot be translated into another naturally-sorted set if the destination type is not comparable: "
+								+ annotation.value() );
+			}
 		} else {
 			throw new TranslationException(
-					"Support for translated sorted sets not yet built");
+					"Support for translated sorted sets with comparators not yet built" );
 		}
 	}
 

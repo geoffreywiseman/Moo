@@ -5,10 +5,14 @@ import static org.junit.Assert.assertNotSame;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import junit.framework.Assert;
 
 import org.junit.Test;
+
+import com.codiform.moo.annotation.TranslateCollection;
 
 /**
  * Testing how properties that contain collection classes are translated.
@@ -41,25 +45,45 @@ public class CollectionPropertyTranslationTest {
 
 	@Test
 	public void testTranslatesCollectionsOfTranslations() {
-		Ordinals ordinals = new Ordinals(new Ordinal(1, "first"), new Ordinal(
+		OrdinalList ordinals = new OrdinalList(new Ordinal(1, "first"), new Ordinal(
 				2, "second"), new Ordinal(3, "third"));
-		OrdinalsDto ordinalsDto = new Moo().translate(ordinals,
-				OrdinalsDto.class);
+		OrdinalListDto ordinalsDto = new Moo().translate(ordinals,
+				OrdinalListDto.class);
 		Assert.assertNotNull(ordinalsDto.getOrdinals());
 		Assert.assertEquals(ordinals.getOrdinals().size(), ordinalsDto
 				.getOrdinals().size());
 		for (int index = 0; index < ordinals.getOrdinals().size(); index++) {
 			Ordinal ordinal = ordinals.getOrdinals().get(index);
-			Ordinal ordinalDto = ordinalsDto.getOrdinals().get(index);
+			OrdinalDto ordinalDto = ordinalsDto.getOrdinals().get(index);
 			Assert.assertEquals(ordinal.getRank(), ordinalDto.getRank());
 			Assert.assertEquals(ordinal.getName(), ordinalDto.getName());
 		}
 	}
 
-	public static class Ordinals {
+	@Test
+	public void testNaturallySortsTranslationsOfNaturallySortedCollections() {
+		OrdinalSet ordinals = new OrdinalSet(new Ordinal(2, "second"), new Ordinal(
+				1, "first"), new Ordinal(3, "third"));
+		int index = 1;
+		for( Ordinal item : ordinals.getOrdinals() ) {
+			assertEquals( item.getRank(), index++ );
+		}
+		
+		OrdinalSetDto ordinalsDto = new Moo().translate(ordinals,
+				OrdinalSetDto.class);
+		Assert.assertNotNull(ordinalsDto.getOrdinals());
+		Assert.assertEquals(ordinals.getOrdinals().size(), ordinalsDto
+				.getOrdinals().size());
+		index = 1;
+		for( OrdinalDto item : ordinalsDto.getOrdinals() ) {
+			assertEquals( item.getRank(), index++ );
+		}
+	}
+
+	public static class OrdinalList {
 		private List<Ordinal> ordinals;
 
-		public Ordinals(Ordinal... ordinals) {
+		public OrdinalList(Ordinal... ordinals) {
 			this.ordinals = Arrays.asList(ordinals);
 		}
 
@@ -68,7 +92,21 @@ public class CollectionPropertyTranslationTest {
 		}
 	}
 
-	public static class Ordinal {
+	public static class OrdinalSet {
+		private SortedSet<Ordinal> ordinals;
+
+		public OrdinalSet(Ordinal... ordinals) {
+			this.ordinals = new TreeSet<Ordinal>();
+			for( Ordinal item : ordinals )
+				this.ordinals.add( item );
+		}
+
+		public SortedSet<Ordinal> getOrdinals() {
+			return ordinals;
+		}
+	}
+
+	public static class Ordinal implements Comparable<Ordinal> {
 		private int rank;
 		private String name;
 
@@ -84,17 +122,31 @@ public class CollectionPropertyTranslationTest {
 		public String getName() {
 			return name;
 		}
+
+		public int compareTo(Ordinal o) {
+			return rank - o.rank;
+		}
 	}
 
-	public static class OrdinalsDto {
-		private List<Ordinal> ordinals;
+	public static class OrdinalListDto {
+		@TranslateCollection(OrdinalDto.class)
+		private List<OrdinalDto> ordinals;
 
-		public List<Ordinal> getOrdinals() {
+		public List<OrdinalDto> getOrdinals() {
 			return ordinals;
 		}
 	}
 
-	public static class OrdinalDto {
+	public static class OrdinalSetDto {
+		@TranslateCollection(OrdinalDto.class)
+		private SortedSet<OrdinalDto> ordinals;
+
+		public SortedSet<OrdinalDto> getOrdinals() {
+			return ordinals;
+		}
+	}
+
+	public static class OrdinalDto implements Comparable<OrdinalDto> {
 		private int rank;
 		private String name;
 
@@ -104,6 +156,10 @@ public class CollectionPropertyTranslationTest {
 
 		public String getName() {
 			return name;
+		}
+		
+		public int compareTo( OrdinalDto other ) {
+			return rank - other.rank;
 		}
 	}
 
