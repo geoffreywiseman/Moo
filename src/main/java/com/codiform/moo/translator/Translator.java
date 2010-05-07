@@ -67,6 +67,7 @@ public class Translator<T> {
 		boolean updated = false;
 		Set<Property> properties = getProperties(destinationClass);
 		for (Property item : properties) {
+
 			if (updateProperty(source, destination, translationSource, item,
 					variables)) {
 				updated = true;
@@ -122,7 +123,7 @@ public class Translator<T> {
 			TranslationSource translationSource) {
 		if (value == null) {
 			return null;
-		} else if (value instanceof Collection) {
+		} else if (value instanceof Collection || value instanceof Map) {
 			if (property.shouldBeTranslated()) {
 				throw new TranslationException(
 						"Cannot use @Translate on a collection (cannot determine internal type due to erasure); use @TranslateCollection instead.");
