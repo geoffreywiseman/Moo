@@ -118,7 +118,6 @@ public class Translator<T> {
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	private Object transform(Object value, Property property,
 			TranslationSource translationSource) {
 		if (value == null) {

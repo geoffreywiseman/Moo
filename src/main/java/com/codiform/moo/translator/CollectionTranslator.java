@@ -59,7 +59,6 @@ public class CollectionTranslator {
 	 *            the translation cache of previously-translated elements
 	 * @return the translated collection
 	 */
-	@SuppressWarnings("unchecked")
 	public Object translate(Object value, TranslateCollection annotation,
 			TranslationSource cache) {
 		if( value instanceof SortedSet<?> ) {
@@ -67,21 +66,20 @@ public class CollectionTranslator {
 		} else if( value instanceof Set<?> ) {
 			return copySet( (Set<?>) value, annotation, cache );
 		} else if( value instanceof SortedMap ) {
-			return copySortedMap( (SortedMap) value, annotation );
+			return copySortedMap( (SortedMap<?,?>) value, annotation );
 		} else if( value instanceof Map ) {
-			return copyMap( (Map) value, annotation );
+			return copyMap( (Map<?,?>) value, annotation );
 		} else if( value instanceof List ) {
-			return (List) copyList( (List) value, annotation, cache );
+			return (List<?>) copyList( (List<?>) value, annotation, cache );
 		} else {
-			return copyCollection( (Collection) value, annotation, cache );
+			return copyCollection( (Collection<?>) value, annotation, cache );
 		}
 	}
 
-	@SuppressWarnings("unchecked")
-	private Collection copyCollection(Collection value,
+	private Collection<?> copyCollection(Collection<?> value,
 			TranslateCollection annotation, TranslationSource translationSource) {
 		if( annotation == null ) {
-			return configuration.isPerformingDefensiveCopies() ? new ArrayList(
+			return configuration.isPerformingDefensiveCopies() ? new ArrayList<Object>(
 					value ) : value;
 		} else {
 			return translationSource.getEachTranslation( value, annotation
@@ -89,11 +87,10 @@ public class CollectionTranslator {
 		}
 	}
 
-	@SuppressWarnings("unchecked")
-	private List copyList(List value, TranslateCollection annotation,
+	private List<?> copyList(List<?> value, TranslateCollection annotation,
 			TranslationSource translationSource) {
 		if( annotation == null ) {
-			return configuration.isPerformingDefensiveCopies() ? new ArrayList(
+			return configuration.isPerformingDefensiveCopies() ? new ArrayList<Object>(
 					value ) : value;
 		} else {
 			return translationSource.getEachTranslation( value, annotation
@@ -101,10 +98,9 @@ public class CollectionTranslator {
 		}
 	}
 
-	@SuppressWarnings("unchecked")
-	private Map copyMap(Map value, TranslateCollection annotation) {
+	private Map<?,?> copyMap(Map<?,?> value, TranslateCollection annotation) {
 		if( annotation == null ) {
-			return configuration.isPerformingDefensiveCopies() ? new HashMap(
+			return configuration.isPerformingDefensiveCopies() ? new HashMap<Object,Object>(
 					value ) : value;
 		} else {
 			throw new TranslationException(
@@ -112,14 +108,11 @@ public class CollectionTranslator {
 		}
 	}
 
-	@SuppressWarnings("unchecked")
-	private SortedMap copySortedMap(SortedMap value,
+	private SortedMap<?,?> copySortedMap(SortedMap<?,?> value,
 			TranslateCollection annotation) {
 		if( annotation == null ) {
 			if( configuration.isPerformingDefensiveCopies() ) {
-				SortedMap map = new TreeMap<Object, Object>( value.comparator() );
-				map.putAll( value );
-				return map;
+				return defensivelyCopySortedMap( value );
 			} else {
 				return value;
 			}
@@ -127,6 +120,13 @@ public class CollectionTranslator {
 			throw new TranslationException(
 					"Support for translated sorted maps not yet built" );
 		}
+	}
+
+	private <A, B> SortedMap<A, B> defensivelyCopySortedMap(
+			SortedMap<A, B> value) {
+		SortedMap<A, B> map = new TreeMap<A, B>( value.comparator() );
+		map.putAll( value );
+		return map;
 	}
 
 	private Set<?> copySet(Set<?> value, TranslateCollection annotation,
@@ -141,33 +141,43 @@ public class CollectionTranslator {
 		}
 	}
 
-	@SuppressWarnings("unchecked")
-	private SortedSet<?> copySortedSet(SortedSet<?> value,
+	private SortedSet<?> copySortedSet(SortedSet<?> original,
 			TranslateCollection annotation, TranslationSource translationSource) {
 		if( annotation == null ) {
 			if( configuration.isPerformingDefensiveCopies() ) {
-				SortedSet result = new TreeSet( value.comparator() );
-				result.addAll( value );
-				return result;
+				return defensivelyCopySortedSet( original );
 			} else {
-				return value;
+				return original;
 			}
-		} else if( value.comparator() == null ) {
-			if( Comparable.class.isAssignableFrom( annotation.value() ) ) {
-				Set<?> translated = translationSource.getEachTranslation(
-						value,
-						annotation.value() );
-				SortedSet<?> result = new TreeSet( translated );
-				return result;
+		} else if( original.comparator() == null ) {
+			Class<?> annotationValue = annotation.value();
+			if( Comparable.class.isAssignableFrom( annotationValue ) ) {
+				return copyAndTranslateSortedSet( original, translationSource,
+						annotationValue );
 			} else {
 				throw new TranslationException(
 						"Naturally sorted set cannot be translated into another naturally-sorted set if the destination type is not comparable: "
-								+ annotation.value() );
+								+ annotationValue );
 			}
 		} else {
 			throw new TranslationException(
 					"Support for translated sorted sets with comparators not yet built" );
 		}
+	}
+
+	private SortedSet<?> copyAndTranslateSortedSet(SortedSet<?> original,
+			TranslationSource translationSource, Class<?> annotationValue) {
+		Set<?> translated = translationSource.getEachTranslation(
+				original,
+				annotationValue );
+		SortedSet<?> result = new TreeSet<Object>( translated );
+		return result;
+	}
+
+	private <Z> SortedSet<Z> defensivelyCopySortedSet(SortedSet<Z> value) {
+		SortedSet<Z> result = new TreeSet<Z>( value.comparator() );
+		result.addAll( value );
+		return result;
 	}
 
 }
