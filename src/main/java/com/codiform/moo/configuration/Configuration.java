@@ -16,7 +16,7 @@ public class Configuration implements TranslatorSource {
 	private CollectionTranslator collectionTranslator;
 	private ArrayTranslator arrayTranslator;
 	private boolean performingDefensiveCopies = true;
-	private boolean sourcePropertyRequired = false;
+	private boolean sourcePropertyRequired = true;
 	
 	/**
 	 * Creates a default configuration.

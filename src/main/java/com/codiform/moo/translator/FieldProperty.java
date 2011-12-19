@@ -7,15 +7,20 @@ import java.lang.reflect.Modifier;
 import com.codiform.moo.InvalidPropertyException;
 import com.codiform.moo.TranslationException;
 import com.codiform.moo.annotation.AccessMode;
+import com.codiform.moo.annotation.Ignore;
 
 public class FieldProperty extends AbstractProperty {
 
 	private Field field;
 	private boolean explicit;
+	private boolean ignore;
 
 	public FieldProperty(Field field) {
 		this.field = field;
-		explicit = getAnnotation(com.codiform.moo.annotation.Property.class) != null;
+		com.codiform.moo.annotation.Property propertyAnnotation = getAnnotation( com.codiform.moo.annotation.Property.class );
+		Ignore ignoreAnnotation = getAnnotation( Ignore.class );
+		explicit = propertyAnnotation != null || ignoreAnnotation != null;
+		ignore = ignoreAnnotation != null;
 	}
 
 	public <A extends Annotation> A getAnnotation(Class<A> annotationClass) {
@@ -104,6 +109,11 @@ public class FieldProperty extends AbstractProperty {
 	
 	public boolean isExplicit() {
 		return explicit;
+	}
+
+	@Override
+	public boolean isIgnored() {
+		return ignore;
 	}
 
 }

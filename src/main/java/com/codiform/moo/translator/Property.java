@@ -78,4 +78,11 @@ public interface Property {
 	 * @return true if the property was explicitly defined
 	 */
 	boolean isExplicit();
+	
+	/**
+	 * Indicates if the property should be ignored (no value stored during Translate or Update).
+	 * 
+	 * @return true if the property should be ignored
+	 */
+	boolean isIgnored();
 }

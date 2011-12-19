@@ -6,17 +6,20 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.codiform.moo.configuration.Configuration;
 import com.codiform.moo.curry.Translate;
 
 public class MismatchedTranslationTest {
 
-	@Test(expected=NothingToTranslateException.class)
+	@Test(expected = NothingToTranslateException.class)
 	public void testThrowsExceptionIfNoCommonProperties() {
 		StringValue source = new StringValue( "Source" );
-		Translate.to(OtherValue.class).from(source); 
+		Configuration configuration = new Configuration();
+		configuration.setSourcePropertiesRequired( false );
+		Moo moo = new Moo( configuration );
+		moo.translate( OtherValue.class ).from( source );
 	}
-	
-	
+
 	/**
 	 * Should fail, but should fail with an error message that makes the
 	 * solution somewhat more obvious.
@@ -24,12 +27,12 @@ public class MismatchedTranslationTest {
 	@Test
 	public void testTranslationOfArrayToStringFails() {
 		try {
-			ArrayValue source = new ArrayValue("one", "two");
-			Translate.to(StringValue.class).from(source);
-			Assert.fail("Expected a translation exception which didn't occur.");
-		} catch (TranslationException exception) {
+			ArrayValue source = new ArrayValue( "one", "two" );
+			Translate.to( StringValue.class ).from( source );
+			Assert.fail( "Expected a translation exception which didn't occur." );
+		} catch( TranslationException exception ) {
 			String expectedMessage = "Cannot translate from source array type class java.lang.String[] to destination type java.lang.String";
-			Assert.assertEquals(expectedMessage, exception.getMessage());
+			Assert.assertEquals( expectedMessage, exception.getMessage() );
 		}
 	}
 
@@ -39,8 +42,8 @@ public class MismatchedTranslationTest {
 	 */
 	@Test(expected = IncompatibleTypeTranslationException.class)
 	public void testTranslationOfListToStringFails() {
-		ListValue source = new ListValue("one", "two");
-		Translate.to(StringValue.class).from(source);
+		ListValue source = new ListValue( "one", "two" );
+		Translate.to( StringValue.class ).from( source );
 	}
 
 	/**
@@ -49,8 +52,8 @@ public class MismatchedTranslationTest {
 	 */
 	@Test(expected = IncompatibleTypeTranslationException.class)
 	public void testTranslationOfIntegerToStringFails() {
-		IntegerValue source = new IntegerValue(1);
-		Translate.to(StringValue.class).from(source);
+		IntegerValue source = new IntegerValue( 1 );
+		Translate.to( StringValue.class ).from( source );
 	}
 
 	public static class ArrayValue {
@@ -69,7 +72,7 @@ public class MismatchedTranslationTest {
 		private List<String> value;
 
 		public ListValue(String... value) {
-			this.value = Arrays.asList(value);
+			this.value = Arrays.asList( value );
 		}
 
 		public List<String> getValue() {
@@ -79,7 +82,7 @@ public class MismatchedTranslationTest {
 
 	public static class StringValue {
 		private String value;
-		
+
 		public StringValue() {
 			// do nothing
 		}

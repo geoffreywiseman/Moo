@@ -8,6 +8,7 @@ import java.lang.reflect.Modifier;
 import com.codiform.moo.InvalidPropertyException;
 import com.codiform.moo.TranslationException;
 import com.codiform.moo.annotation.AccessMode;
+import com.codiform.moo.annotation.Ignore;
 
 public class MethodProperty extends AbstractProperty implements Property {
 
@@ -17,11 +18,17 @@ public class MethodProperty extends AbstractProperty implements Property {
 	private String name;
 	private String propertyFailure;
 	private boolean explicit;
+	private boolean ignore;
 
 	public MethodProperty(Method method) {
 		this.method = method;
 		name = convertName(method.getName());
-		explicit = getAnnotation(com.codiform.moo.annotation.Property.class) != null;
+		
+		com.codiform.moo.annotation.Property propertyAnnotation = getAnnotation( com.codiform.moo.annotation.Property.class );
+		Ignore ignoreAnnotation = getAnnotation( Ignore.class );
+		explicit = propertyAnnotation != null || ignoreAnnotation != null;
+		ignore = ignoreAnnotation != null;
+		
 		if (name == null) {
 			propertyFailure = "Method %s (in %s) is marked with @Property but does not follow the 'set<Name>' pattern required of a method property.";
 			return;
@@ -114,6 +121,11 @@ public class MethodProperty extends AbstractProperty implements Property {
 
 	public boolean isExplicit() {
 		return explicit;
+	}
+
+	@Override
+	public boolean isIgnored() {
+		return ignore;
 	}
 
 }

@@ -12,6 +12,7 @@ import org.mvel2.MVEL;
 import org.mvel2.PropertyAccessException;
 
 import com.codiform.moo.InvalidPropertyException;
+import com.codiform.moo.MissingSourcePropertyException;
 import com.codiform.moo.NoSourceException;
 import com.codiform.moo.NothingToTranslateException;
 import com.codiform.moo.TranslationException;
@@ -63,24 +64,26 @@ public class Translator<T> {
 	 */
 	public void update(Object source, T destination,
 			TranslationSource translationSource, Map<String, Object> variables) {
-		assureSource(source);
+		assureSource( source );
 		boolean updated = false;
-		Set<Property> properties = getProperties(destinationClass);
-		for (Property item : properties) {
-
-			if (updateProperty(source, destination, translationSource, item,
-					variables)) {
-				updated = true;
+		Set<Property> properties = getProperties( destinationClass );
+		for( Property item : properties ) {
+			if( !item.isIgnored() ) {
+				if( updateProperty( source, destination, translationSource,
+						item,
+						variables ) ) {
+					updated = true;
+				}
 			}
 		}
-		if (updated == false) {
-			throw new NothingToTranslateException(source.getClass(),
-					destination.getClass());
+		if( updated == false ) {
+			throw new NothingToTranslateException( source.getClass(),
+					destination.getClass() );
 		}
 	}
 
 	private void assureSource(Object source) {
-		if (source == null) {
+		if( source == null ) {
 			throw new NoSourceException();
 		}
 	}
@@ -94,8 +97,8 @@ public class Translator<T> {
 	 */
 	public void castAndUpdate(Object source, Object from,
 			TranslationSource translationSource, Map<String, Object> variables) {
-		update(source, destinationClass.cast(from), translationSource,
-				variables);
+		update( source, destinationClass.cast( from ), translationSource,
+				variables );
 	}
 
 	/**
@@ -107,31 +110,32 @@ public class Translator<T> {
 	public T create() {
 		try {
 			return destinationClass.newInstance();
-		} catch (InstantiationException exception) {
-			throw new TranslationException(String.format(
-					"Error while instantiating %s", destinationClass),
-					exception);
-		} catch (IllegalAccessException exception) {
-			throw new TranslationException(String.format(
-					"Not allowed to instantiate %s", destinationClass),
-					exception);
+		} catch( InstantiationException exception ) {
+			throw new TranslationException( String.format(
+					"Error while instantiating %s", destinationClass ),
+					exception );
+		} catch( IllegalAccessException exception ) {
+			throw new TranslationException( String.format(
+					"Not allowed to instantiate %s", destinationClass ),
+					exception );
 		}
 	}
 
 	private Object transform(Object value, Property property,
 			TranslationSource translationSource) {
-		if (value == null) {
+		if( value == null ) {
 			return null;
-		} else if (value instanceof Collection || value instanceof Map) {
-			if (property.shouldBeTranslated()) {
+		} else if( value instanceof Collection || value instanceof Map ) {
+			if( property.shouldBeTranslated() ) {
 				throw new TranslationException(
-						"Cannot use @Translate on a collection (cannot determine internal type due to erasure); use @TranslateCollection instead.");
+						"Cannot use @Translate on a collection (cannot determine internal type due to erasure); use @TranslateCollection instead." );
 			}
-			return transformCollection(value, property, translationSource);
-		} else if (value.getClass().isArray()) {
-			return transformArray((Object[]) value, property, translationSource);
-		} else if (property.shouldBeTranslated()) {
-			return translationSource.getTranslation(value, property.getType());
+			return transformCollection( value, property, translationSource );
+		} else if( value.getClass().isArray() ) {
+			return transformArray( (Object[]) value, property,
+					translationSource );
+		} else if( property.shouldBeTranslated() ) {
+			return translationSource.getTranslation( value, property.getType() );
 		} else {
 			return value;
 		}
@@ -142,15 +146,15 @@ public class Translator<T> {
 		Class<?> fieldType = property.getType();
 		Class<?> valueType = value.getClass();
 
-		if (valueType.isAssignableFrom(fieldType)) {
-			return configuration.getArrayTranslator().defensiveCopy(value);
-		} else if (fieldType.isArray()) {
-			if (valueType.isAssignableFrom(fieldType.getComponentType())) {
-				return configuration.getArrayTranslator().copyTo(value,
-						fieldType);
+		if( valueType.isAssignableFrom( fieldType ) ) {
+			return configuration.getArrayTranslator().defensiveCopy( value );
+		} else if( fieldType.isArray() ) {
+			if( valueType.isAssignableFrom( fieldType.getComponentType() ) ) {
+				return configuration.getArrayTranslator().copyTo( value,
+						fieldType );
 			} else {
-				return configuration.getArrayTranslator().translate(value,
-						fieldType.getComponentType(), translationSource);
+				return configuration.getArrayTranslator().translate( value,
+						fieldType.getComponentType(), translationSource );
 			}
 		} else {
 			throw new TranslationException(
@@ -158,73 +162,75 @@ public class Translator<T> {
 							.format(
 									"Cannot translate from source array type %s[] to destination type %s",
 									valueType.getComponentType(), fieldType
-											.getName()));
+											.getName() ) );
 		}
 	}
 
 	private Object transformCollection(Object value, Property property,
 			TranslationSource translationSource) {
-		return configuration.getCollectionTranslator().translate(value,
-				property.getAnnotation(TranslateCollection.class),
-				translationSource);
+		return configuration.getCollectionTranslator().translate( value,
+				property.getAnnotation( TranslateCollection.class ),
+				translationSource );
 	}
 
 	private Object getValue(Object source, String expression,
 			Map<String, Object> variables) {
-		if (variables == null || variables.isEmpty()) {
-			return MVEL.eval(expression, source);
+		if( variables == null || variables.isEmpty() ) {
+			return MVEL.eval( expression, source );
 		} else {
-			return MVEL.eval(expression, source, variables);
+			return MVEL.eval( expression, source, variables );
 		}
 	}
 
-	/* package */ Set<Property> getProperties(Class<T> destinationClass) {
+	/* package */Set<Property> getProperties(Class<T> destinationClass) {
 		Map<String, Property> properties = new HashMap<String, Property>();
 		Class<?> current = destinationClass;
-		while (current != null) {
-			merge(properties, getPropertiesForClass(current));
+		while( current != null ) {
+			merge( properties, getPropertiesForClass( current ) );
 			current = current.getSuperclass();
 		}
-		return new HashSet<Property>(properties.values());
+		return new HashSet<Property>( properties.values() );
 	}
 
 	private void merge(Map<String, Property> currentProperties,
 			Set<Property> superclassProperties) {
-		for (Property item : superclassProperties) {
-			if (currentProperties.containsKey(item.getName())) {
-				if (item.isExplicit()) {
-					if (!currentProperties.get(item.getName()).isExplicit()) {
-						currentProperties.put(item.getName(), item);
+		for( Property item : superclassProperties ) {
+			if( currentProperties.containsKey( item.getName() ) ) {
+				if( item.isExplicit() ) {
+					if( !currentProperties.get( item.getName() ).isExplicit() ) {
+						currentProperties.put( item.getName(), item );
 					}
 				}
 			} else {
-				currentProperties.put(item.getName(), item);
+				currentProperties.put( item.getName(), item );
 			}
 		}
 	}
 
 	private Set<Property> getPropertiesForClass(Class<?> clazz) {
-		Map<String,Property> properties = new HashMap<String,Property>();
-		Access access = clazz.getAnnotation(Access.class);
+		Map<String, Property> properties = new HashMap<String, Property>();
+		Access access = clazz.getAnnotation( Access.class );
 		AccessMode mode = access == null ? AccessMode.FIELD : access.value();
-		for (Field item : clazz.getDeclaredFields()) {
-			FieldProperty property = new FieldProperty(item);
-			if (property.isProperty(mode)) {
-				properties.put(property.getName(),property);
+		for( Field item : clazz.getDeclaredFields() ) {
+			FieldProperty property = new FieldProperty( item );
+			if( property.isProperty( mode ) ) {
+				properties.put( property.getName(), property );
 			}
 		}
-		for (Method item : clazz.getDeclaredMethods()) {
-			MethodProperty property = new MethodProperty(item);
-			if (property.isProperty(mode)) {
+		for( Method item : clazz.getDeclaredMethods() ) {
+			MethodProperty property = new MethodProperty( item );
+			if( property.isProperty( mode ) ) {
 				if( properties.containsKey( property.getName() ) ) {
 					Property current = properties.get( property.getName() );
 					if( current.isExplicit() && property.isExplicit() ) {
-						throw new InvalidPropertyException(property, "Property %s (in %s) is explicitly defined with @Property as both field and method properties; Moo expects no more than one annotation per property name per class." );
+						throw new InvalidPropertyException(
+								property,
+								"Property %s (in %s) is explicitly defined with @Property as both field and method properties; Moo expects no more than one annotation per property name per class." );
 					} else if( !current.isExplicit() && property.isExplicit() ) {
-						properties.put( property.getName(), property);
+						properties.put( property.getName(), property );
 					}
 				} else {
-					properties.put(property.getName(),property);
+					properties.put( property.getName(), property );
 				}
 			}
 		}
@@ -235,17 +241,16 @@ public class Translator<T> {
 			TranslationSource translationSource, Property property,
 			Map<String, Object> variables) {
 		try {
-			Object value = getValue(source,
-					property.getTranslationExpression(), variables);
-			value = transform(value, property, translationSource);
-			property.setValue(destination, value);
+			Object value = getValue( source,
+					property.getTranslationExpression(), variables );
+			value = transform( value, property, translationSource );
+			property.setValue( destination, value );
 			return true;
-		} catch (PropertyAccessException exception) {
-			if (configuration.isSourcePropertyRequired()) {
-				throw new TranslationException(
-						"Could not find required source property for expression: "
-								+ property.getTranslationExpression(),
-						exception);
+		} catch( PropertyAccessException exception ) {
+			if( configuration.isSourcePropertyRequired() ) {
+				throw new MissingSourcePropertyException(
+						property.getTranslationExpression(),
+						exception );
 			}
 			return false;
 		}

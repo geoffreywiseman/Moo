@@ -8,6 +8,7 @@ import com.codiform.moo.annotation.Property;
 
 import com.codiform.moo.annotation.Access;
 import com.codiform.moo.annotation.AccessMode;
+import com.codiform.moo.annotation.Ignore;
 import com.codiform.moo.curry.Translate;
 
 public class AccessModeTest {
@@ -92,6 +93,8 @@ public class AccessModeTest {
 
 	public static class MixedDestination {
 		private String string;
+		
+		@Ignore
 		private Integer integerValue;
 		
 		public String getString() {
