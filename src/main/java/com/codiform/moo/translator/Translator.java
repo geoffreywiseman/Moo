@@ -1,6 +1,8 @@
 package com.codiform.moo.translator;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.HashMap;
@@ -109,7 +111,11 @@ public class Translator<T> {
 	 */
 	public T create() {
 		try {
-			return destinationClass.newInstance();
+			Constructor<T> constructor = destinationClass.getDeclaredConstructor( );
+			constructor.setAccessible( true );
+			return constructor.newInstance( );
+		} catch( NoSuchMethodException exception ) {
+			throw new TranslationException( "No no-argument constructor in class " + destinationClass.getName(), exception );
 		} catch( InstantiationException exception ) {
 			throw new TranslationException( String.format(
 					"Error while instantiating %s", destinationClass ),
@@ -117,6 +123,14 @@ public class Translator<T> {
 		} catch( IllegalAccessException exception ) {
 			throw new TranslationException( String.format(
 					"Not allowed to instantiate %s", destinationClass ),
+					exception );
+		} catch( IllegalArgumentException exception ) {
+			throw new TranslationException( String.format(
+					"Error while instantiating %s", destinationClass ),
+					exception );
+		} catch( InvocationTargetException exception ) {
+			throw new TranslationException( String.format(
+					"Error thrown by constructor of %s", destinationClass ),
 					exception );
 		}
 	}
