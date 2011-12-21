@@ -10,4 +10,5 @@ import java.lang.annotation.Target;
 public @interface Property {
 	String translation() default "";
 	boolean translate() default false;
+	boolean update() default false;
 }

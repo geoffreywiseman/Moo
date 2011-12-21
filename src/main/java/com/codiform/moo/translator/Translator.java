@@ -111,11 +111,13 @@ public class Translator<T> {
 	 */
 	public T create() {
 		try {
-			Constructor<T> constructor = destinationClass.getDeclaredConstructor( );
+			Constructor<T> constructor = destinationClass.getDeclaredConstructor();
 			constructor.setAccessible( true );
-			return constructor.newInstance( );
+			return constructor.newInstance();
 		} catch( NoSuchMethodException exception ) {
-			throw new TranslationException( "No no-argument constructor in class " + destinationClass.getName(), exception );
+			throw new TranslationException(
+					"No no-argument constructor in class "
+							+ destinationClass.getName(), exception );
 		} catch( InstantiationException exception ) {
 			throw new TranslationException( String.format(
 					"Error while instantiating %s", destinationClass ),
@@ -258,7 +260,8 @@ public class Translator<T> {
 			Object value = getValue( source,
 					property.getTranslationExpression(), variables );
 			value = transform( value, property, translationSource );
-			property.setValue( destination, value );
+			updateOrReplaceProperty( destination, value, property,
+					translationSource );
 			return true;
 		} catch( PropertyAccessException exception ) {
 			if( configuration.isSourcePropertyRequired() ) {
@@ -267,6 +270,17 @@ public class Translator<T> {
 						exception );
 			}
 			return false;
+		}
+	}
+
+	private void updateOrReplaceProperty(T destination, Object value,
+			Property property, TranslationSource translationSource) {
+		Object destinationValue = property.canGetValue() ? property.getValue( destination ) : null;
+		if( property.shouldUpdate() && value != null && destinationValue != null ) {
+			translationSource.update( value, destinationValue );
+		}
+		else {
+			property.setValue( destination, value );
 		}
 	}
 

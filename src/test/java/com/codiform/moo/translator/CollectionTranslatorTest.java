@@ -16,6 +16,7 @@ import org.junit.Test;
 import com.codiform.moo.annotation.TranslateCollection;
 import com.codiform.moo.configuration.Configuration;
 import com.codiform.moo.session.TranslationSession;
+import com.codiform.moo.source.TranslationSource;
 
 public class CollectionTranslatorTest {
 
@@ -24,7 +25,7 @@ public class CollectionTranslatorTest {
 	private CollectionTranslator translator = new CollectionTranslator(
 			configuration);
 
-	private TranslationSession session = new TranslationSession(configuration);
+	private TranslationSource session = new TranslationSession(configuration);
 
 	@SuppressWarnings("unchecked")
 	@Test

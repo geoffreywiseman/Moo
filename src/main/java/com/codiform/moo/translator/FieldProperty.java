@@ -116,4 +116,21 @@ public class FieldProperty extends AbstractProperty {
 		return ignore;
 	}
 
+	@Override
+	public boolean canGetValue() {
+		return true;
+	}
+
+	@Override
+	public Object getValue( Object instance ) {
+		try {
+			field.setAccessible( true );
+			return field.get( instance );
+		} catch( IllegalArgumentException exception ) {
+			throw new TranslationException( "Cannot get value for property", exception );
+		} catch( IllegalAccessException exception ) {
+			throw new TranslationException( "Cannot access getter property", exception );
+		}
+	}
+
 }

@@ -46,7 +46,7 @@ public interface Property {
 	String getTranslationExpression();
 
 	/**
-	 * Indicates if the property should be translated (has a @Translate annotation)
+	 * Indicates if the property should be translated (has translate=true in the {@link Property} annotation)
 	 * 
 	 * @return boolean if the property should be translated
 	 */
@@ -85,4 +85,30 @@ public interface Property {
 	 * @return true if the property should be ignored
 	 */
 	boolean isIgnored();
+
+	/**
+	 * Indicates if the property should be updated rather than replaced when an update is taking 
+	 * place. In particular, this implies that an update can succeed because the destination is 
+	 * mutable and the important properties can be copied from one side to the other.
+	 * 
+	 * @return true if the object should be updated, assuming it can be
+	 */
+	boolean shouldUpdate();
+
+	/**
+	 * Indicates if the property can be used to retrieve a value, or if the value can only be set.
+	 * 
+	 * @return true if the value can be retrieved, false if the value can only be set
+	 */
+	boolean canGetValue();
+
+	/**
+	 * Retrieves the value represented by the property from an object instance.
+	 * 
+	 * @param the instance from which the value should be retrieved
+	 * @return the current value of the property
+	 * @throws UnsupportedOperationException if the property's value can not be retrieved
+	 * @see #canGetValue() 
+	 */
+	Object getValue( Object instance );
 }

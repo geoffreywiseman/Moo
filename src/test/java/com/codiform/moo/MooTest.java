@@ -15,6 +15,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import com.codiform.moo.configuration.Configuration;
 import com.codiform.moo.session.TranslationSession;
+import com.codiform.moo.source.TranslationSource;
 
 @RunWith(MockitoJUnitRunner.class)
 public class MooTest {
@@ -71,7 +72,7 @@ public class MooTest {
 		}
 
 		@Override
-		protected TranslationSession newSession() {
+		protected TranslationSource newSession() {
 			return session;
 		}
 

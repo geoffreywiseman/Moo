@@ -9,6 +9,7 @@ import com.codiform.moo.curry.Update;
 import com.codiform.moo.configuration.Configuration;
 import com.codiform.moo.curry.Translate;
 import com.codiform.moo.session.TranslationSession;
+import com.codiform.moo.source.TranslationSource;
 
 /**
  * Central facade class for interacting with Moo to do mapping from objects to objects.  
@@ -135,7 +136,7 @@ public class Moo {
 		return new Update(configuration, source);
 	}
 
-	protected TranslationSession newSession() {
+	protected TranslationSource newSession() {
 		return new TranslationSession(configuration);
 	}
 	

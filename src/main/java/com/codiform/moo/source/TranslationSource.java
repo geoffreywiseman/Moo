@@ -49,5 +49,7 @@ public interface TranslationSource {
 	 * @param <T> the type that binds the return values to the destination class
 	 */
 	public <T> Collection<T> getEachTranslation( Collection<?> sources, Class<T> destinationClass );
+
+	public abstract void update(Object source, Object destination);
 	
 }

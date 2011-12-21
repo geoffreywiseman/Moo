@@ -34,4 +34,9 @@ public abstract class AbstractProperty implements Property {
 		return annotation != null && annotation.translate();
 	}
 	
+	public boolean shouldUpdate() {
+		com.codiform.moo.annotation.Property annotation = getAnnotation( com.codiform.moo.annotation.Property.class );
+		return annotation == null ? false : annotation.update();
+	}
+	
 }

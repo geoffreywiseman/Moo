@@ -102,6 +102,7 @@ public class TranslationSession implements TranslationSource {
 	 * @param destination
 	 *            the object to which the values should be applied
 	 */
+	@Override
 	public void update(Object source, Object destination) {
 		assureDestination(destination);
 		configuration.getTranslator(destination.getClass()).castAndUpdate(
