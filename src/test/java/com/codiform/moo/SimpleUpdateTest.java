@@ -4,6 +4,7 @@ import junit.framework.Assert;
 
 import org.junit.Test;
 
+import com.codiform.moo.annotation.Property;
 import com.codiform.moo.curry.Update;
 
 /**
@@ -23,24 +24,42 @@ public class SimpleUpdateTest {
 	 */
 	@Test
 	public void testCanUpdateInstanceValues() {
-		Ordinal ordinal = new Ordinal(1, "First");
-		Assert.assertEquals(1, ordinal.getRank());
-		Assert.assertEquals("First", ordinal.getName());
+		Ordinal ordinal = new Ordinal( 1, "First" );
+		Assert.assertEquals( 1, ordinal.getRank() );
+		Assert.assertEquals( "First", ordinal.getName() );
 
-		OrdinalDto dto = new OrdinalDto(2, "Second");
-		Update.from(dto).to(ordinal);
-		Assert.assertEquals(2, ordinal.getRank());
-		Assert.assertEquals("Second", ordinal.getName());
+		OrdinalDto dto = new OrdinalDto( 2, "Second" );
+		Update.from( dto ).to( ordinal );
+		Assert.assertEquals( 2, ordinal.getRank() );
+		Assert.assertEquals( "Second", ordinal.getName() );
 	}
 
-	@Test(expected=NoSourceException.class)
+	/**
+	 * Can update instance values on an instance including translation.
+	 */
+	@Test
+	public void testCanUpdateInstanceValuesWithTranslation() {
+		Ordinal ordinal = new Ordinal( 1, "First" );
+		Assert.assertEquals( 1, ordinal.getRank() );
+		Assert.assertEquals( "First", ordinal.getName() );
+
+		Level level = new Level( 2, "Second" );
+		Assert.assertEquals( 2, level.getLevel() );
+		Assert.assertEquals( "Second", level.getName() );
+
+		Update.from( ordinal ).to( level );
+		Assert.assertEquals( 1, level.getLevel() );
+		Assert.assertEquals( "First", level.getName() );
+	}
+
+	@Test(expected = NoSourceException.class)
 	public void testExceptionIfUpdateFromNullObject() {
-		Update.from(null).to(new Ordinal());
+		Update.from( null ).to( new Ordinal() );
 	}
 
-	@Test(expected=NoDestinationException.class)
+	@Test(expected = NoDestinationException.class)
 	public void testExceptionIfUpdateToNullObject() {
-		Update.from(new Ordinal(1, "First")).to(null);
+		Update.from( new Ordinal( 1, "First" ) ).to( null );
 	}
 
 	public static class OrdinalDto {
@@ -81,5 +100,29 @@ public class SimpleUpdateTest {
 		public String getName() {
 			return name;
 		}
+	}
+
+	public static class Level {
+		@Property(translation = "rank")
+		private int level;
+		private String name;
+
+		public Level(int level, String name) {
+			this.level = level;
+			this.name = name;
+		}
+
+		private Level() {
+			// For Translation Only
+		}
+
+		public int getLevel() {
+			return level;
+		}
+
+		public String getName() {
+			return name;
+		}
+
 	}
 }
