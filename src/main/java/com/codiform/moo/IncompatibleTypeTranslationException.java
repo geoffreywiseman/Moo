@@ -1,6 +1,6 @@
 package com.codiform.moo;
 
-public class IncompatibleTypeTranslationException extends TranslationException {
+public class IncompatibleTypeTranslationException extends UnsupportedTranslationException {
 
 	private static final long serialVersionUID = 5324683855325641246L;
 

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -12,7 +13,7 @@ import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
-import com.codiform.moo.TranslationException;
+import com.codiform.moo.UnsupportedTranslationException;
 import com.codiform.moo.annotation.TranslateCollection;
 import com.codiform.moo.configuration.Configuration;
 import com.codiform.moo.source.TranslationSource;
@@ -66,9 +67,9 @@ public class CollectionTranslator {
 		} else if( value instanceof Set<?> ) {
 			return copySet( (Set<?>) value, annotation, cache );
 		} else if( value instanceof SortedMap ) {
-			return copySortedMap( (SortedMap<?,?>) value, annotation );
+			return copySortedMap( (SortedMap<?, ?>) value, annotation );
 		} else if( value instanceof Map ) {
-			return copyMap( (Map<?,?>) value, annotation );
+			return copyMap( (Map<?, ?>) value, annotation );
 		} else if( value instanceof List ) {
 			return (List<?>) copyList( (List<?>) value, annotation, cache );
 		} else {
@@ -80,7 +81,8 @@ public class CollectionTranslator {
 			TranslateCollection annotation, TranslationSource translationSource) {
 		if( annotation == null ) {
 			return configuration.isPerformingDefensiveCopies() ? new ArrayList<Object>(
-					value ) : value;
+					value )
+					: value;
 		} else {
 			return translationSource.getEachTranslation( value, annotation
 					.value() );
@@ -91,24 +93,26 @@ public class CollectionTranslator {
 			TranslationSource translationSource) {
 		if( annotation == null ) {
 			return configuration.isPerformingDefensiveCopies() ? new ArrayList<Object>(
-					value ) : value;
+					value )
+					: value;
 		} else {
 			return translationSource.getEachTranslation( value, annotation
 					.value() );
 		}
 	}
 
-	private Map<?,?> copyMap(Map<?,?> value, TranslateCollection annotation) {
+	private Map<?, ?> copyMap(Map<?, ?> value, TranslateCollection annotation) {
 		if( annotation == null ) {
-			return configuration.isPerformingDefensiveCopies() ? new HashMap<Object,Object>(
-					value ) : value;
+			return configuration.isPerformingDefensiveCopies() ? new HashMap<Object, Object>(
+					value )
+					: value;
 		} else {
-			throw new TranslationException(
+			throw new UnsupportedTranslationException(
 					"Support for translated maps not yet built." );
 		}
 	}
 
-	private SortedMap<?,?> copySortedMap(SortedMap<?,?> value,
+	private SortedMap<?, ?> copySortedMap(SortedMap<?, ?> value,
 			TranslateCollection annotation) {
 		if( annotation == null ) {
 			if( configuration.isPerformingDefensiveCopies() ) {
@@ -117,7 +121,7 @@ public class CollectionTranslator {
 				return value;
 			}
 		} else {
-			throw new TranslationException(
+			throw new UnsupportedTranslationException(
 					"Support for translated sorted maps not yet built" );
 		}
 	}
@@ -155,12 +159,12 @@ public class CollectionTranslator {
 				return copyAndTranslateSortedSet( original, translationSource,
 						annotationValue );
 			} else {
-				throw new TranslationException(
+				throw new UnsupportedTranslationException(
 						"Naturally sorted set cannot be translated into another naturally-sorted set if the destination type is not comparable: "
 								+ annotationValue );
 			}
 		} else {
-			throw new TranslationException(
+			throw new UnsupportedTranslationException(
 					"Support for translated sorted sets with comparators not yet built" );
 		}
 	}
@@ -178,6 +182,51 @@ public class CollectionTranslator {
 		SortedSet<Z> result = new TreeSet<Z>( value.comparator() );
 		result.addAll( value );
 		return result;
+	}
+
+	public void updateMap(Object source, Map<?, ?> destinationMap) {
+		throw new UnsupportedOperationException();
+	}
+
+	@SuppressWarnings("unchecked")
+	public void updateCollection(Object source,
+			Collection<Object> destinationCollection,
+			TranslationSource translationSource,
+			TranslateCollection translationClass) {
+		if( source instanceof Collection ) {
+			Collection<Object> sourceCollection = (Collection<Object>) source;
+			updateCollectionInOrder( sourceCollection, destinationCollection,
+					translationSource, translationClass );
+		} else {
+			throw new UnsupportedTranslationException(
+					"Cannot update Collection from "
+							+ source.getClass().getName() );
+		}
+	}
+
+	private void updateCollectionInOrder(Collection<Object> sourceCollection,
+			Collection<Object> destinationCollection,
+			TranslationSource translationSource,
+			TranslateCollection translationClass) {
+		Iterator<Object> source = sourceCollection.iterator();
+		Iterator<Object> destination = destinationCollection.iterator();
+
+		while( source.hasNext() && destination.hasNext() ) {
+			translationSource.update( source.next(), destination.next() );
+		}
+
+		if( source.hasNext() && !destination.hasNext() ) {
+			while( source.hasNext() ) {
+				if( translationClass != null ) {
+					translationSource.getTranslation( source,
+							translationClass.value() );
+				} else {
+					destinationCollection.add( source.next() );
+				}
+			}
+		} else if( destination.hasNext() && !source.hasNext() ) {
+
+		}
 	}
 
 }

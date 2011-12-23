@@ -273,15 +273,38 @@ public class Translator<T> {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	private void updateOrReplaceProperty(T destination, Object value,
 			Property property, TranslationSource translationSource) {
-		Object destinationValue = property.canGetValue() ? property.getValue( destination ) : null;
-		if( property.shouldUpdate() && value != null && destinationValue != null ) {
-			translationSource.update( value, destinationValue );
+		Object destinationValue = property.canGetValue() ? property.getValue( destination )
+				: null;
+		if( property.shouldUpdate() && value != null
+				&& destinationValue != null ) {
+			if( Collection.class.isAssignableFrom( property.getType() ) ) {
+				updateCollection( value, (Collection<Object>) destinationValue,
+						property, translationSource );
+			} else if( Map.class.isAssignableFrom( property.getType() ) ) {
+				updateMap( value, (Map<?, ?>) destinationValue );
+			} else {
+				translationSource.update( value, destinationValue );
+			}
 		}
 		else {
 			property.setValue( destination, value );
 		}
 	}
 
+	private void updateMap(Object source, Map<?, ?> destinationMap) {
+		configuration.getCollectionTranslator().updateMap( source,
+				destinationMap );
+
+	}
+
+	private void updateCollection(Object source,
+			Collection<Object> destinationCollection, Property property,
+			TranslationSource translationSource) {
+		configuration.getCollectionTranslator().updateCollection( source,
+				destinationCollection, translationSource,
+				property.getAnnotation( TranslateCollection.class ) );
+	}
 }
