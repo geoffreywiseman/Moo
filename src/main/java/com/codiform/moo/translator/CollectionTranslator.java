@@ -184,8 +184,43 @@ public class CollectionTranslator {
 		return result;
 	}
 
-	public void updateMap(Object source, Map<?, ?> destinationMap) {
-		throw new UnsupportedOperationException();
+	@SuppressWarnings("unchecked")
+	public void updateMap(Object source, Map<Object, Object> destinationMap,
+			TranslationSource translationSource,
+			TranslateCollection translationClass) {
+		if( source instanceof Map ) {
+			Map<Object, Object> sourceMap = (Map<Object, Object>) source;
+			updateMapByKey( sourceMap, destinationMap,
+					translationSource, translationClass );
+		} else {
+			throw new UnsupportedTranslationException(
+					"Cannot update Map from "
+							+ source.getClass().getName() );
+		}
+	}
+
+	private void updateMapByKey(Map<Object, Object> sourceMap,
+			Map<Object, Object> destinationMap,
+			TranslationSource translationSource,
+			TranslateCollection translationClass) {
+		for( Map.Entry<Object, Object> item : sourceMap.entrySet() ) {
+			Object destinationValue = destinationMap.get( item.getKey() );
+			if( destinationValue != null ) {
+				translationSource.update( destinationValue, item.getValue() );
+			} else if( translationClass != null ) {
+				destinationMap.put( item.getKey(),
+						translationSource.getTranslation( item.getValue(),
+								translationClass.value() ) );
+			} else {
+				destinationMap.put( item.getKey(), item.getValue() );
+			}
+		}
+
+		Set<Object> toRemove = new HashSet<Object>( destinationMap.keySet() );
+		toRemove.removeAll( sourceMap.keySet() );
+		for( Object key : toRemove ) {
+			destinationMap.remove( key );
+		}
 	}
 
 	@SuppressWarnings("unchecked")

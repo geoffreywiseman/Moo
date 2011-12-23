@@ -284,7 +284,8 @@ public class Translator<T> {
 				updateCollection( value, (Collection<Object>) destinationValue,
 						property, translationSource );
 			} else if( Map.class.isAssignableFrom( property.getType() ) ) {
-				updateMap( value, (Map<?, ?>) destinationValue );
+				updateMap( value, (Map<Object, Object>) destinationValue,
+						property, translationSource );
 			} else {
 				translationSource.update( value, destinationValue );
 			}
@@ -294,9 +295,12 @@ public class Translator<T> {
 		}
 	}
 
-	private void updateMap(Object source, Map<?, ?> destinationMap) {
+	private void updateMap(Object source, Map<Object, Object> destinationMap,
+			Property property,
+			TranslationSource translationSource) {
 		configuration.getCollectionTranslator().updateMap( source,
-				destinationMap );
+				destinationMap, translationSource,
+				property.getAnnotation( TranslateCollection.class ) );
 
 	}
 

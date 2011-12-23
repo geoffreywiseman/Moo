@@ -5,7 +5,9 @@ import static org.junit.Assert.assertSame;
 import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Ignore;
 import org.junit.Test;
@@ -53,9 +55,30 @@ public class CollectionUpdateTest {
 	}
 
 	@Test
-	@Ignore("TODO")
 	public void testUpdateMapPropertyUpdatesObjectsInMapByKey() {
-		fail( "Not yet implemented" );
+		ValueDto flaDto = new ValueDto( 242, "Front Line Assembly" );
+		ValueDto tkkDto = new ValueDto( 38, "My Life with the Thrill Kill Kult" );
+		ValueDtoMap dtoMap = new ValueDtoMap();
+		dtoMap.put( "FLA", flaDto );
+		dtoMap.put( "TKK", tkkDto );
+
+		Value fla = new Value( 1, "Front Line" );
+		Value tkk = new Value( 2, "Thrill Kill" );
+		ValueMap valueMap = new ValueMap();
+		valueMap.put( "TKK", tkk );
+		valueMap.put( "FLA", fla );
+
+		Update.from( dtoMap ).to( valueMap );
+
+		Value updated = valueMap.get( "TKK" );
+		assertSame( tkk, updated );
+		assertEquals( tkkDto.getId(), updated.getId() );
+		assertEquals( tkkDto.getName(), updated.getName() );
+
+		updated = valueMap.get( "FLA" );
+		assertSame( fla, updated );
+		assertEquals( flaDto.getId(), updated.getId() );
+		assertEquals( flaDto.getName(), updated.getName() );
 	}
 
 	@Test
@@ -97,6 +120,24 @@ public class CollectionUpdateTest {
 	@Test
 	@Ignore("TODO")
 	public void testUpdateSetWithMatcherWillInsertItemNotFoundByMatcher() {
+		fail( "Not yet implemented" );
+	}
+
+	@Test
+	@Ignore("TODO")
+	public void testUpdateListWillInsertTranslatedItemNotPresentInDestination() {
+		fail( "Not yet implemented" );
+	}
+
+	@Test
+	@Ignore("TODO")
+	public void testUpdateMapWillInsertTranslatedItemWhoseKeyIsNotPresentInDestinationMap() {
+		fail( "Not yet implemented" );
+	}
+
+	@Test
+	@Ignore("TODO")
+	public void testUpdateSetWithMatcherWillInsertTranslatedItemNotFoundByMatcher() {
 		fail( "Not yet implemented" );
 	}
 
@@ -157,14 +198,14 @@ public class CollectionUpdateTest {
 		public ValueDto get(int index) {
 			return values.get( index );
 		}
-		
+
 		public List<ValueDto> getValues() {
 			return values;
 		}
 	}
 
 	public static class ValueList {
-		@Property( update=true )
+		@Property(update = true)
 		private List<Value> values;
 
 		public ValueList(Value... items) {
@@ -175,6 +216,44 @@ public class CollectionUpdateTest {
 		}
 
 		public Value get(int index) {
+			return values.get( index );
+		}
+
+	}
+
+	public static class ValueDtoMap {
+		private Map<String, ValueDto> values;
+
+		public ValueDtoMap() {
+			values = new HashMap<String, ValueDto>();
+		}
+
+		public void put(String index, ValueDto dto) {
+			values.put( index, dto );
+		}
+
+		public ValueDto get(String index) {
+			return values.get( index );
+		}
+
+		public Map<String, ValueDto> getValues() {
+			return values;
+		}
+	}
+
+	public static class ValueMap {
+		@Property(update = true)
+		private Map<String, Value> values;
+
+		public ValueMap() {
+			values = new HashMap<String, Value>();
+		}
+
+		public void put(String index, Value value) {
+			values.put( index, value );
+		}
+
+		public Value get(String index) {
 			return values.get( index );
 		}
 
