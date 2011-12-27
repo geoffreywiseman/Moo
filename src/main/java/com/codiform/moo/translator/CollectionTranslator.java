@@ -205,14 +205,15 @@ public class CollectionTranslator {
 			TranslateCollection translationClass) {
 		for( Map.Entry<Object, Object> item : sourceMap.entrySet() ) {
 			Object destinationValue = destinationMap.get( item.getKey() );
-			if( destinationValue != null ) {
-				translationSource.update( destinationValue, item.getValue() );
-			} else if( translationClass != null ) {
+			Object sourceValue = item.getValue();
+			if( destinationValue != null && sourceValue != null ) {
+				translationSource.update( sourceValue, destinationValue );
+			} else if( translationClass != null && sourceValue != null ) {
 				destinationMap.put( item.getKey(),
-						translationSource.getTranslation( item.getValue(),
+						translationSource.getTranslation( sourceValue,
 								translationClass.value() ) );
 			} else {
-				destinationMap.put( item.getKey(), item.getValue() );
+				destinationMap.put( item.getKey(), sourceValue );
 			}
 		}
 
@@ -253,8 +254,10 @@ public class CollectionTranslator {
 		if( source.hasNext() && !destination.hasNext() ) {
 			while( source.hasNext() ) {
 				if( translationClass != null ) {
-					translationSource.getTranslation( source,
+					Object translation = translationSource.getTranslation(
+							source.next(),
 							translationClass.value() );
+					destinationCollection.add( translation );
 				} else {
 					destinationCollection.add( source.next() );
 				}

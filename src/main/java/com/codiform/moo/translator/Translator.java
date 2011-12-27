@@ -259,14 +259,14 @@ public class Translator<T> {
 		try {
 			Object value = getValue( source,
 					property.getTranslationExpression(), variables );
-			value = transform( value, property, translationSource );
 			updateOrReplaceProperty( destination, value, property,
 					translationSource );
 			return true;
 		} catch( PropertyAccessException exception ) {
 			if( configuration.isSourcePropertyRequired() ) {
 				throw new MissingSourcePropertyException(
-						property.getTranslationExpression(),
+						property.getTranslationExpression(), 
+						source.getClass(),
 						exception );
 			}
 			return false;
@@ -291,6 +291,7 @@ public class Translator<T> {
 			}
 		}
 		else {
+			value = transform( value, property, translationSource );
 			property.setValue( destination, value );
 		}
 	}

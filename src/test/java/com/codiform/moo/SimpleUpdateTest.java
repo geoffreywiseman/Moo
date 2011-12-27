@@ -112,6 +112,7 @@ public class SimpleUpdateTest {
 			this.name = name;
 		}
 
+		@SuppressWarnings("unused")
 		private Level() {
 			// For Translation Only
 		}
