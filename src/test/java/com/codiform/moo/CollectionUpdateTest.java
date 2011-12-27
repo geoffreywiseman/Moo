@@ -82,26 +82,33 @@ public class CollectionUpdateTest {
 	}
 
 	@Test
-	@Ignore("TODO")
-	public void testUpdateSetPropertyWithMatcherUpdatesObjectsByMatcher() {
-		fail( "Not yet implemented" );
-	}
-
-	@Test
-	@Ignore("TODO")
 	public void testUpdateListWillRemoveItemNotPresentInSource() {
-		fail( "Not yet implemented" );
+		ValueDto firstDto = new ValueDto( 1, "Still First" );
+		ValueDto secondDto = new ValueDto( 3, "Was Third, Now Second" );
+		ValueDtoList dtoList = new ValueDtoList( firstDto, secondDto );
+
+		Value firstValue = new Value( 1, "First" );
+		Value secondValue = new Value( 2, "Second" );
+		Value thirdValue = new Value( 3, "Third" );
+		ValueList valueList = new ValueList( firstValue, secondValue, thirdValue );
+		Update.from( dtoList ).to( valueList );
+
+		assertEquals( "Update should have removed a value from the destination list.", 2, valueList.size() );
+		
+		Value updated = valueList.get( 0 );
+		assertSame( firstValue, updated );
+		assertEquals( firstDto.getId(), updated.getId() );
+		assertEquals( firstDto.getName(), updated.getName() );
+
+		updated = valueList.get( 1 );
+		assertSame( secondValue, updated );
+		assertEquals( secondDto.getId(), updated.getId() );
+		assertEquals( secondDto.getName(), updated.getName() );
 	}
 
 	@Test
 	@Ignore("TODO")
 	public void testUpdateMapWillRemoveItemWhoseKeyIsNotPresentInSourceMap() {
-		fail( "Not yet implemented" );
-	}
-
-	@Test
-	@Ignore("TODO")
-	public void testUpdateSetWithMatcherWillRemoveItemNotPresentInSource() {
 		fail( "Not yet implemented" );
 	}
 
@@ -119,12 +126,6 @@ public class CollectionUpdateTest {
 
 	@Test
 	@Ignore("TODO")
-	public void testUpdateSetWithMatcherWillInsertItemNotFoundByMatcher() {
-		fail( "Not yet implemented" );
-	}
-
-	@Test
-	@Ignore("TODO")
 	public void testUpdateListWillInsertTranslatedItemNotPresentInDestination() {
 		fail( "Not yet implemented" );
 	}
@@ -132,6 +133,24 @@ public class CollectionUpdateTest {
 	@Test
 	@Ignore("TODO")
 	public void testUpdateMapWillInsertTranslatedItemWhoseKeyIsNotPresentInDestinationMap() {
+		fail( "Not yet implemented" );
+	}
+
+	@Test
+	@Ignore("TODO")
+	public void testUpdateSetPropertyWithMatcherUpdatesObjectsByMatcher() {
+		fail( "Not yet implemented" );
+	}
+
+	@Test
+	@Ignore("TODO")
+	public void testUpdateSetWithMatcherWillRemoveItemNotPresentInSource() {
+		fail( "Not yet implemented" );
+	}
+
+	@Test
+	@Ignore("TODO")
+	public void testUpdateSetWithMatcherWillInsertItemNotFoundByMatcher() {
 		fail( "Not yet implemented" );
 	}
 
@@ -213,6 +232,10 @@ public class CollectionUpdateTest {
 			for( Value item : items ) {
 				values.add( item );
 			}
+		}
+
+		public int size() {
+			return values.size();
 		}
 
 		public Value get(int index) {

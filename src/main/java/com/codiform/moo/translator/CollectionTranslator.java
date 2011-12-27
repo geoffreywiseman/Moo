@@ -260,7 +260,10 @@ public class CollectionTranslator {
 				}
 			}
 		} else if( destination.hasNext() && !source.hasNext() ) {
-
+			while( destination.hasNext() ) {
+				destination.next();
+				destination.remove();
+			}
 		}
 	}
 
