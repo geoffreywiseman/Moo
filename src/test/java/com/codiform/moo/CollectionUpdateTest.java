@@ -8,16 +8,22 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.junit.Ignore;
 import org.junit.Test;
 
+import com.codiform.moo.annotation.MatchWith;
 import com.codiform.moo.annotation.Property;
 import com.codiform.moo.annotation.TranslateCollection;
 import com.codiform.moo.curry.Update;
+import com.codiform.moo.translator.CollectionMatcher;
 
 public class CollectionUpdateTest {
 
@@ -199,39 +205,57 @@ public class CollectionUpdateTest {
 	}
 
 	@Test
-	@Ignore("TODO")
-	public void testUpdateListWillInsertTranslatedItemNotPresentInDestination() {
-		fail( "Not yet implemented" );
+	public void testUpdateCollectionWithMatcherUpdatesObjectsByMatcher() {
+		ValueDto secondDto = new ValueDto( 2, "Updated Second" );
+		ValueDto firstDto = new ValueDto( 1, "Updated First" );
+		ValueDtoList dtoList = new ValueDtoList( secondDto, firstDto );
+
+		Value firstValue = new Value( 1, "First" );
+		Value secondValue = new Value( 2, "Second" );
+		ValueSet valueSet = new ValueSet( firstValue, secondValue );
+		Update.from( dtoList ).to( valueSet );
+
+		assertEquals( 2, valueSet.size() );
+		for( Value item : valueSet ) {
+			if( item.getId() == 1 )
+				assertIdentityAndValues( firstValue, firstDto, item );
+			else
+				assertIdentityAndValues( secondValue, secondDto, item );
+		}
 	}
 
 	@Test
-	@Ignore("TODO")
-	public void testUpdateMapWillInsertTranslatedItemWhoseKeyIsNotPresentInDestinationMap() {
-		fail( "Not yet implemented" );
+	public void testUpdateCollectionWithMatcherWillRemoveItemNotPresentInSource() {
+		ValueDto firstDto = new ValueDto( 1, "Updated First" );
+		ValueDtoList dtoList = new ValueDtoList( firstDto );
+
+		Value firstValue = new Value( 1, "First" );
+		Value secondValue = new Value( 2, "Second" );
+		ValueSet valueSet = new ValueSet( secondValue, firstValue );
+		Update.from( dtoList ).to( valueSet );
+
+		assertEquals( 1, valueSet.size() );
+		Iterator<Value> updated = valueSet.iterator();
+		assertIdentityAndValues( firstValue, firstDto, updated.next() );
 	}
 
 	@Test
-	@Ignore("TODO")
-	public void testUpdateSetPropertyWithMatcherUpdatesObjectsByMatcher() {
-		fail( "Not yet implemented" );
-	}
+	public void testUpdateCollectionWithMatcherWillInsertItemNotFoundByMatcher() {
+		ValueDto secondDto = new ValueDto( 2, "New Second" );
+		ValueDto firstDto = new ValueDto( 1, "Updated First" );
+		ValueDtoList dtoList = new ValueDtoList( secondDto, firstDto );
 
-	@Test
-	@Ignore("TODO")
-	public void testUpdateSetWithMatcherWillRemoveItemNotPresentInSource() {
-		fail( "Not yet implemented" );
-	}
+		Value firstValue = new Value( 1, "First" );
+		ValueSet valueSet = new ValueSet( firstValue );
+		Update.from( dtoList ).to( valueSet );
 
-	@Test
-	@Ignore("TODO")
-	public void testUpdateSetWithMatcherWillInsertItemNotFoundByMatcher() {
-		fail( "Not yet implemented" );
-	}
-
-	@Test
-	@Ignore("TODO")
-	public void testUpdateSetWithMatcherWillInsertTranslatedItemNotFoundByMatcher() {
-		fail( "Not yet implemented" );
+		assertEquals( 2, valueSet.size() );
+		for( Value item : valueSet ) {
+			if( item.getId() == 1 )
+				assertIdentityAndValues( firstValue, firstDto, item );
+			else
+				assertEqualValues( secondDto, item );
+		}
 	}
 
 	public static class Value {
@@ -364,6 +388,60 @@ public class CollectionUpdateTest {
 
 		public Value get(String index) {
 			return values.get( index );
+		}
+	}
+
+	public static class ValueSet implements Iterable<Value> {
+		@MatchWith(ValueIdMatcher.class)
+		@TranslateCollection(value = Value.class)
+		@Property(update = true)
+		private Set<Value> values;
+
+		public ValueSet() {
+			values = new HashSet<Value>();
+		}
+
+		public ValueSet(Value... values) {
+			this();
+			for( Value item : values ) {
+				add( item );
+			}
+		}
+
+		public int size() {
+			return values.size();
+		}
+
+		public void add(Value value) {
+			values.add( value );
+		}
+
+		@Override
+		public Iterator<Value> iterator() {
+			return values.iterator();
+		}
+	}
+
+	public static class ValueIdMatcher implements
+			CollectionMatcher<ValueDto, Value> {
+
+		private Map<Integer, Value> valueById;
+		
+		public ValueIdMatcher() {
+			valueById = new HashMap<Integer,Value>();
+		}
+
+		@Override
+		public void setTargets(Collection<Value> targets) {
+			valueById.clear();
+			for( Value item : targets ) {
+				valueById.put( item.getId(), item );
+			}
+		}
+
+		@Override
+		public Value getTarget(ValueDto source) {
+			return valueById.get( source.getId() );
 		}
 
 	}

@@ -20,6 +20,7 @@ import com.codiform.moo.NothingToTranslateException;
 import com.codiform.moo.TranslationException;
 import com.codiform.moo.annotation.Access;
 import com.codiform.moo.annotation.AccessMode;
+import com.codiform.moo.annotation.MatchWith;
 import com.codiform.moo.annotation.TranslateCollection;
 import com.codiform.moo.configuration.Configuration;
 import com.codiform.moo.source.TranslationSource;
@@ -310,6 +311,7 @@ public class Translator<T> {
 			TranslationSource translationSource) {
 		configuration.getCollectionTranslator().updateCollection( source,
 				destinationCollection, translationSource,
-				property.getAnnotation( TranslateCollection.class ) );
+				property.getAnnotation( TranslateCollection.class ),
+				property.getAnnotation( MatchWith.class ) );
 	}
 }

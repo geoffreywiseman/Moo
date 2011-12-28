@@ -14,8 +14,10 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 
 import com.codiform.moo.UnsupportedTranslationException;
+import com.codiform.moo.annotation.MatchWith;
 import com.codiform.moo.annotation.TranslateCollection;
 import com.codiform.moo.configuration.Configuration;
+import com.codiform.moo.curry.Update;
 import com.codiform.moo.source.TranslationSource;
 
 /**
@@ -228,15 +230,62 @@ public class CollectionTranslator {
 	public void updateCollection(Object source,
 			Collection<Object> destinationCollection,
 			TranslationSource translationSource,
-			TranslateCollection translationClass) {
+			TranslateCollection translationClass,
+			MatchWith matcher) {
 		if( source instanceof Collection ) {
 			Collection<Object> sourceCollection = (Collection<Object>) source;
-			updateCollectionInOrder( sourceCollection, destinationCollection,
-					translationSource, translationClass );
+			if( matcher == null ) {
+				updateCollectionInOrder( sourceCollection,
+						destinationCollection,
+						translationSource, translationClass );
+			} else {
+				updateCollectionWithMatcher(
+						sourceCollection,
+						destinationCollection,
+						translationSource,
+						translationClass,
+						(Class<? extends CollectionMatcher<Object, Object>>) matcher.value() );
+			}
 		} else {
 			throw new UnsupportedTranslationException(
 					"Cannot update Collection from "
 							+ source.getClass().getName() );
+		}
+	}
+
+	private void updateCollectionWithMatcher(
+			Collection<Object> sourceCollection,
+			Collection<Object> destinationCollection,
+			TranslationSource translationSource,
+			TranslateCollection translationClass,
+			Class<? extends CollectionMatcher<Object, Object>> value) {
+		try {
+			Collection<Object> unmatched = new ArrayList<Object>(
+					destinationCollection );
+			CollectionMatcher<Object, Object> matcher = value.newInstance();
+			matcher.setTargets( destinationCollection );
+			for( Object source : sourceCollection ) {
+				Object destination = matcher.getTarget( source );
+				if( destination == null ) {
+					if( translationClass == null ) {
+						destinationCollection.add( source );
+					} else {
+						destinationCollection.add( translationSource.getTranslation(
+								source, translationClass.value() ) );
+					}
+				} else {
+					unmatched.remove( destination );
+					Update.from( source ).to( destination );
+				}
+			}
+
+			for( Object item : unmatched ) {
+				destinationCollection.remove( item );
+			}
+		} catch( InstantiationException e ) {
+			e.printStackTrace();
+		} catch( IllegalAccessException e ) {
+			e.printStackTrace();
 		}
 	}
 
