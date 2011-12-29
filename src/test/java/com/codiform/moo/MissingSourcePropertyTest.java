@@ -8,6 +8,9 @@ import org.junit.Test;
 
 import com.codiform.moo.annotation.Access;
 import com.codiform.moo.annotation.AccessMode;
+import com.codiform.moo.annotation.Ignore;
+import com.codiform.moo.annotation.Optionality;
+import com.codiform.moo.annotation.Property;
 import com.codiform.moo.configuration.Configuration;
 import com.codiform.moo.curry.Translate;
 import com.codiform.moo.curry.Update;
@@ -106,6 +109,24 @@ public class MissingSourcePropertyTest {
 		MissingSourceMethodDestination destination = new MissingSourceMethodDestination(
 				242, "To Be Updated", new Date() );
 		moo.update( source, destination );
+	}
+
+	@Test
+	public void testMooIgnoresMissingSourceForMethodMarkedOptionalOnTranslate() {
+		Source source = new Source(
+				3,
+				"Moo throws an exception if the destination method isn't found in the source on translation." );
+		Translate.to( OptionalMethodDestination.class ).from( source );
+	}
+
+	@Test
+	public void testMooIgnoresMissingSourceForMethodMarkedOptionalOnUpdateIfSourcePropertiesNotRequired() {
+		Source source = new Source(
+				4,
+				"Moo throws an exception if the destination method isn't found in the source on update." );
+		OptionalMethodDestination destination = new OptionalMethodDestination(
+				242, "To Be Updated", new Date() );
+		Update.from( source ).to( destination );
 	}
 
 	public static class Source {
@@ -209,4 +230,50 @@ public class MissingSourcePropertyTest {
 
 	}
 
+	@Access(AccessMode.METHOD)
+	public static class OptionalMethodDestination {
+
+		private Integer id;
+
+		private String name;
+
+		private Date creationDate;
+
+		public OptionalMethodDestination() {
+			// no-arg constructor for moo
+		}
+
+		public OptionalMethodDestination(int id, String name,
+				Date creationDate) {
+			this.id = id;
+			this.name = name;
+			this.creationDate = creationDate;
+		}
+
+		public String getName() {
+			return name;
+		}
+
+		public Integer getId() {
+			return id;
+		}
+
+		public Date getCreationDate() {
+			return creationDate;
+		}
+
+		@Property(optionality = Optionality.OPTIONAL)
+		public void setCreationDate(Date creationDate) {
+			this.creationDate = creationDate;
+		}
+
+		public void setId(Integer id) {
+			this.id = id;
+		}
+
+		public void setName(String name) {
+			this.name = name;
+		}
+
+	}
 }

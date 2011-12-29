@@ -264,9 +264,9 @@ public class Translator<T> {
 					translationSource );
 			return true;
 		} catch( PropertyAccessException exception ) {
-			if( configuration.isSourcePropertyRequired() ) {
+			if( property.isSourceRequired( configuration.isSourcePropertyRequired() ) ) {
 				throw new MissingSourcePropertyException(
-						property.getTranslationExpression(), 
+						property.getTranslationExpression(),
 						source.getClass(),
 						exception );
 			}

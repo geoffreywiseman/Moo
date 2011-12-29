@@ -9,6 +9,24 @@ public abstract class AbstractProperty implements Property {
 		return !getType().isPrimitive();
 	}
 
+	@Override
+	public boolean isSourceRequired(boolean defaultSetting) {
+		com.codiform.moo.annotation.Property annotation = getAnnotation(com.codiform.moo.annotation.Property.class);
+		if( annotation == null ) {
+			return defaultSetting;
+		} else {
+			switch( annotation.optionality() ) {
+			case REQUIRED:
+				return true;
+			case OPTIONAL:
+				return false;
+			default:
+				return defaultSetting;
+			}
+		}
+		
+	}
+
 	protected void checkValue(Object value) {
 		if (value == null) {
 			if (!canSupportNull()) {

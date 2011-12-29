@@ -11,4 +11,5 @@ public @interface Property {
 	String translation() default "";
 	boolean translate() default false;
 	boolean update() default false;
+	Optionality optionality() default Optionality.DEFAULT;
 }
