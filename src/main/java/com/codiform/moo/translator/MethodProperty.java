@@ -65,7 +65,7 @@ public class MethodProperty extends AbstractProperty implements Property {
 			if( getter == null )
 				getterFailure = "No get " + name + " getter.";
 		}
-		if( getter != null && getter.getReturnType().isAssignableFrom( type ) ) {
+		if( getter != null && !getter.getReturnType().isAssignableFrom( type ) ) {
 			getter = null;
 			getterFailure = "Getter return type is incompatible with " + type.getName();
 		}

@@ -15,7 +15,7 @@ import com.codiform.moo.translator.CollectionMatcher;
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.FIELD)
+@Target({ElementType.FIELD,ElementType.METHOD})
 public @interface MatchWith {
 	Class<? extends CollectionMatcher<?,?>> value();
 }

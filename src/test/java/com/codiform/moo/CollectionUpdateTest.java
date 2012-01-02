@@ -210,7 +210,7 @@ public class CollectionUpdateTest {
 
 		Value firstValue = new Value( 1, "First" );
 		Value secondValue = new Value( 2, "Second" );
-		ValueSet valueSet = new ValueSet( firstValue, secondValue );
+		FieldValueSet valueSet = new FieldValueSet( firstValue, secondValue );
 		Update.from( dtoList ).to( valueSet );
 
 		assertEquals( 2, valueSet.size() );
@@ -229,7 +229,42 @@ public class CollectionUpdateTest {
 
 		Value firstValue = new Value( 1, "First" );
 		Value secondValue = new Value( 2, "Second" );
-		ValueSet valueSet = new ValueSet( secondValue, firstValue );
+		FieldValueSet valueSet = new FieldValueSet( secondValue, firstValue );
+		Update.from( dtoList ).to( valueSet );
+
+		assertEquals( 1, valueSet.size() );
+		Iterator<Value> updated = valueSet.iterator();
+		assertIdentityAndValues( firstValue, firstDto, updated.next() );
+	}
+
+	@Test
+	public void testUpdateCollectionViaMethodWithMatcherUpdatesObjectsByMatcher() {
+		ValueDto secondDto = new ValueDto( 2, "Updated Second" );
+		ValueDto firstDto = new ValueDto( 1, "Updated First" );
+		ValueDtoList dtoList = new ValueDtoList( secondDto, firstDto );
+
+		Value firstValue = new Value( 1, "First" );
+		Value secondValue = new Value( 2, "Second" );
+		MethodValueSet valueSet = new MethodValueSet( firstValue, secondValue );
+		Update.from( dtoList ).to( valueSet );
+
+		assertEquals( 2, valueSet.size() );
+		for( Value item : valueSet ) {
+			if( item.getId() == 1 )
+				assertIdentityAndValues( firstValue, firstDto, item );
+			else
+				assertIdentityAndValues( secondValue, secondDto, item );
+		}
+	}
+
+	@Test
+	public void testUpdateCollectionViaMethodWithMatcherWillRemoveItemNotPresentInSource() {
+		ValueDto firstDto = new ValueDto( 1, "Updated First" );
+		ValueDtoList dtoList = new ValueDtoList( firstDto );
+
+		Value firstValue = new Value( 1, "First" );
+		Value secondValue = new Value( 2, "Second" );
+		MethodValueSet valueSet = new MethodValueSet( secondValue, firstValue );
 		Update.from( dtoList ).to( valueSet );
 
 		assertEquals( 1, valueSet.size() );
@@ -244,7 +279,7 @@ public class CollectionUpdateTest {
 		ValueDtoList dtoList = new ValueDtoList( secondDto, firstDto );
 
 		Value firstValue = new Value( 1, "First" );
-		ValueSet valueSet = new ValueSet( firstValue );
+		FieldValueSet valueSet = new FieldValueSet( firstValue );
 		Update.from( dtoList ).to( valueSet );
 
 		assertEquals( 2, valueSet.size() );
@@ -389,17 +424,17 @@ public class CollectionUpdateTest {
 		}
 	}
 
-	public static class ValueSet implements Iterable<Value> {
+	public static class FieldValueSet implements Iterable<Value> {
 		@MatchWith(ValueIdMatcher.class)
 		@TranslateCollection(value = Value.class)
 		@Property(update = true)
 		private Set<Value> values;
 
-		public ValueSet() {
+		public FieldValueSet() {
 			values = new HashSet<Value>();
 		}
 
-		public ValueSet(Value... values) {
+		public FieldValueSet(Value... values) {
 			this();
 			for( Value item : values ) {
 				add( item );
@@ -417,6 +452,45 @@ public class CollectionUpdateTest {
 		@Override
 		public Iterator<Value> iterator() {
 			return values.iterator();
+		}
+	}
+
+	public static class MethodValueSet implements Iterable<Value> {
+		private Set<Value> values;
+
+		public MethodValueSet() {
+			values = new HashSet<Value>();
+		}
+
+		public MethodValueSet(Value... values) {
+			this();
+			for( Value item : values ) {
+				add( item );
+			}
+		}
+
+		public int size() {
+			return values.size();
+		}
+
+		public void add(Value value) {
+			values.add( value );
+		}
+
+		@Override
+		public Iterator<Value> iterator() {
+			return values.iterator();
+		}
+		
+		public Set<Value> getValues() {
+			return values;
+		}
+		
+		@MatchWith(ValueIdMatcher.class)
+		@TranslateCollection(value = Value.class)
+		@Property(update = true)
+		public void setValues( Set<Value> values ) {
+			this.values = values;
 		}
 	}
 
