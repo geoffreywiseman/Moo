@@ -30,6 +30,7 @@ public class MethodProperty extends AbstractProperty implements Property {
 		ignore = ignoreAnnotation != null;
 
 		if( name == null ) {
+			name = setter.getName();
 			setterFailure = "Method %s (in %s) is marked with @Property but does not follow the 'set<Name>' pattern required of a method property.";
 			return;
 		}
