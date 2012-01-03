@@ -94,7 +94,7 @@ public class MethodProperty extends AbstractProperty implements Property {
 
 	/* package */boolean isProperty(AccessMode mode) {
 		if( isExplicit() && !isProperty ) {
-			throw new InvalidPropertyException( this, setterFailure );
+			throw new InvalidPropertyException( getName(), getDeclaringClass(), setterFailure );
 		}
 		switch( mode ) {
 		case METHOD:

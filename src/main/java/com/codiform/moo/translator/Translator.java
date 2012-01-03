@@ -141,7 +141,8 @@ public class Translator<T> {
 		if( value == null ) {
 			return null;
 		} else if( property instanceof CollectionProperty ) {
-			return transformCollection( value, (CollectionProperty) property, translationSource );
+			return transformCollection( value, (CollectionProperty) property,
+					translationSource );
 		} else if( value.getClass().isArray() ) {
 			return transformArray( (Object[]) value, property,
 					translationSource );
@@ -177,7 +178,8 @@ public class Translator<T> {
 		}
 	}
 
-	private Object transformCollection(Object value, CollectionProperty property,
+	private Object transformCollection(Object value,
+			CollectionProperty property,
 			TranslationSource translationSource) {
 		return configuration.getCollectionTranslator().translate( value,
 				property,
@@ -235,7 +237,8 @@ public class Translator<T> {
 					Property current = properties.get( property.getName() );
 					if( current.isExplicit() && property.isExplicit() ) {
 						throw new InvalidPropertyException(
-								property,
+								property.getName(),
+								property.getDeclaringClass(),
 								"Property %s (in %s) is explicitly defined with @Property as both field and method properties; Moo expects no more than one annotation per property name per class." );
 					} else if( !current.isExplicit() && property.isExplicit() ) {
 						properties.put( property.getName(), property );
@@ -301,7 +304,8 @@ public class Translator<T> {
 	}
 
 	private void updateCollection(Object source,
-			Collection<Object> destinationCollection, CollectionProperty property,
+			Collection<Object> destinationCollection,
+			CollectionProperty property,
 			TranslationSource translationSource) {
 		configuration.getCollectionTranslator().updateCollection( source,
 				destinationCollection, translationSource,

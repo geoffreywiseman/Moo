@@ -94,7 +94,7 @@ public class CollectionMethodProperty extends AbstractCollectionProperty {
 
 	/* package */boolean isProperty(AccessMode mode) {
 		if( isExplicit() && !isProperty ) {
-			throw new InvalidPropertyException( this, setterFailure );
+			throw new InvalidPropertyException( getName(), getDeclaringClass(), setterFailure );
 		}
 		switch( mode ) {
 		case METHOD:

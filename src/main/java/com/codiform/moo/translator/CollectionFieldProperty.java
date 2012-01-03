@@ -24,7 +24,7 @@ public class CollectionFieldProperty extends AbstractCollectionProperty {
 	}
 
 	public <A extends Annotation> A getAnnotation(Class<A> annotationClass) {
-		return field.getAnnotation(annotationClass);
+		return field.getAnnotation( annotationClass );
 	}
 
 	public String getName() {
@@ -32,8 +32,9 @@ public class CollectionFieldProperty extends AbstractCollectionProperty {
 	}
 
 	public String getTranslationExpression() {
-		com.codiform.moo.annotation.Property property = getAnnotation(com.codiform.moo.annotation.Property.class);
-		if( property == null || property.translation() == null || property.translation().length() == 0 ) {
+		com.codiform.moo.annotation.Property property = getAnnotation( com.codiform.moo.annotation.Property.class );
+		if( property == null || property.translation() == null
+				|| property.translation().length() == 0 ) {
 			return field.getName();
 		} else {
 			return property.translation();
@@ -45,53 +46,56 @@ public class CollectionFieldProperty extends AbstractCollectionProperty {
 	}
 
 	public void setValue(Object instance, Object value) {
-		checkValue(value);
+		checkValue( value );
 		try {
-			if (!field.isAccessible())
-				field.setAccessible(true);
-			field.set(instance, value);
-		} catch (IllegalArgumentException exception) {
+			if( !field.isAccessible() )
+				field.setAccessible( true );
+			field.set( instance, value );
+		} catch( IllegalArgumentException exception ) {
 			throw new TranslationException(
 					"Cannot set value for field property " + getName(),
-					exception);
-		} catch (IllegalAccessException exception) {
+					exception );
+		} catch( IllegalAccessException exception ) {
 			throw new TranslationException(
 					"Cannot set value for field property " + getName(),
-					exception);
+					exception );
 		}
 	}
 
 	/* package */boolean isProperty(AccessMode mode) {
-		switch (mode) {
+		switch( mode ) {
 		case FIELD:
-			if (explicit) {
-				return isAcceptableField(true);
+			if( explicit ) {
+				return isAcceptableField( true );
 			} else {
-				return isAcceptableField(false);
+				return isAcceptableField( false );
 			}
 		case METHOD:
-			return getAnnotation(com.codiform.moo.annotation.Property.class) != null && isAcceptableField(true);
+			return getAnnotation( com.codiform.moo.annotation.Property.class ) != null
+					&& isAcceptableField( true );
 		default:
 			throw new IllegalStateException(
-					"I have no idea how to deal with access mode: " + mode);
+					"I have no idea how to deal with access mode: " + mode );
 		}
 	}
 
 	private boolean isAcceptableField(boolean throwException) {
 		int modifiers = field.getModifiers();
-		if (Modifier.isStatic(modifiers)) {
-			if (throwException) {
+		if( Modifier.isStatic( modifiers ) ) {
+			if( throwException ) {
 				throw new InvalidPropertyException(
-						this,
-						"%s (%s) is annotated with @Property, but is static.  Moo does not support static fields as properties.");
+						getName(),
+						getDeclaringClass(),
+						"%s (%s) is annotated with @Property, but is static.  Moo does not support static fields as properties." );
 			} else {
 				return false;
 			}
-		} else if (Modifier.isFinal(modifiers)) {
-			if (throwException) {
+		} else if( Modifier.isFinal( modifiers ) ) {
+			if( throwException ) {
 				throw new InvalidPropertyException(
-						this,
-						"%s (%s) is annotated with @Property, but is final.  Moo cannot write to final fields as properties.");
+						getName(),
+						getDeclaringClass(),
+						"%s (%s) is annotated with @Property, but is final.  Moo cannot write to final fields as properties." );
 			} else {
 				return false;
 			}
@@ -106,7 +110,7 @@ public class CollectionFieldProperty extends AbstractCollectionProperty {
 	public Class<?> getDeclaringClass() {
 		return field.getDeclaringClass();
 	}
-	
+
 	public boolean isExplicit() {
 		return explicit;
 	}
@@ -122,14 +126,16 @@ public class CollectionFieldProperty extends AbstractCollectionProperty {
 	}
 
 	@Override
-	public Object getValue( Object instance ) {
+	public Object getValue(Object instance) {
 		try {
 			field.setAccessible( true );
 			return field.get( instance );
 		} catch( IllegalArgumentException exception ) {
-			throw new TranslationException( "Cannot get value for property", exception );
+			throw new TranslationException( "Cannot get value for property",
+					exception );
 		} catch( IllegalAccessException exception ) {
-			throw new TranslationException( "Cannot access getter property", exception );
+			throw new TranslationException( "Cannot access getter property",
+					exception );
 		}
 	}
 

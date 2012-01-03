@@ -10,16 +10,21 @@ public class InvalidPropertyException extends TranslationException {
 
 	private static final long serialVersionUID = 2394094419586942159L;
 
-	private Property property;
+	private String propertyName;
+	private Class<?> declaringClass;
 
-	public InvalidPropertyException(Property property, String message) {
-		super(String.format(message, property.getName(), property
-				.getDeclaringClass().getName()));
-		this.property = property;
+	public InvalidPropertyException(String propertyName, Class<?> declaringClass, String message) {
+		super(String.format(message, propertyName, declaringClass.getName()));
+		this.propertyName = propertyName;
+		this.declaringClass = declaringClass;
 	}
 
-	public Property getProperty() {
-		return property;
+	public String getPropertyName() {
+		return propertyName;
+	}
+	
+	public Class<?> getDeclaringClass() {
+		return declaringClass;
 	}
 
 }
