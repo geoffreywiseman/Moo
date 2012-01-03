@@ -13,8 +13,8 @@ import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
+import com.codiform.moo.TranslationException;
 import com.codiform.moo.UnsupportedTranslationException;
-import com.codiform.moo.annotation.MatchWith;
 import com.codiform.moo.annotation.TranslateCollection;
 import com.codiform.moo.configuration.Configuration;
 import com.codiform.moo.curry.Update;
@@ -62,61 +62,64 @@ public class CollectionTranslator {
 	 *            the translation cache of previously-translated elements
 	 * @return the translated collection
 	 */
-	public Object translate(Object value, TranslateCollection annotation,
+	public Object translate(Object value, CollectionProperty property,
 			TranslationSource cache) {
 		if( value instanceof SortedSet<?> ) {
-			return copySortedSet( (SortedSet<?>) value, annotation, cache );
+			return copySortedSet( (SortedSet<?>) value, property, cache );
 		} else if( value instanceof Set<?> ) {
-			return copySet( (Set<?>) value, annotation, cache );
+			return copySet( (Set<?>) value, property, cache );
 		} else if( value instanceof SortedMap ) {
-			return copySortedMap( (SortedMap<?, ?>) value, annotation );
+			return copySortedMap( (SortedMap<?, ?>) value, property );
 		} else if( value instanceof Map ) {
-			return copyMap( (Map<?, ?>) value, annotation );
+			return copyMap( (Map<?, ?>) value, property );
 		} else if( value instanceof List ) {
-			return (List<?>) copyList( (List<?>) value, annotation, cache );
+			return (List<?>) copyList( (List<?>) value, property, cache );
 		} else {
-			return copyCollection( (Collection<?>) value, annotation, cache );
+			return copyCollection( (Collection<?>) value, property, cache );
 		}
 	}
 
 	private Collection<?> copyCollection(Collection<?> value,
-			TranslateCollection annotation, TranslationSource translationSource) {
-		if( annotation == null ) {
-			return configuration.isPerformingDefensiveCopies() ? new ArrayList<Object>(
-					value )
-					: value;
+			CollectionProperty property, TranslationSource translationSource) {
+		if( property.shouldItemsBeTranslated() ) {
+			return translationSource.getEachTranslation( value,
+					property.getItemTranslationType() );
+		} else if( configuration.isPerformingDefensiveCopies() ) {
+			return new ArrayList<Object>(
+					value );
 		} else {
-			return translationSource.getEachTranslation( value, annotation
-					.value() );
+			return value;
 		}
 	}
 
-	private List<?> copyList(List<?> value, TranslateCollection annotation,
+	private List<?> copyList(List<?> value, CollectionProperty property,
 			TranslationSource translationSource) {
-		if( annotation == null ) {
-			return configuration.isPerformingDefensiveCopies() ? new ArrayList<Object>(
-					value )
-					: value;
+		if( property.shouldItemsBeTranslated() ) {
+			return translationSource.getEachTranslation( value,
+					property.getItemTranslationType() );
+		} else if( configuration.isPerformingDefensiveCopies() ) {
+			return new ArrayList<Object>(
+					value );
 		} else {
-			return translationSource.getEachTranslation( value, annotation
-					.value() );
+			return value;
 		}
 	}
 
-	private Map<?, ?> copyMap(Map<?, ?> value, TranslateCollection annotation) {
-		if( annotation == null ) {
-			return configuration.isPerformingDefensiveCopies() ? new HashMap<Object, Object>(
-					value )
-					: value;
-		} else {
+	private Map<?, ?> copyMap(Map<?, ?> values, CollectionProperty property) {
+		if( property.shouldItemsBeTranslated() ) {
 			throw new UnsupportedTranslationException(
 					"Support for translated maps not yet built." );
+		} else if( configuration.isPerformingDefensiveCopies() ) {
+			return new HashMap<Object, Object>(
+					values );
+		} else {
+			return values;
 		}
 	}
 
 	private SortedMap<?, ?> copySortedMap(SortedMap<?, ?> value,
-			TranslateCollection annotation) {
-		if( annotation == null ) {
+			CollectionProperty property) {
+		if( !property.shouldItemsBeTranslated() ) {
 			if( configuration.isPerformingDefensiveCopies() ) {
 				return defensivelyCopySortedMap( value );
 			} else {
@@ -135,28 +138,28 @@ public class CollectionTranslator {
 		return map;
 	}
 
-	private Set<?> copySet(Set<?> value, TranslateCollection annotation,
+	private Set<?> copySet(Set<?> values, CollectionProperty property,
 			TranslationSource translationSource) {
-		if( annotation == null ) {
-			return configuration.isPerformingDefensiveCopies() ? new HashSet<Object>(
-					value )
-					: value;
+		if( property.shouldItemsBeTranslated() ) {
+			return translationSource.getEachTranslation( values, property
+					.getItemTranslationType() );
+		} else if( configuration.isPerformingDefensiveCopies() ) {
+			return new HashSet<Object>( values );
 		} else {
-			return translationSource.getEachTranslation( value, annotation
-					.value() );
+			return values;
 		}
 	}
 
 	private SortedSet<?> copySortedSet(SortedSet<?> original,
-			TranslateCollection annotation, TranslationSource translationSource) {
-		if( annotation == null ) {
+			CollectionProperty property, TranslationSource translationSource) {
+		if( !property.shouldItemsBeTranslated() ) {
 			if( configuration.isPerformingDefensiveCopies() ) {
 				return defensivelyCopySortedSet( original );
 			} else {
 				return original;
 			}
 		} else if( original.comparator() == null ) {
-			Class<?> annotationValue = annotation.value();
+			Class<?> annotationValue = property.getItemTranslationType();
 			if( Comparable.class.isAssignableFrom( annotationValue ) ) {
 				return copyAndTranslateSortedSet( original, translationSource,
 						annotationValue );
@@ -189,11 +192,11 @@ public class CollectionTranslator {
 	@SuppressWarnings("unchecked")
 	public void updateMap(Object source, Map<Object, Object> destinationMap,
 			TranslationSource translationSource,
-			TranslateCollection translationClass) {
+			CollectionProperty property) {
 		if( source instanceof Map ) {
 			Map<Object, Object> sourceMap = (Map<Object, Object>) source;
 			updateMapByKey( sourceMap, destinationMap,
-					translationSource, translationClass );
+					translationSource, property );
 		} else {
 			throw new UnsupportedTranslationException(
 					"Cannot update Map from "
@@ -204,16 +207,17 @@ public class CollectionTranslator {
 	private void updateMapByKey(Map<Object, Object> sourceMap,
 			Map<Object, Object> destinationMap,
 			TranslationSource translationSource,
-			TranslateCollection translationClass) {
+			CollectionProperty property) {
 		for( Map.Entry<Object, Object> item : sourceMap.entrySet() ) {
 			Object destinationValue = destinationMap.get( item.getKey() );
 			Object sourceValue = item.getValue();
 			if( destinationValue != null && sourceValue != null ) {
 				translationSource.update( sourceValue, destinationValue );
-			} else if( translationClass != null && sourceValue != null ) {
+			} else if( property.getItemTranslationType() != null
+					&& sourceValue != null ) {
 				destinationMap.put( item.getKey(),
 						translationSource.getTranslation( sourceValue,
-								translationClass.value() ) );
+								property.getItemTranslationType() ) );
 			} else {
 				destinationMap.put( item.getKey(), sourceValue );
 			}
@@ -230,21 +234,19 @@ public class CollectionTranslator {
 	public void updateCollection(Object source,
 			Collection<Object> destinationCollection,
 			TranslationSource translationSource,
-			TranslateCollection translationClass,
-			MatchWith matcher) {
+			CollectionProperty property) {
 		if( source instanceof Collection ) {
 			Collection<Object> sourceCollection = (Collection<Object>) source;
-			if( matcher == null ) {
-				updateCollectionInOrder( sourceCollection,
-						destinationCollection,
-						translationSource, translationClass );
-			} else {
+			if( property.hasMatcher() ) {
 				updateCollectionWithMatcher(
 						sourceCollection,
 						destinationCollection,
 						translationSource,
-						translationClass,
-						(Class<? extends CollectionMatcher<Object, Object>>) matcher.value() );
+						property );
+			} else {
+				updateCollectionInOrder( sourceCollection,
+						destinationCollection,
+						translationSource, property );
 			}
 		} else {
 			throw new UnsupportedTranslationException(
@@ -257,42 +259,43 @@ public class CollectionTranslator {
 			Collection<Object> sourceCollection,
 			Collection<Object> destinationCollection,
 			TranslationSource translationSource,
-			TranslateCollection translationClass,
-			Class<? extends CollectionMatcher<Object, Object>> value) {
+			CollectionProperty property) {
+		Class<CollectionMatcher<Object, Object>> matcherClass = property.getMatcherClass();
 		try {
 			Collection<Object> unmatched = new ArrayList<Object>(
 					destinationCollection );
-			CollectionMatcher<Object, Object> matcher = value.newInstance();
+			CollectionMatcher<Object, Object> matcher = matcherClass.newInstance();
 			matcher.setTargets( destinationCollection );
 			for( Object source : sourceCollection ) {
 				Object destination = matcher.getTarget( source );
 				if( destination == null ) {
-					if( translationClass == null ) {
-						destinationCollection.add( source );
-					} else {
+					if( property.shouldItemsBeTranslated() ) {
 						destinationCollection.add( translationSource.getTranslation(
-								source, translationClass.value() ) );
+								source, property.getItemTranslationType() ) );
+					} else {
+						destinationCollection.add( source );
 					}
 				} else {
 					unmatched.remove( destination );
 					Update.from( source ).to( destination );
 				}
 			}
-
 			for( Object item : unmatched ) {
 				destinationCollection.remove( item );
 			}
 		} catch( InstantiationException e ) {
-			e.printStackTrace();
+			throw new TranslationException( "Could not create matcher: "
+					+ matcherClass, e );
 		} catch( IllegalAccessException e ) {
-			e.printStackTrace();
+			throw new TranslationException( "Could not create matcher: "
+					+ matcherClass, e );
 		}
 	}
 
 	private void updateCollectionInOrder(Collection<Object> sourceCollection,
 			Collection<Object> destinationCollection,
 			TranslationSource translationSource,
-			TranslateCollection translationClass) {
+			CollectionProperty property) {
 		Iterator<Object> source = sourceCollection.iterator();
 		Iterator<Object> destination = destinationCollection.iterator();
 
@@ -302,10 +305,10 @@ public class CollectionTranslator {
 
 		if( source.hasNext() && !destination.hasNext() ) {
 			while( source.hasNext() ) {
-				if( translationClass != null ) {
+				if( property.shouldItemsBeTranslated() ) {
 					Object translation = translationSource.getTranslation(
 							source.next(),
-							translationClass.value() );
+							property.getItemTranslationType() );
 					destinationCollection.add( translation );
 				} else {
 					destinationCollection.add( source.next() );

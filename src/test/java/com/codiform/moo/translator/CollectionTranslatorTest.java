@@ -1,6 +1,9 @@
 package com.codiform.moo.translator;
 
-import java.lang.annotation.Annotation;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -13,7 +16,6 @@ import java.util.TreeSet;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.codiform.moo.annotation.TranslateCollection;
 import com.codiform.moo.configuration.Configuration;
 import com.codiform.moo.session.TranslationSession;
 import com.codiform.moo.source.TranslationSource;
@@ -26,6 +28,8 @@ public class CollectionTranslatorTest {
 			configuration);
 
 	private TranslationSource session = new TranslationSession(configuration);
+	
+	private CollectionProperty property = mock(CollectionProperty.class);
 
 	@SuppressWarnings("unchecked")
 	@Test
@@ -36,7 +40,7 @@ public class CollectionTranslatorTest {
 		rhyme.add("buckle my shoe");
 
 		Set<String> translated = (Set<String>) translator.translate(rhyme,
-				null, session);
+				property, session);
 
 		Assert.assertNotNull(translated);
 		Assert.assertEquals(rhyme, translated);
@@ -54,7 +58,7 @@ public class CollectionTranslatorTest {
 		assertOrder(rhyme, "Ay", "Pee", "Zed");
 
 		SortedSet<String> translated = (SortedSet<String>) translator
-				.translate(rhyme, null, session);
+				.translate(rhyme, property, session);
 
 		Assert.assertNotNull(translated);
 		Assert.assertEquals(rhyme, translated);
@@ -85,7 +89,7 @@ public class CollectionTranslatorTest {
 		configuration.setPerformingDefensiveCopies(false);
 
 		List<String> translated = (List<String>) translator.translate(rhyme,
-				null, session);
+				property, session);
 
 		Assert.assertNotNull(translated);
 		Assert.assertEquals(rhyme, translated);
@@ -99,19 +103,12 @@ public class CollectionTranslatorTest {
 		rhyme.add(new Foo("this"));
 		rhyme.add(new Foo("that"));
 
-		TranslateCollection annotation = new TranslateCollection() {
-
-			public Class<? extends Annotation> annotationType() {
-				return TranslateCollection.class;
-			}
-
-			public Class<?> value() {
-				return Bar.class;
-			}
-		};
-
+		when( property.shouldItemsBeTranslated() ).thenReturn( true );
+		// Mockito doesn't love Class<?> return types.
+		doReturn( Bar.class ).when( property ).getItemTranslationType();
+		
 		Collection<Bar> translated = (Collection<Bar>) translator.translate(
-				rhyme, annotation, session);
+				rhyme, property, session);
 
 		Assert.assertEquals(2, translated.size());
 		Iterator<Bar> iterator = translated.iterator();

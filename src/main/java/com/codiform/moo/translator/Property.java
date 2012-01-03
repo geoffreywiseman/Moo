@@ -1,6 +1,6 @@
 package com.codiform.moo.translator;
 
-import java.lang.annotation.Annotation;
+
 
 /**
  * Represents a destination into which a value can be stored.
@@ -52,18 +52,6 @@ public interface Property {
 	 * @return boolean if the property should be translated
 	 */
 	boolean shouldBeTranslated();
-
-	/**
-	 * Gets the annotation of a specified type applied to this property, if
-	 * present.
-	 * 
-	 * @param <A>
-	 *            links the requested annotation class to the return value
-	 * @param annotationClass
-	 *            the class of the annotation requested
-	 * @return the annotation, if present, and null otherwise
-	 */
-	<A extends Annotation> A getAnnotation(Class<A> annotationClass);
 
 	/**
 	 * Indicates if the property supports a null value (e.g. can store and
@@ -131,5 +119,13 @@ public interface Property {
 	 *         optional
 	 */
 	boolean isSourceRequired(boolean defaultSetting);
+
+	/**
+	 * Indicates if the property is the specified type or a subtype of the specified type.
+	 * 
+	 * @param type the type against which the property should be compared
+	 * @return true if the property is of the type or a subtype
+	 */
+	boolean isTypeOrSubtype(Class<?> type);
 
 }

@@ -20,8 +20,6 @@ import com.codiform.moo.NothingToTranslateException;
 import com.codiform.moo.TranslationException;
 import com.codiform.moo.annotation.Access;
 import com.codiform.moo.annotation.AccessMode;
-import com.codiform.moo.annotation.MatchWith;
-import com.codiform.moo.annotation.TranslateCollection;
 import com.codiform.moo.configuration.Configuration;
 import com.codiform.moo.source.TranslationSource;
 
@@ -142,12 +140,8 @@ public class Translator<T> {
 			TranslationSource translationSource) {
 		if( value == null ) {
 			return null;
-		} else if( value instanceof Collection || value instanceof Map ) {
-			if( property.shouldBeTranslated() ) {
-				throw new TranslationException(
-						"Cannot use @Translate on a collection (cannot determine internal type due to erasure); use @TranslateCollection instead." );
-			}
-			return transformCollection( value, property, translationSource );
+		} else if( property instanceof CollectionProperty ) {
+			return transformCollection( value, (CollectionProperty) property, translationSource );
 		} else if( value.getClass().isArray() ) {
 			return transformArray( (Object[]) value, property,
 					translationSource );
@@ -183,10 +177,10 @@ public class Translator<T> {
 		}
 	}
 
-	private Object transformCollection(Object value, Property property,
+	private Object transformCollection(Object value, CollectionProperty property,
 			TranslationSource translationSource) {
 		return configuration.getCollectionTranslator().translate( value,
-				property.getAnnotation( TranslateCollection.class ),
+				property,
 				translationSource );
 	}
 
@@ -229,14 +223,14 @@ public class Translator<T> {
 		Access access = clazz.getAnnotation( Access.class );
 		AccessMode mode = access == null ? AccessMode.FIELD : access.value();
 		for( Field item : clazz.getDeclaredFields() ) {
-			FieldProperty property = new FieldProperty( item );
-			if( property.isProperty( mode ) ) {
+			Property property = PropertyFactory.createProperty( item, mode );
+			if( property != null ) {
 				properties.put( property.getName(), property );
 			}
 		}
 		for( Method item : clazz.getDeclaredMethods() ) {
-			MethodProperty property = new MethodProperty( item );
-			if( property.isProperty( mode ) ) {
+			Property property = PropertyFactory.createProperty( item, mode );
+			if( property != null ) {
 				if( properties.containsKey( property.getName() ) ) {
 					Property current = properties.get( property.getName() );
 					if( current.isExplicit() && property.isExplicit() ) {
@@ -281,12 +275,12 @@ public class Translator<T> {
 				: null;
 		if( property.shouldUpdate() && value != null
 				&& destinationValue != null ) {
-			if( Collection.class.isAssignableFrom( property.getType() ) ) {
+			if( property.isTypeOrSubtype( Collection.class ) ) {
 				updateCollection( value, (Collection<Object>) destinationValue,
-						property, translationSource );
-			} else if( Map.class.isAssignableFrom( property.getType() ) ) {
+						(CollectionProperty) property, translationSource );
+			} else if( property.isTypeOrSubtype( Map.class ) ) {
 				updateMap( value, (Map<Object, Object>) destinationValue,
-						property, translationSource );
+						(CollectionProperty) property, translationSource );
 			} else {
 				translationSource.update( value, destinationValue );
 			}
@@ -298,20 +292,19 @@ public class Translator<T> {
 	}
 
 	private void updateMap(Object source, Map<Object, Object> destinationMap,
-			Property property,
+			CollectionProperty property,
 			TranslationSource translationSource) {
 		configuration.getCollectionTranslator().updateMap( source,
 				destinationMap, translationSource,
-				property.getAnnotation( TranslateCollection.class ) );
+				property );
 
 	}
 
 	private void updateCollection(Object source,
-			Collection<Object> destinationCollection, Property property,
+			Collection<Object> destinationCollection, CollectionProperty property,
 			TranslationSource translationSource) {
 		configuration.getCollectionTranslator().updateCollection( source,
 				destinationCollection, translationSource,
-				property.getAnnotation( TranslateCollection.class ),
-				property.getAnnotation( MatchWith.class ) );
+				property );
 	}
 }
