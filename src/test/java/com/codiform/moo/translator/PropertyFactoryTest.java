@@ -1,7 +1,7 @@
 package com.codiform.moo.translator;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
@@ -16,32 +16,71 @@ import com.codiform.moo.annotation.AccessMode;
 public class PropertyFactoryTest {
 
 	@Test
-	public void testCreatesFieldProperty() throws NoSuchFieldException {
+	public void testImplicitFieldCreatesFieldPropertyIfAccessModeIsField()
+			throws NoSuchFieldException {
 		Property property = PropertyFactory.createProperty(
-				getField( "validField" ), AccessMode.FIELD );
-		assertEquals( "validField", property.getName() );
-		assertFalse( property.isExplicit() );
-		assertFalse( property.isIgnored() );
-		assertSame( int.class, property.getType() );
+				getField( "implicitField" ), AccessMode.FIELD );
+		assertProperty( "implicitField", false, false, int.class, property );
 	}
 
 	@Test
-	public void testInvalidPropertyExceptionIfFieldIsStatic()
+	public void testImplicitFieldIgnoredIfAccessModeIsMethod()
+			throws NoSuchFieldException {
+		Property property = PropertyFactory.createProperty(
+				getField( "implicitField" ), AccessMode.METHOD );
+		assertNull( property );
+	}
+
+	@Test
+	public void testExplicitFieldCreatesFieldPropertyIfAccessModeIsField()
+			throws NoSuchFieldException {
+		Property property = PropertyFactory.createProperty(
+				getField( "explicitField" ), AccessMode.FIELD );
+		assertProperty( "explicitField", true, false, long.class, property );
+	}
+
+	@Test
+	public void testExplicitFieldCreatesFieldPropertyIfAccessModeIsMethod()
+			throws NoSuchFieldException {
+		Property property = PropertyFactory.createProperty(
+				getField( "explicitField" ), AccessMode.METHOD );
+		assertProperty( "explicitField", true, false, long.class, property );
+	}
+
+	private void assertProperty(String name, boolean explicit, boolean ignored,
+			Class<?> type, Property property) {
+		assertEquals( name, property.getName() );
+		assertEquals( explicit, property.isExplicit() );
+		assertEquals( ignored, property.isIgnored() );
+		assertSame( type, property.getType() );
+
+	}
+
+	@Test
+	public void testInvalidPropertyExceptionIfExplicitFieldIsStatic()
 			throws NoSuchFieldException {
 		try {
 			Property property = PropertyFactory.createProperty(
-					getField( "staticField" ), AccessMode.FIELD );
+					getField( "explicitStaticField" ), AccessMode.FIELD );
 			fail( "Should not have created a property for a static field: "
 					+ property );
 		} catch( InvalidPropertyException ipe ) {
-			assertEquals( "staticField", ipe.getPropertyName() );
+			assertEquals( "explicitStaticField", ipe.getPropertyName() );
 			assertThat( ipe.getMessage(),
 					org.hamcrest.Matchers.containsString( "static field" ) );
 		}
 	}
 
 	@Test
-	public void testInvalidPropertyExceptionIfFieldIsFinal()
+	public void testNoPropertyOrExceptionIfImplicitFieldIsStatic()
+			throws NoSuchFieldException {
+		Property property = PropertyFactory.createProperty(
+				getField( "implicitStaticField" ), AccessMode.FIELD );
+		assertNull( property );
+	}
+
+	@Test
+	public void testInvalidPropertyExceptionIfExplicitFieldIsFinal()
 			throws NoSuchFieldException {
 		try {
 			Property property = PropertyFactory.createProperty(
@@ -63,11 +102,16 @@ public class PropertyFactoryTest {
 	private static class PropertyContainer {
 
 		@com.codiform.moo.annotation.Property
-		private static boolean staticField;
+		private static boolean explicitStaticField;
+
+		private static boolean implicitStaticField;
 
 		@com.codiform.moo.annotation.Property
 		private final String finalField = "final";
 
-		private int validField;
+		private int implicitField;
+		
+		@com.codiform.moo.annotation.Property
+		private long explicitField;
 	}
 }
