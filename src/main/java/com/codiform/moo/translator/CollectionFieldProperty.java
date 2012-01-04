@@ -2,25 +2,26 @@ package com.codiform.moo.translator;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 
-import com.codiform.moo.InvalidPropertyException;
 import com.codiform.moo.TranslationException;
-import com.codiform.moo.annotation.AccessMode;
-import com.codiform.moo.annotation.Ignore;
 
 public class CollectionFieldProperty extends AbstractCollectionProperty {
 
 	private Field field;
+	private String name;
+	private String expression;
 	private boolean explicit;
 	private boolean ignore;
 
-	public CollectionFieldProperty(Field field) {
+	public CollectionFieldProperty(Field field, String name, String expression, boolean explicit, boolean ignore) {
 		this.field = field;
-		com.codiform.moo.annotation.Property propertyAnnotation = getAnnotation( com.codiform.moo.annotation.Property.class );
-		Ignore ignoreAnnotation = getAnnotation( Ignore.class );
-		explicit = propertyAnnotation != null || ignoreAnnotation != null;
-		ignore = ignoreAnnotation != null;
+		this.name = name;
+		this.expression = expression;
+		this.explicit = explicit;
+		this.ignore = ignore;
+		
+		if( !field.isAccessible() )
+			field.setAccessible( true );
 	}
 
 	public <A extends Annotation> A getAnnotation(Class<A> annotationClass) {
@@ -28,17 +29,11 @@ public class CollectionFieldProperty extends AbstractCollectionProperty {
 	}
 
 	public String getName() {
-		return field.getName();
+		return name;
 	}
 
 	public String getTranslationExpression() {
-		com.codiform.moo.annotation.Property property = getAnnotation( com.codiform.moo.annotation.Property.class );
-		if( property == null || property.translation() == null
-				|| property.translation().length() == 0 ) {
-			return field.getName();
-		} else {
-			return property.translation();
-		}
+		return expression;
 	}
 
 	public Class<?> getType() {
@@ -48,8 +43,6 @@ public class CollectionFieldProperty extends AbstractCollectionProperty {
 	public void setValue(Object instance, Object value) {
 		checkValue( value );
 		try {
-			if( !field.isAccessible() )
-				field.setAccessible( true );
 			field.set( instance, value );
 		} catch( IllegalArgumentException exception ) {
 			throw new TranslationException(
@@ -62,49 +55,8 @@ public class CollectionFieldProperty extends AbstractCollectionProperty {
 		}
 	}
 
-	/* package */boolean isProperty(AccessMode mode) {
-		switch( mode ) {
-		case FIELD:
-			if( explicit ) {
-				return isAcceptableField( true );
-			} else {
-				return isAcceptableField( false );
-			}
-		case METHOD:
-			return getAnnotation( com.codiform.moo.annotation.Property.class ) != null
-					&& isAcceptableField( true );
-		default:
-			throw new IllegalStateException(
-					"I have no idea how to deal with access mode: " + mode );
-		}
-	}
-
-	private boolean isAcceptableField(boolean throwException) {
-		int modifiers = field.getModifiers();
-		if( Modifier.isStatic( modifiers ) ) {
-			if( throwException ) {
-				throw new InvalidPropertyException(
-						getName(),
-						getDeclaringClass(),
-						"%s (%s) is annotated with @Property, but is static.  Moo does not support static fields as properties." );
-			} else {
-				return false;
-			}
-		} else if( Modifier.isFinal( modifiers ) ) {
-			if( throwException ) {
-				throw new InvalidPropertyException(
-						getName(),
-						getDeclaringClass(),
-						"%s (%s) is annotated with @Property, but is final.  Moo cannot write to final fields as properties." );
-			} else {
-				return false;
-			}
-		} else
-			return true;
-	}
-
 	public boolean canSupportNull() {
-		return !getType().isPrimitive();
+		return true;
 	}
 
 	public Class<?> getDeclaringClass() {
@@ -128,7 +80,6 @@ public class CollectionFieldProperty extends AbstractCollectionProperty {
 	@Override
 	public Object getValue(Object instance) {
 		try {
-			field.setAccessible( true );
 			return field.get( instance );
 		} catch( IllegalArgumentException exception ) {
 			throw new TranslationException( "Cannot get value for property",

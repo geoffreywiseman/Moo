@@ -14,7 +14,8 @@ public class FieldProperty extends AbstractProperty {
 	private boolean ignore;
 	private boolean supportsNull;
 
-	public FieldProperty(Field field, String name, String expression, boolean explicit,
+	public FieldProperty(Field field, String name, String expression,
+			boolean explicit,
 			boolean ignore) {
 		this.field = field;
 		this.name = name;
@@ -84,7 +85,6 @@ public class FieldProperty extends AbstractProperty {
 	@Override
 	public Object getValue(Object instance) {
 		try {
-			field.setAccessible( true );
 			return field.get( instance );
 		} catch( IllegalArgumentException exception ) {
 			throw new TranslationException( "Cannot get value for property",

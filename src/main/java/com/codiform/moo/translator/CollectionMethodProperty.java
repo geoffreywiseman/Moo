@@ -3,71 +3,42 @@ package com.codiform.moo.translator;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 
-import com.codiform.moo.InvalidPropertyException;
 import com.codiform.moo.TranslationException;
-import com.codiform.moo.annotation.AccessMode;
-import com.codiform.moo.annotation.Ignore;
 
 public class CollectionMethodProperty extends AbstractCollectionProperty {
 
 	private Method getter, setter;
-	private boolean isProperty = false;
 	private Class<?> type;
-	private String name;
-	private String setterFailure, getterFailure;
+	private String name, expression;
+	private String getterFailure;
 	private boolean explicit;
 	private boolean ignore;
 
-	public CollectionMethodProperty(Method setter) {
+	public CollectionMethodProperty(Method setter, String name,
+			String expression, boolean explicit, boolean ignore) {
 		this.setter = setter;
-		name = convertName( setter.getName() );
+		this.name = name;
+		this.expression = expression;
+		this.explicit = explicit;
+		this.ignore = ignore;
 
-		com.codiform.moo.annotation.Property propertyAnnotation = getAnnotation( com.codiform.moo.annotation.Property.class );
-		Ignore ignoreAnnotation = getAnnotation( Ignore.class );
-		explicit = propertyAnnotation != null || ignoreAnnotation != null;
-		ignore = ignoreAnnotation != null;
+		type = setter.getParameterTypes()[0];
 
-		if( name == null ) {
-			name = setter.getName();
-			setterFailure = "Method %s (in %s) is marked with @Property but does not follow the 'set<Name>' pattern required of a method property.";
-			return;
-		}
+		if( !setter.isAccessible() )
+			setter.setAccessible( true );
 
-		if( setter.getParameterTypes().length != 1 ) {
-			setterFailure = "Method %s (in %s) is marked with @Property but is not a single-parameter method.";
-			return;
-		} else
-			type = setter.getParameterTypes()[0];
-
-		int modifiers = setter.getModifiers();
-		if( Modifier.isStatic( modifiers ) ) {
-			setterFailure = "Method %s (in %s) is marked with @Property but is static; Moo doesn't support static methods as properties.";
-			return;
-		}
-
-		// past all guards
 		findGetter( setter.getDeclaringClass() );
-		isProperty = true;
 	}
 
 	private void findGetter(Class<?> searchClass) {
-		if( type == Boolean.class || type == boolean.class ) {
-			getter = findGetter( searchClass, "is" );
-			if( getter == null )
-				getter = findGetter( searchClass, "get" );
-			if( getter == null )
-				getterFailure = "No get/is + " + name + " getter.";
-		}
-		else if( getter == null ) {
-			getter = findGetter( searchClass, "get" );
-			if( getter == null )
-				getterFailure = "No get " + name + " getter.";
-		}
+		getter = findGetter( searchClass, "get" );
+		if( getter == null )
+			getterFailure = "No get " + name + " getter.";
 		if( getter != null && !getter.getReturnType().isAssignableFrom( type ) ) {
 			getter = null;
-			getterFailure = "Getter return type is incompatible with " + type.getName();
+			getterFailure = "Getter return type is incompatible with "
+					+ type.getName();
 		}
 	}
 
@@ -92,30 +63,6 @@ public class CollectionMethodProperty extends AbstractCollectionProperty {
 		return getter;
 	}
 
-	/* package */boolean isProperty(AccessMode mode) {
-		if( isExplicit() && !isProperty ) {
-			throw new InvalidPropertyException( getName(), getDeclaringClass(), setterFailure );
-		}
-		switch( mode ) {
-		case METHOD:
-			return isProperty;
-		case FIELD:
-			return isExplicit() && isProperty;
-		default:
-			throw new IllegalStateException(
-					"I have no idea how to deal with access mode: " + mode );
-		}
-	}
-
-	private String convertName(String before) {
-		if( before.length() > 3 && before.startsWith( "set" ) ) {
-			return Character.toLowerCase( before.charAt( 3 ) )
-					+ before.substring( 4 );
-		} else {
-			return null;
-		}
-	}
-
 	public <A extends Annotation> A getAnnotation(Class<A> annotationClass) {
 		return setter.getAnnotation( annotationClass );
 	}
@@ -125,13 +72,7 @@ public class CollectionMethodProperty extends AbstractCollectionProperty {
 	}
 
 	public String getTranslationExpression() {
-		com.codiform.moo.annotation.Property annotation = getAnnotation( com.codiform.moo.annotation.Property.class );
-		if( annotation != null && annotation.translation() != null
-				&& annotation.translation().length() > 0 ) {
-			return annotation.translation();
-		} else {
-			return name;
-		}
+		return expression;
 	}
 
 	public Class<?> getType() {
@@ -141,8 +82,6 @@ public class CollectionMethodProperty extends AbstractCollectionProperty {
 	public void setValue(Object instance, Object value) {
 		checkValue( value );
 		try {
-			if( !setter.isAccessible() )
-				setter.setAccessible( true );
 			setter.invoke( instance, value );
 		} catch( IllegalArgumentException exception ) {
 			throw new TranslationException(
@@ -179,17 +118,21 @@ public class CollectionMethodProperty extends AbstractCollectionProperty {
 	@Override
 	public Object getValue(Object instance) {
 		if( getter == null ) {
-			throw new UnsupportedOperationException( "Cannot get value: " + getterFailure );
+			throw new UnsupportedOperationException( "Cannot get value: "
+					+ getterFailure );
 		} else {
 			try {
 				getter.setAccessible( true );
 				return getter.invoke( instance );
 			} catch( IllegalArgumentException exception ) {
-				throw new TranslationException( "Illegal argument to getter", exception );
+				throw new TranslationException( "Illegal argument to getter",
+						exception );
 			} catch( IllegalAccessException exception ) {
-				throw new TranslationException( "Cannot access getter", exception );
+				throw new TranslationException( "Cannot access getter",
+						exception );
 			} catch( InvocationTargetException exception ) {
-				throw new TranslationException( "Error while invoking getter", exception );
+				throw new TranslationException( "Error while invoking getter",
+						exception );
 			}
 		}
 	}

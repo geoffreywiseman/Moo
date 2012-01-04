@@ -14,16 +14,40 @@ public class PropertyFactory {
 
 	public static Property createProperty(Field field, AccessMode mode) {
 		if( isCollectionOrMap( field.getType() ) ) {
-			CollectionFieldProperty property = new CollectionFieldProperty(
-					field );
-			if( property.isProperty( mode ) ) {
-				return property;
-			} else {
-				return null;
-			}
+			return createCollectionFieldProperty( field, mode );
 		} else {
 			return createFieldProperty( field, mode );
 		}
+	}
+
+	private static Property createCollectionFieldProperty(Field field,
+			AccessMode mode) {
+		Ignore ignoreAnnotation = field.getAnnotation( Ignore.class );
+		com.codiform.moo.annotation.Property propertyAnnotation = field.getAnnotation( com.codiform.moo.annotation.Property.class );
+
+		String name = field.getName();
+		boolean explicit = isExplicit( ignoreAnnotation, propertyAnnotation );
+		boolean ignore = ignoreAnnotation != null;
+		String expression = getExpression( name, propertyAnnotation );
+
+		if( explicit || mode == AccessMode.FIELD ) {
+			String errorMessage = validateField( field );
+			if( errorMessage == null ) {
+				return new CollectionFieldProperty( field, name, expression,
+						explicit,
+						ignore );
+			} else if( explicit ) {
+				throw new InvalidPropertyException( name,
+						field.getDeclaringClass(), errorMessage );
+			}
+		}
+		return null;
+	}
+
+	private static boolean isExplicit(Ignore ignoreAnnotation,
+			com.codiform.moo.annotation.Property propertyAnnotation) {
+		return propertyAnnotation != null
+				|| ignoreAnnotation != null;
 	}
 
 	private static Property createFieldProperty(Field field, AccessMode mode) {
@@ -31,8 +55,7 @@ public class PropertyFactory {
 		com.codiform.moo.annotation.Property propertyAnnotation = field.getAnnotation( com.codiform.moo.annotation.Property.class );
 
 		String name = field.getName();
-		boolean explicit = propertyAnnotation != null
-				|| ignoreAnnotation != null;
+		boolean explicit = isExplicit( ignoreAnnotation, propertyAnnotation );
 		boolean ignore = ignoreAnnotation != null;
 		String expression = getExpression( name, propertyAnnotation );
 
@@ -44,12 +67,9 @@ public class PropertyFactory {
 			} else if( explicit ) {
 				throw new InvalidPropertyException( name,
 						field.getDeclaringClass(), errorMessage );
-			} else {
-				return null;
 			}
-		} else {
-			return null;
 		}
+		return null;
 	}
 
 	private static String validateField(Field field) {
@@ -79,22 +99,67 @@ public class PropertyFactory {
 	}
 
 	public static Property createProperty(Method method, AccessMode mode) {
+		com.codiform.moo.annotation.Property propertyAnnotation = method.getAnnotation( com.codiform.moo.annotation.Property.class );
+		Ignore ignoreAnnotation = method.getAnnotation( Ignore.class );
+		String methodName = method.getName();
+		String propertyName = getPropertyName( methodName );
 		Class<?>[] parameters = method.getParameterTypes();
-		if( parameters.length == 1 && isCollectionOrMap( parameters[0] ) ) {
-			CollectionMethodProperty property = new CollectionMethodProperty(
-					method );
-			if( property.isProperty( mode ) ) {
-				return property;
-			} else {
-				return null;
+
+		boolean explicit = isExplicit( ignoreAnnotation, propertyAnnotation );
+		boolean ignore = ignoreAnnotation != null;
+		String expression = getExpression( propertyName, propertyAnnotation );
+
+		if( explicit || mode == AccessMode.METHOD ) {
+			String errorMessage = validateMethod( methodName, propertyName,
+					parameters, method.getModifiers() );
+			if( errorMessage == null ) {
+				if( isCollectionOrMap( parameters[0] ) ) {
+					return createCollectionMethodProperty( method,
+							propertyName, expression, explicit, ignore );
+				} else {
+					return createMethodProperty( method, propertyName,
+							expression,	explicit, ignore );
+				}
+			} else if( explicit ) {
+				throw new InvalidPropertyException(
+						propertyName == null ? methodName : propertyName,
+						method.getDeclaringClass(), errorMessage );
 			}
+		}
+		return null;
+	}
+
+	private static Property createCollectionMethodProperty(Method method,
+			String name, String expression, boolean explicit, boolean ignore) {
+		return new CollectionMethodProperty( method, name, expression, explicit, ignore );
+	}
+
+	private static Property createMethodProperty(Method method, String name,
+			String expression, boolean explicit, boolean ignore) {
+		return new MethodProperty( method, name, expression, explicit, ignore );
+	}
+
+	private static String validateMethod(String methodName,
+			String propertyName, Class<?>[] parameters, int modifiers) {
+		if( propertyName == null ) {
+			return "Method %s (in %s) is annotated as a property but does not follow the 'set<Name>' pattern required of a method property.";
+		}
+		if( parameters.length != 1 ) {
+			return "Method %s (in %s) is marked with @Property but is not a single-parameter method.";
+		}
+		if( Modifier.isStatic( modifiers ) ) {
+			return "Method %s (in %s) is marked with @Property but is static; Moo doesn't support static methods as properties.";
+		}
+
+		return null;
+	}
+
+	private static String getPropertyName(String methodName) {
+		if( methodName.length() > 3 && methodName.startsWith( "set" ) ) {
+			return Character.toLowerCase( methodName.charAt( 3 ) )
+					+ methodName.substring( 4 );
 		} else {
-			MethodProperty property = new MethodProperty( method );
-			if( property.isProperty( mode ) ) {
-				return property;
-			} else {
-				return null;
-			}
+			return null;
 		}
 	}
 

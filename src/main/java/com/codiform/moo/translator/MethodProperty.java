@@ -3,53 +3,32 @@ package com.codiform.moo.translator;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 
-import com.codiform.moo.InvalidPropertyException;
 import com.codiform.moo.TranslationException;
-import com.codiform.moo.annotation.AccessMode;
-import com.codiform.moo.annotation.Ignore;
 
 public class MethodProperty extends AbstractProperty implements Property {
 
 	private Method getter, setter;
-	private boolean isProperty = false;
 	private Class<?> type;
 	private String name;
-	private String setterFailure, getterFailure;
+	private String expression;
+	private String getterFailure;
 	private boolean explicit;
 	private boolean ignore;
 
-	public MethodProperty(Method setter) {
+	public MethodProperty(Method setter, String name, String expression, boolean explicit, boolean ignore ) {
 		this.setter = setter;
-		name = convertName( setter.getName() );
+		this.name = name;
+		this.expression = expression;
+		this.ignore = ignore;
+		this.explicit = explicit;
 
-		com.codiform.moo.annotation.Property propertyAnnotation = getAnnotation( com.codiform.moo.annotation.Property.class );
-		Ignore ignoreAnnotation = getAnnotation( Ignore.class );
-		explicit = propertyAnnotation != null || ignoreAnnotation != null;
-		ignore = ignoreAnnotation != null;
+		type = setter.getParameterTypes()[0];
 
-		if( name == null ) {
-			name = setter.getName();
-			setterFailure = "Method %s (in %s) is marked with @Property but does not follow the 'set<Name>' pattern required of a method property.";
-			return;
-		}
+		if( !setter.isAccessible() )
+			setter.setAccessible( true );
 
-		if( setter.getParameterTypes().length != 1 ) {
-			setterFailure = "Method %s (in %s) is marked with @Property but is not a single-parameter method.";
-			return;
-		} else
-			type = setter.getParameterTypes()[0];
-
-		int modifiers = setter.getModifiers();
-		if( Modifier.isStatic( modifiers ) ) {
-			setterFailure = "Method %s (in %s) is marked with @Property but is static; Moo doesn't support static methods as properties.";
-			return;
-		}
-
-		// past all guards
 		findGetter( setter.getDeclaringClass() );
-		isProperty = true;
 	}
 
 	private void findGetter(Class<?> searchClass) {
@@ -69,6 +48,8 @@ public class MethodProperty extends AbstractProperty implements Property {
 			getter = null;
 			getterFailure = "Getter return type is incompatible with " + type.getName();
 		}
+		if( getter != null && !getter.isAccessible() )
+			getter.setAccessible( true );
 	}
 
 	private Method findGetter(Class<?> startClass, String prefix) {
@@ -92,30 +73,6 @@ public class MethodProperty extends AbstractProperty implements Property {
 		return getter;
 	}
 
-	/* package */boolean isProperty(AccessMode mode) {
-		if( isExplicit() && !isProperty ) {
-			throw new InvalidPropertyException( getName(), getDeclaringClass(), setterFailure );
-		}
-		switch( mode ) {
-		case METHOD:
-			return isProperty;
-		case FIELD:
-			return isExplicit() && isProperty;
-		default:
-			throw new IllegalStateException(
-					"I have no idea how to deal with access mode: " + mode );
-		}
-	}
-
-	private String convertName(String before) {
-		if( before.length() > 3 && before.startsWith( "set" ) ) {
-			return Character.toLowerCase( before.charAt( 3 ) )
-					+ before.substring( 4 );
-		} else {
-			return null;
-		}
-	}
-
 	public <A extends Annotation> A getAnnotation(Class<A> annotationClass) {
 		return setter.getAnnotation( annotationClass );
 	}
@@ -125,13 +82,7 @@ public class MethodProperty extends AbstractProperty implements Property {
 	}
 
 	public String getTranslationExpression() {
-		com.codiform.moo.annotation.Property annotation = getAnnotation( com.codiform.moo.annotation.Property.class );
-		if( annotation != null && annotation.translation() != null
-				&& annotation.translation().length() > 0 ) {
-			return annotation.translation();
-		} else {
-			return name;
-		}
+		return expression;
 	}
 
 	public Class<?> getType() {
@@ -141,8 +92,6 @@ public class MethodProperty extends AbstractProperty implements Property {
 	public void setValue(Object instance, Object value) {
 		checkValue( value );
 		try {
-			if( !setter.isAccessible() )
-				setter.setAccessible( true );
 			setter.invoke( instance, value );
 		} catch( IllegalArgumentException exception ) {
 			throw new TranslationException(
