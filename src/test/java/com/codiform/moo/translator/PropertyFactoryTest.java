@@ -1,6 +1,7 @@
 package com.codiform.moo.translator;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertThat;
@@ -66,14 +67,32 @@ public class PropertyFactoryTest {
 		public void setNoValues() {
 			// do nothing
 		}
+
+		public void setGettable(Float value) {
+
+		}
+
+		public Float getGettable() {
+			return null;
+		}
+
+		public void setBoolean(boolean value) {
+
+		}
+
+		public boolean isBoolean() {
+			return true;
+		}
 	}
 
 	private void assertProperty(String name, boolean explicit, boolean ignored,
-			Class<?> type, Property property) {
+			Class<?> type, boolean canGetValue, Property property) {
+		assertNotNull( property );
 		assertEquals( name, property.getName() );
 		assertEquals( explicit, property.isExplicit() );
 		assertEquals( ignored, property.isIgnored() );
 		assertSame( type, property.getType() );
+		assertEquals( canGetValue, property.canGetValue() );
 
 	}
 
@@ -92,7 +111,8 @@ public class PropertyFactoryTest {
 			throws NoSuchFieldException {
 		Property property = PropertyFactory.createProperty(
 				getField( "explicitField" ), AccessMode.FIELD );
-		assertProperty( "explicitField", true, false, long.class, property );
+		assertProperty( "explicitField", true, false, long.class, true,
+				property );
 	}
 
 	@Test
@@ -100,7 +120,8 @@ public class PropertyFactoryTest {
 			throws NoSuchFieldException {
 		Property property = PropertyFactory.createProperty(
 				getField( "explicitField" ), AccessMode.METHOD );
-		assertProperty( "explicitField", true, false, long.class, property );
+		assertProperty( "explicitField", true, false, long.class, true,
+				property );
 	}
 
 	@Test
@@ -109,7 +130,8 @@ public class PropertyFactoryTest {
 		Property property = PropertyFactory.createProperty(
 				getMethod( "setExplicitMethod", String.class ),
 				AccessMode.FIELD );
-		assertProperty( "explicitMethod", true, false, String.class, property );
+		assertProperty( "explicitMethod", true, false, String.class, false,
+				property );
 	}
 
 	@Test
@@ -118,7 +140,8 @@ public class PropertyFactoryTest {
 		Property property = PropertyFactory.createProperty(
 				getMethod( "setExplicitMethod", String.class ),
 				AccessMode.METHOD );
-		assertProperty( "explicitMethod", true, false, String.class, property );
+		assertProperty( "explicitMethod", true, false, String.class, false,
+				property );
 	}
 
 	@Test
@@ -126,7 +149,8 @@ public class PropertyFactoryTest {
 			throws NoSuchFieldException {
 		Property property = PropertyFactory.createProperty(
 				getField( "implicitField" ), AccessMode.FIELD );
-		assertProperty( "implicitField", false, false, int.class, property );
+		assertProperty( "implicitField", false, false, int.class, true,
+				property );
 	}
 
 	@Test
@@ -144,7 +168,7 @@ public class PropertyFactoryTest {
 				getMethod( "setImplicitMethod", BigDecimal.class ),
 				AccessMode.METHOD );
 		assertProperty( "implicitMethod", false, false, BigDecimal.class,
-				property );
+				false, property );
 	}
 
 	@Test
@@ -263,6 +287,22 @@ public class PropertyFactoryTest {
 			assertThat( ipe.getMessage(),
 					org.hamcrest.Matchers.containsString( "single-parameter" ) );
 		}
+	}
+
+	@Test
+	public void testSetterGetterPairCreatesGettableMethodProperty()
+			throws NoSuchMethodException {
+		Property property = PropertyFactory.createProperty(
+				getMethod( "setGettable", Float.class ), AccessMode.METHOD );
+		assertProperty( "gettable", false, false, Float.class, true, property );
+	}
+
+	@Test
+	public void testSetIsPairCreatesGettableBooleanMethodProperty()
+			throws NoSuchMethodException {
+		Property property = PropertyFactory.createProperty(
+				getMethod( "setBoolean", boolean.class ), AccessMode.METHOD );
+		assertProperty( "boolean", false, false, boolean.class, true, property );
 	}
 
 }
