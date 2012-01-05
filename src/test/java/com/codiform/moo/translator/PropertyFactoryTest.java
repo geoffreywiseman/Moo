@@ -1,15 +1,20 @@
 package com.codiform.moo.translator;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
 
 import org.junit.Test;
 import org.mvel2.sh.Command;
@@ -20,7 +25,20 @@ import com.codiform.moo.annotation.AccessMode;
 public class PropertyFactoryTest {
 
 	@SuppressWarnings("unused")
-	private static class PropertyContainer {
+	private static class CollectionFieldPropertyContainer {
+		@com.codiform.moo.annotation.Property
+		private Collection<String> explicitCollectionField;
+
+		private Set<Double> implicitField;
+
+		private static List<Object> implicitStaticField;
+		
+		@com.codiform.moo.annotation.Property
+		private static Collection<Integer> explicitStaticField;
+	}
+
+	@SuppressWarnings("unused")
+	private static class FieldPropertyContainer {
 
 		@com.codiform.moo.annotation.Property
 		private static boolean explicitStaticField;
@@ -34,18 +52,13 @@ public class PropertyFactoryTest {
 
 		@com.codiform.moo.annotation.Property
 		private long explicitField;
+	}
 
-		@com.codiform.moo.annotation.Property
-		public void setExplicitMethod(String parameter) {
-			// do nothing
-		}
+	@SuppressWarnings("unused")
+	private static class MethodPropertyContainer {
 
 		@com.codiform.moo.annotation.Property
 		public static void setExplicitStaticMethod(Integer parameter) {
-			// do nothing
-		}
-
-		public void setImplicitMethod(BigDecimal parameter) {
 			// do nothing
 		}
 
@@ -58,8 +71,28 @@ public class PropertyFactoryTest {
 			// do nothing
 		}
 
+		public Float getGettable() {
+			return null;
+		}
+
+		public boolean isBoolean() {
+			return true;
+		}
+
+		public void setBoolean(boolean value) {
+
+		}
+
 		@com.codiform.moo.annotation.Property
-		public void setTwoValues(int id, String name) {
+		public void setExplicitMethod(String parameter) {
+			// do nothing
+		}
+
+		public void setGettable(Float value) {
+
+		}
+
+		public void setImplicitMethod(BigDecimal parameter) {
 			// do nothing
 		}
 
@@ -68,25 +101,17 @@ public class PropertyFactoryTest {
 			// do nothing
 		}
 
-		public void setGettable(Float value) {
-
-		}
-
-		public Float getGettable() {
-			return null;
-		}
-
-		public void setBoolean(boolean value) {
-
-		}
-
-		public boolean isBoolean() {
-			return true;
+		@com.codiform.moo.annotation.Property
+		public void setTwoValues(int id, String name) {
+			// do nothing
 		}
 	}
 
-	private void assertProperty(String name, boolean explicit, boolean ignored,
+	private void assertCollectionProperty(String name, boolean explicit,
+			boolean ignored,
 			Class<?> type, boolean canGetValue, Property property) {
+		assertTrue( "Property should not be a collection.",
+				property instanceof CollectionProperty );
 		assertNotNull( property );
 		assertEquals( name, property.getName() );
 		assertEquals( explicit, property.isExplicit() );
@@ -96,14 +121,54 @@ public class PropertyFactoryTest {
 
 	}
 
+	private void assertProperty(String name, boolean explicit, boolean ignored,
+			Class<?> type, boolean canGetValue, Property property) {
+		assertFalse( "Property should not be a collection.",
+				property instanceof CollectionProperty );
+		assertNotNull( property );
+		assertEquals( name, property.getName() );
+		assertEquals( explicit, property.isExplicit() );
+		assertEquals( ignored, property.isIgnored() );
+		assertSame( type, property.getType() );
+		assertEquals( canGetValue, property.canGetValue() );
+
+	}
+
+	private Field getCollectionField(String fieldName)
+			throws NoSuchFieldException {
+		return CollectionFieldPropertyContainer.class.getDeclaredField( fieldName );
+	}
+
 	private Field getField(String fieldName) throws NoSuchFieldException {
-		return PropertyContainer.class.getDeclaredField( fieldName );
+		return FieldPropertyContainer.class.getDeclaredField( fieldName );
 	}
 
 	private Method getMethod(String methodName, Class<?>... parameters)
 			throws NoSuchMethodException {
-		return PropertyContainer.class.getDeclaredMethod( methodName,
+		return MethodPropertyContainer.class.getDeclaredMethod( methodName,
 				parameters );
+	}
+
+	@Test
+	public void testExplicitCollectionFieldCreatesCollectionFieldPropertyIfAccessModeIsField()
+			throws NoSuchFieldException {
+		Property property = PropertyFactory.createProperty(
+				getCollectionField( "explicitCollectionField" ),
+				AccessMode.FIELD );
+		assertCollectionProperty( "explicitCollectionField", true, false,
+				Collection.class, true,
+				property );
+	}
+
+	@Test
+	public void testExplicitCollectionFieldCreatesCollectionFieldPropertyIfAccessModeIsMethod()
+			throws NoSuchFieldException {
+		Property property = PropertyFactory.createProperty(
+				getCollectionField( "explicitCollectionField" ),
+				AccessMode.METHOD );
+		assertCollectionProperty( "explicitCollectionField", true, false,
+				Collection.class, true,
+				property );
 	}
 
 	@Test
@@ -142,6 +207,25 @@ public class PropertyFactoryTest {
 				AccessMode.METHOD );
 		assertProperty( "explicitMethod", true, false, String.class, false,
 				property );
+	}
+
+	@Test
+	public void testImplicitCollectionFieldCreatesCollectionFieldPropertyIfAccessModeIsField()
+			throws NoSuchFieldException {
+		Property property = PropertyFactory.createProperty(
+				getCollectionField( "implicitField" ), AccessMode.FIELD );
+		assertCollectionProperty( "implicitField", false, false, Set.class, true,
+				property );
+	}
+
+	@Test
+	public void testImplicitCollectionFieldIgnoredIfAccessModeIsMethod()
+			throws NoSuchFieldException {
+		Field field = getCollectionField( "implicitField" );
+		assertNotNull( field );
+		Property property = PropertyFactory.createProperty(
+				field, AccessMode.METHOD );
+		assertNull( property );
 	}
 
 	@Test
@@ -211,6 +295,21 @@ public class PropertyFactoryTest {
 	}
 
 	@Test
+	public void testInvalidPropertyExceptionIfExplicitCollectionFieldIsStatic()
+			throws NoSuchFieldException {
+		try {
+			Property property = PropertyFactory.createProperty(
+					getCollectionField( "explicitStaticField" ), AccessMode.FIELD );
+			fail( "Should not have created a property for a static collection field: "
+					+ property );
+		} catch( InvalidPropertyException ipe ) {
+			assertEquals( "explicitStaticField", ipe.getPropertyName() );
+			assertThat( ipe.getMessage(),
+					org.hamcrest.Matchers.containsString( "static field" ) );
+		}
+	}
+
+	@Test
 	public void testInvalidPropertyExceptionIfExplicitMethodIsStatic()
 			throws NoSuchMethodException {
 		try {
@@ -227,23 +326,6 @@ public class PropertyFactoryTest {
 	}
 
 	@Test
-	public void testNoPropertyOrExceptionIfImplicitFieldIsStatic()
-			throws NoSuchFieldException {
-		Property property = PropertyFactory.createProperty(
-				getField( "implicitStaticField" ), AccessMode.FIELD );
-		assertNull( property );
-	}
-
-	@Test
-	public void testNoPropertyOrExceptionIfImplicitMethodIsStatic()
-			throws NoSuchMethodException {
-		Property property = PropertyFactory.createProperty(
-				getMethod( "setImplicitStaticMethod", Boolean.class ),
-				AccessMode.METHOD );
-		assertNull( property );
-	}
-
-	@Test
 	public void testInvalidPropertyExceptionIfMethodDoesntBeginWithSet()
 			throws NoSuchMethodException {
 		try {
@@ -255,6 +337,21 @@ public class PropertyFactoryTest {
 			assertEquals( "execute", ipe.getPropertyName() );
 			assertThat( ipe.getMessage(),
 					org.hamcrest.Matchers.containsString( "'set<Name>'" ) );
+		}
+	}
+
+	@Test
+	public void testInvalidPropertyExceptionIfMethodHasLessThanOneParameter()
+			throws NoSuchMethodException {
+		try {
+			Property property = PropertyFactory.createProperty(
+					getMethod( "setNoValues" ), AccessMode.METHOD );
+			fail( "Should have thrown exception; property setter has no parameters"
+					+ property );
+		} catch( InvalidPropertyException ipe ) {
+			assertEquals( "noValues", ipe.getPropertyName() );
+			assertThat( ipe.getMessage(),
+					org.hamcrest.Matchers.containsString( "single-parameter" ) );
 		}
 	}
 
@@ -275,26 +372,28 @@ public class PropertyFactoryTest {
 	}
 
 	@Test
-	public void testInvalidPropertyExceptionIfMethodHasLessThanOneParameter()
-			throws NoSuchMethodException {
-		try {
-			Property property = PropertyFactory.createProperty(
-					getMethod( "setNoValues" ), AccessMode.METHOD );
-			fail( "Should have thrown exception; property setter has no parameters"
-					+ property );
-		} catch( InvalidPropertyException ipe ) {
-			assertEquals( "noValues", ipe.getPropertyName() );
-			assertThat( ipe.getMessage(),
-					org.hamcrest.Matchers.containsString( "single-parameter" ) );
-		}
+	public void testNoPropertyOrExceptionIfImplicitFieldIsStatic()
+			throws NoSuchFieldException {
+		Property property = PropertyFactory.createProperty(
+				getField( "implicitStaticField" ), AccessMode.FIELD );
+		assertNull( property );
 	}
 
 	@Test
-	public void testSetterGetterPairCreatesGettableMethodProperty()
+	public void testNoPropertyOrExceptionIfImplicitCollectionFieldIsStatic()
+			throws NoSuchFieldException {
+		Property property = PropertyFactory.createProperty(
+				getCollectionField( "implicitStaticField" ), AccessMode.FIELD );
+		assertNull( property );
+	}
+
+	@Test
+	public void testNoPropertyOrExceptionIfImplicitMethodIsStatic()
 			throws NoSuchMethodException {
 		Property property = PropertyFactory.createProperty(
-				getMethod( "setGettable", Float.class ), AccessMode.METHOD );
-		assertProperty( "gettable", false, false, Float.class, true, property );
+				getMethod( "setImplicitStaticMethod", Boolean.class ),
+				AccessMode.METHOD );
+		assertNull( property );
 	}
 
 	@Test
@@ -303,6 +402,14 @@ public class PropertyFactoryTest {
 		Property property = PropertyFactory.createProperty(
 				getMethod( "setBoolean", boolean.class ), AccessMode.METHOD );
 		assertProperty( "boolean", false, false, boolean.class, true, property );
+	}
+
+	@Test
+	public void testSetterGetterPairCreatesGettableMethodProperty()
+			throws NoSuchMethodException {
+		Property property = PropertyFactory.createProperty(
+				getMethod( "setGettable", Float.class ), AccessMode.METHOD );
+		assertProperty( "gettable", false, false, Float.class, true, property );
 	}
 
 }
