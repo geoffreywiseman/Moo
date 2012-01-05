@@ -39,7 +39,10 @@ public class PropertyFactoryTest {
 
 		@TranslateCollection(Double.class)
 		private Set<Float> translatable;
-		
+
+		@com.codiform.moo.annotation.Property(update=true)
+		private Set<Float> updatable;
+
 		private List<Integer> copyMe;
 	}
 
@@ -58,10 +61,13 @@ public class PropertyFactoryTest {
 
 		@com.codiform.moo.annotation.Property
 		private long explicitField;
-		
-		@com.codiform.moo.annotation.Property(translate=true)
+
+		@com.codiform.moo.annotation.Property(translate = true)
 		private Integer translatable;
-		
+
+		@com.codiform.moo.annotation.Property(update = true)
+		private Integer updateable;
+
 		private Integer copyMe;
 	}
 
@@ -426,7 +432,8 @@ public class PropertyFactoryTest {
 	}
 
 	@Test
-	public void testFieldPropertyCanDetectTranslation() throws NoSuchFieldException {
+	public void testFieldPropertyCanDetectTranslation()
+			throws NoSuchFieldException {
 		Property property = PropertyFactory.createProperty(
 				getField( "translatable" ),
 				AccessMode.FIELD );
@@ -436,7 +443,8 @@ public class PropertyFactoryTest {
 	}
 
 	@Test
-	public void testFieldPropertyCanDetectLackOfTranslation() throws NoSuchFieldException {
+	public void testFieldPropertyCanDetectLackOfTranslation()
+			throws NoSuchFieldException {
 		Property property = PropertyFactory.createProperty(
 				getField( "copyMe" ),
 				AccessMode.FIELD );
@@ -446,7 +454,8 @@ public class PropertyFactoryTest {
 	}
 
 	@Test
-	public void testCollectionFieldPropertyDetectsTranslation() throws NoSuchFieldException {
+	public void testCollectionFieldPropertyDetectsTranslation()
+			throws NoSuchFieldException {
 		CollectionProperty property = (CollectionProperty) PropertyFactory.createProperty(
 				getCollectionField( "translatable" ),
 				AccessMode.FIELD );
@@ -457,7 +466,8 @@ public class PropertyFactoryTest {
 	}
 
 	@Test
-	public void testCollectionFieldPropertyDetectsLackOfTranslation() throws NoSuchFieldException {
+	public void testCollectionFieldPropertyDetectsLackOfTranslation()
+			throws NoSuchFieldException {
 		CollectionProperty property = (CollectionProperty) PropertyFactory.createProperty(
 				getCollectionField( "copyMe" ),
 				AccessMode.FIELD );
@@ -465,5 +475,49 @@ public class PropertyFactoryTest {
 		assertEquals( "copyMe", property.getName() );
 		assertFalse( property.shouldBeTranslated() );
 		assertFalse( property.shouldItemsBeTranslated() );
+	}
+
+	@Test
+	public void testFieldPropertyCanDetectUpdatability()
+			throws NoSuchFieldException {
+		Property property = PropertyFactory.createProperty(
+				getField( "updateable" ),
+				AccessMode.FIELD );
+		assertNotNull( property );
+		assertEquals( "updateable", property.getName() );
+		assertTrue( property.shouldUpdate() );
+	}
+
+	@Test
+	public void testFieldPropertyCanDetectLackOfUpdating()
+			throws NoSuchFieldException {
+		Property property = PropertyFactory.createProperty(
+				getField( "copyMe" ),
+				AccessMode.FIELD );
+		assertNotNull( property );
+		assertEquals( "copyMe", property.getName() );
+		assertFalse( property.shouldBeTranslated() );
+	}
+
+	@Test
+	public void testCollectionFieldPropertyDetectsUpdatability()
+			throws NoSuchFieldException {
+		CollectionProperty property = (CollectionProperty) PropertyFactory.createProperty(
+				getCollectionField( "updatable" ),
+				AccessMode.FIELD );
+		assertNotNull( property );
+		assertEquals( "updatable", property.getName() );
+		assertTrue( property.shouldUpdate() );
+	}
+
+	@Test
+	public void testCollectionFieldPropertyDetectsLackOfUpdating()
+			throws NoSuchFieldException {
+		CollectionProperty property = (CollectionProperty) PropertyFactory.createProperty(
+				getCollectionField( "copyMe" ),
+				AccessMode.FIELD );
+		assertNotNull( property );
+		assertEquals( "copyMe", property.getName() );
+		assertFalse( property.shouldUpdate() );
 	}
 }
