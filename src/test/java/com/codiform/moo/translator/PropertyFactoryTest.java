@@ -21,6 +21,7 @@ import org.mvel2.sh.Command;
 
 import com.codiform.moo.InvalidPropertyException;
 import com.codiform.moo.annotation.AccessMode;
+import com.codiform.moo.annotation.TranslateCollection;
 
 public class PropertyFactoryTest {
 
@@ -32,9 +33,14 @@ public class PropertyFactoryTest {
 		private Set<Double> implicitField;
 
 		private static List<Object> implicitStaticField;
-		
+
 		@com.codiform.moo.annotation.Property
 		private static Collection<Integer> explicitStaticField;
+
+		@TranslateCollection(Double.class)
+		private Set<Float> translatable;
+		
+		private List<Integer> copyMe;
 	}
 
 	@SuppressWarnings("unused")
@@ -52,6 +58,11 @@ public class PropertyFactoryTest {
 
 		@com.codiform.moo.annotation.Property
 		private long explicitField;
+		
+		@com.codiform.moo.annotation.Property(translate=true)
+		private Integer translatable;
+		
+		private Integer copyMe;
 	}
 
 	@SuppressWarnings("unused")
@@ -214,7 +225,8 @@ public class PropertyFactoryTest {
 			throws NoSuchFieldException {
 		Property property = PropertyFactory.createProperty(
 				getCollectionField( "implicitField" ), AccessMode.FIELD );
-		assertCollectionProperty( "implicitField", false, false, Set.class, true,
+		assertCollectionProperty( "implicitField", false, false, Set.class,
+				true,
 				property );
 	}
 
@@ -299,7 +311,8 @@ public class PropertyFactoryTest {
 			throws NoSuchFieldException {
 		try {
 			Property property = PropertyFactory.createProperty(
-					getCollectionField( "explicitStaticField" ), AccessMode.FIELD );
+					getCollectionField( "explicitStaticField" ),
+					AccessMode.FIELD );
 			fail( "Should not have created a property for a static collection field: "
 					+ property );
 		} catch( InvalidPropertyException ipe ) {
@@ -412,4 +425,45 @@ public class PropertyFactoryTest {
 		assertProperty( "gettable", false, false, Float.class, true, property );
 	}
 
+	@Test
+	public void testFieldPropertyCanDetectTranslation() throws NoSuchFieldException {
+		Property property = PropertyFactory.createProperty(
+				getField( "translatable" ),
+				AccessMode.FIELD );
+		assertNotNull( property );
+		assertEquals( "translatable", property.getName() );
+		assertTrue( property.shouldBeTranslated() );
+	}
+
+	@Test
+	public void testFieldPropertyCanDetectLackOfTranslation() throws NoSuchFieldException {
+		Property property = PropertyFactory.createProperty(
+				getField( "copyMe" ),
+				AccessMode.FIELD );
+		assertNotNull( property );
+		assertEquals( "copyMe", property.getName() );
+		assertFalse( property.shouldBeTranslated() );
+	}
+
+	@Test
+	public void testCollectionFieldPropertyDetectsTranslation() throws NoSuchFieldException {
+		CollectionProperty property = (CollectionProperty) PropertyFactory.createProperty(
+				getCollectionField( "translatable" ),
+				AccessMode.FIELD );
+		assertNotNull( property );
+		assertEquals( "translatable", property.getName() );
+		assertFalse( property.shouldBeTranslated() );
+		assertTrue( property.shouldItemsBeTranslated() );
+	}
+
+	@Test
+	public void testCollectionFieldPropertyDetectsLackOfTranslation() throws NoSuchFieldException {
+		CollectionProperty property = (CollectionProperty) PropertyFactory.createProperty(
+				getCollectionField( "copyMe" ),
+				AccessMode.FIELD );
+		assertNotNull( property );
+		assertEquals( "copyMe", property.getName() );
+		assertFalse( property.shouldBeTranslated() );
+		assertFalse( property.shouldItemsBeTranslated() );
+	}
 }
