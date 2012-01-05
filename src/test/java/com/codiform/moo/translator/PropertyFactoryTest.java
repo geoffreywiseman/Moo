@@ -21,6 +21,7 @@ import org.mvel2.sh.Command;
 
 import com.codiform.moo.InvalidPropertyException;
 import com.codiform.moo.annotation.AccessMode;
+import com.codiform.moo.annotation.MatchWith;
 import com.codiform.moo.annotation.TranslateCollection;
 
 public class PropertyFactoryTest {
@@ -44,6 +45,9 @@ public class PropertyFactoryTest {
 		private Set<Float> updatable;
 
 		private List<Integer> copyMe;
+		
+		@MatchWith(HashCodeMatcher.class)
+		private Collection<Boolean> matchable;
 	}
 
 	@SuppressWarnings("unused")
@@ -69,6 +73,21 @@ public class PropertyFactoryTest {
 		private Integer updateable;
 
 		private Integer copyMe;
+	}
+
+	public static class HashCodeMatcher implements CollectionMatcher<Object, Object> {
+
+		@Override
+		public Object getTarget(Object source) {
+			// ignore
+			return null;
+		}
+
+		@Override
+		public void setTargets(Collection<Object> targets) {
+			// ignore
+		}
+
 	}
 
 	@SuppressWarnings("unused")
@@ -167,6 +186,75 @@ public class PropertyFactoryTest {
 	}
 
 	@Test
+	public void testCollectionFieldPropertyDetectsLackOfMatcher()
+			throws NoSuchFieldException {
+		CollectionProperty property = (CollectionProperty) PropertyFactory.createProperty(
+				getCollectionField( "copyMe" ),
+				AccessMode.FIELD );
+		assertNotNull( property );
+		assertEquals( "copyMe", property.getName() );
+		assertFalse( property.hasMatcher() );
+	}
+
+	@Test
+	public void testCollectionFieldPropertyDetectsLackOfTranslation()
+			throws NoSuchFieldException {
+		CollectionProperty property = (CollectionProperty) PropertyFactory.createProperty(
+				getCollectionField( "copyMe" ),
+				AccessMode.FIELD );
+		assertNotNull( property );
+		assertEquals( "copyMe", property.getName() );
+		assertFalse( property.shouldBeTranslated() );
+		assertFalse( property.shouldItemsBeTranslated() );
+	}
+
+	@Test
+	public void testCollectionFieldPropertyDetectsLackOfUpdating()
+			throws NoSuchFieldException {
+		CollectionProperty property = (CollectionProperty) PropertyFactory.createProperty(
+				getCollectionField( "copyMe" ),
+				AccessMode.FIELD );
+		assertNotNull( property );
+		assertEquals( "copyMe", property.getName() );
+		assertFalse( property.shouldUpdate() );
+	}
+
+	@Test
+	public void testCollectionFieldPropertyDetectsMatcher()
+			throws NoSuchFieldException {
+		CollectionProperty property = (CollectionProperty) PropertyFactory.createProperty(
+				getCollectionField( "matchable" ),
+				AccessMode.FIELD );
+		assertNotNull( property );
+		assertEquals( "matchable", property.getName() );
+		assertTrue( property.hasMatcher() );
+		assertEquals( HashCodeMatcher.class, property.getMatcherClass() );
+	}
+
+	@Test
+	public void testCollectionFieldPropertyDetectsTranslation()
+			throws NoSuchFieldException {
+		CollectionProperty property = (CollectionProperty) PropertyFactory.createProperty(
+				getCollectionField( "translatable" ),
+				AccessMode.FIELD );
+		assertNotNull( property );
+		assertEquals( "translatable", property.getName() );
+		assertFalse( property.shouldBeTranslated() );
+		assertTrue( property.shouldItemsBeTranslated() );
+	}
+
+	@Test
+	public void testCollectionFieldPropertyDetectsUpdatability()
+			throws NoSuchFieldException {
+		CollectionProperty property = (CollectionProperty) PropertyFactory.createProperty(
+				getCollectionField( "updatable" ),
+				AccessMode.FIELD );
+		assertNotNull( property );
+		assertEquals( "updatable", property.getName() );
+		assertTrue( property.shouldUpdate() );
+	}
+
+	@Test
 	public void testExplicitCollectionFieldCreatesCollectionFieldPropertyIfAccessModeIsField()
 			throws NoSuchFieldException {
 		Property property = PropertyFactory.createProperty(
@@ -227,6 +315,50 @@ public class PropertyFactoryTest {
 	}
 
 	@Test
+	public void testFieldPropertyCanDetectLackOfTranslation()
+			throws NoSuchFieldException {
+		Property property = PropertyFactory.createProperty(
+				getField( "copyMe" ),
+				AccessMode.FIELD );
+		assertNotNull( property );
+		assertEquals( "copyMe", property.getName() );
+		assertFalse( property.shouldBeTranslated() );
+	}
+
+	@Test
+	public void testFieldPropertyCanDetectLackOfUpdating()
+			throws NoSuchFieldException {
+		Property property = PropertyFactory.createProperty(
+				getField( "copyMe" ),
+				AccessMode.FIELD );
+		assertNotNull( property );
+		assertEquals( "copyMe", property.getName() );
+		assertFalse( property.shouldBeTranslated() );
+	}
+
+	@Test
+	public void testFieldPropertyCanDetectTranslation()
+			throws NoSuchFieldException {
+		Property property = PropertyFactory.createProperty(
+				getField( "translatable" ),
+				AccessMode.FIELD );
+		assertNotNull( property );
+		assertEquals( "translatable", property.getName() );
+		assertTrue( property.shouldBeTranslated() );
+	}
+
+	@Test
+	public void testFieldPropertyCanDetectUpdatability()
+			throws NoSuchFieldException {
+		Property property = PropertyFactory.createProperty(
+				getField( "updateable" ),
+				AccessMode.FIELD );
+		assertNotNull( property );
+		assertEquals( "updateable", property.getName() );
+		assertTrue( property.shouldUpdate() );
+	}
+
+	@Test
 	public void testImplicitCollectionFieldCreatesCollectionFieldPropertyIfAccessModeIsField()
 			throws NoSuchFieldException {
 		Property property = PropertyFactory.createProperty(
@@ -283,6 +415,22 @@ public class PropertyFactoryTest {
 	}
 
 	@Test
+	public void testInvalidPropertyExceptionIfExplicitCollectionFieldIsStatic()
+			throws NoSuchFieldException {
+		try {
+			Property property = PropertyFactory.createProperty(
+					getCollectionField( "explicitStaticField" ),
+					AccessMode.FIELD );
+			fail( "Should not have created a property for a static collection field: "
+					+ property );
+		} catch( InvalidPropertyException ipe ) {
+			assertEquals( "explicitStaticField", ipe.getPropertyName() );
+			assertThat( ipe.getMessage(),
+					org.hamcrest.Matchers.containsString( "static field" ) );
+		}
+	}
+
+	@Test
 	public void testInvalidPropertyExceptionIfExplicitFieldIsFinal()
 			throws NoSuchFieldException {
 		try {
@@ -304,22 +452,6 @@ public class PropertyFactoryTest {
 			Property property = PropertyFactory.createProperty(
 					getField( "explicitStaticField" ), AccessMode.FIELD );
 			fail( "Should not have created a property for a static field: "
-					+ property );
-		} catch( InvalidPropertyException ipe ) {
-			assertEquals( "explicitStaticField", ipe.getPropertyName() );
-			assertThat( ipe.getMessage(),
-					org.hamcrest.Matchers.containsString( "static field" ) );
-		}
-	}
-
-	@Test
-	public void testInvalidPropertyExceptionIfExplicitCollectionFieldIsStatic()
-			throws NoSuchFieldException {
-		try {
-			Property property = PropertyFactory.createProperty(
-					getCollectionField( "explicitStaticField" ),
-					AccessMode.FIELD );
-			fail( "Should not have created a property for a static collection field: "
 					+ property );
 		} catch( InvalidPropertyException ipe ) {
 			assertEquals( "explicitStaticField", ipe.getPropertyName() );
@@ -391,18 +523,18 @@ public class PropertyFactoryTest {
 	}
 
 	@Test
-	public void testNoPropertyOrExceptionIfImplicitFieldIsStatic()
-			throws NoSuchFieldException {
-		Property property = PropertyFactory.createProperty(
-				getField( "implicitStaticField" ), AccessMode.FIELD );
-		assertNull( property );
-	}
-
-	@Test
 	public void testNoPropertyOrExceptionIfImplicitCollectionFieldIsStatic()
 			throws NoSuchFieldException {
 		Property property = PropertyFactory.createProperty(
 				getCollectionField( "implicitStaticField" ), AccessMode.FIELD );
+		assertNull( property );
+	}
+
+	@Test
+	public void testNoPropertyOrExceptionIfImplicitFieldIsStatic()
+			throws NoSuchFieldException {
+		Property property = PropertyFactory.createProperty(
+				getField( "implicitStaticField" ), AccessMode.FIELD );
 		assertNull( property );
 	}
 
@@ -429,95 +561,5 @@ public class PropertyFactoryTest {
 		Property property = PropertyFactory.createProperty(
 				getMethod( "setGettable", Float.class ), AccessMode.METHOD );
 		assertProperty( "gettable", false, false, Float.class, true, property );
-	}
-
-	@Test
-	public void testFieldPropertyCanDetectTranslation()
-			throws NoSuchFieldException {
-		Property property = PropertyFactory.createProperty(
-				getField( "translatable" ),
-				AccessMode.FIELD );
-		assertNotNull( property );
-		assertEquals( "translatable", property.getName() );
-		assertTrue( property.shouldBeTranslated() );
-	}
-
-	@Test
-	public void testFieldPropertyCanDetectLackOfTranslation()
-			throws NoSuchFieldException {
-		Property property = PropertyFactory.createProperty(
-				getField( "copyMe" ),
-				AccessMode.FIELD );
-		assertNotNull( property );
-		assertEquals( "copyMe", property.getName() );
-		assertFalse( property.shouldBeTranslated() );
-	}
-
-	@Test
-	public void testCollectionFieldPropertyDetectsTranslation()
-			throws NoSuchFieldException {
-		CollectionProperty property = (CollectionProperty) PropertyFactory.createProperty(
-				getCollectionField( "translatable" ),
-				AccessMode.FIELD );
-		assertNotNull( property );
-		assertEquals( "translatable", property.getName() );
-		assertFalse( property.shouldBeTranslated() );
-		assertTrue( property.shouldItemsBeTranslated() );
-	}
-
-	@Test
-	public void testCollectionFieldPropertyDetectsLackOfTranslation()
-			throws NoSuchFieldException {
-		CollectionProperty property = (CollectionProperty) PropertyFactory.createProperty(
-				getCollectionField( "copyMe" ),
-				AccessMode.FIELD );
-		assertNotNull( property );
-		assertEquals( "copyMe", property.getName() );
-		assertFalse( property.shouldBeTranslated() );
-		assertFalse( property.shouldItemsBeTranslated() );
-	}
-
-	@Test
-	public void testFieldPropertyCanDetectUpdatability()
-			throws NoSuchFieldException {
-		Property property = PropertyFactory.createProperty(
-				getField( "updateable" ),
-				AccessMode.FIELD );
-		assertNotNull( property );
-		assertEquals( "updateable", property.getName() );
-		assertTrue( property.shouldUpdate() );
-	}
-
-	@Test
-	public void testFieldPropertyCanDetectLackOfUpdating()
-			throws NoSuchFieldException {
-		Property property = PropertyFactory.createProperty(
-				getField( "copyMe" ),
-				AccessMode.FIELD );
-		assertNotNull( property );
-		assertEquals( "copyMe", property.getName() );
-		assertFalse( property.shouldBeTranslated() );
-	}
-
-	@Test
-	public void testCollectionFieldPropertyDetectsUpdatability()
-			throws NoSuchFieldException {
-		CollectionProperty property = (CollectionProperty) PropertyFactory.createProperty(
-				getCollectionField( "updatable" ),
-				AccessMode.FIELD );
-		assertNotNull( property );
-		assertEquals( "updatable", property.getName() );
-		assertTrue( property.shouldUpdate() );
-	}
-
-	@Test
-	public void testCollectionFieldPropertyDetectsLackOfUpdating()
-			throws NoSuchFieldException {
-		CollectionProperty property = (CollectionProperty) PropertyFactory.createProperty(
-				getCollectionField( "copyMe" ),
-				AccessMode.FIELD );
-		assertNotNull( property );
-		assertEquals( "copyMe", property.getName() );
-		assertFalse( property.shouldUpdate() );
 	}
 }
