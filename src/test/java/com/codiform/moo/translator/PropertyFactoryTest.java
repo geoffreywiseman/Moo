@@ -93,6 +93,10 @@ public class PropertyFactoryTest {
 			return null;
 		}
 
+		@TranslateCollection(Date.class)
+		private void setTranslatable(List<Date> strings) {
+			// do nothing
+		}
 	}
 
 	@SuppressWarnings("unused")
@@ -195,6 +199,15 @@ public class PropertyFactoryTest {
 
 		public Date getUpdatable() {
 			return null;
+		}
+		
+		@com.codiform.moo.annotation.Property(translate = true)
+		public void setTranslatable(Float value) {
+			// do nothing
+		}
+
+		public void setUntranslatable(Float value) {
+			// do nothing
 		}
 	}
 
@@ -304,6 +317,7 @@ public class PropertyFactoryTest {
 		assertEquals( "translatable", property.getName() );
 		assertFalse( property.shouldBeTranslated() );
 		assertTrue( property.shouldItemsBeTranslated() );
+		assertEquals( Double.class, property.getItemTranslationType() );
 	}
 
 	@Test
@@ -769,6 +783,52 @@ public class PropertyFactoryTest {
 				AccessMode.METHOD );
 		assertNotNull( property );
 		assertTrue( property.shouldUpdate() );
+	}
+
+	@Test
+	public void testCollectionMethodPropertyDetectsLackOfTranslation()
+			throws NoSuchMethodException {
+		CollectionProperty property = (CollectionProperty) PropertyFactory.createProperty(
+				getCollectionMethod( "setExplicitMethod", Set.class ),
+				AccessMode.METHOD );
+		assertNotNull( property );
+		assertFalse( property.shouldBeTranslated() );
+		assertFalse( property.shouldItemsBeTranslated() );
+	}
+
+	@Test
+	public void testCollectionMethodPropertyDetectsTranslation()
+			throws NoSuchMethodException {
+		CollectionProperty property = (CollectionProperty) PropertyFactory.createProperty(
+				getCollectionMethod( "setTranslatable", List.class ),
+				AccessMode.METHOD );
+		assertNotNull( property );
+		assertEquals( "translatable", property.getName() );
+		assertFalse( property.shouldBeTranslated() );
+		assertTrue( property.shouldItemsBeTranslated() );
+		assertEquals( Date.class, property.getItemTranslationType() );
+	}
+
+	@Test
+	public void testMethodPropertyCanDetectLackOfTranslation()
+			throws NoSuchMethodException {
+		Property property = PropertyFactory.createProperty(
+				getMethod( "setUntranslatable", Float.class ),
+				AccessMode.METHOD );
+		assertNotNull( property );
+		assertEquals( "untranslatable", property.getName() );
+		assertFalse( property.shouldBeTranslated() );
+	}
+
+	@Test
+	public void testMethodPropertyCanDetectTranslation()
+			throws NoSuchMethodException {
+		Property property = PropertyFactory.createProperty(
+				getMethod( "setTranslatable", Float.class ),
+				AccessMode.METHOD );
+		assertNotNull( property );
+		assertEquals( "translatable", property.getName() );
+		assertTrue( property.shouldBeTranslated() );
 	}
 
 }
