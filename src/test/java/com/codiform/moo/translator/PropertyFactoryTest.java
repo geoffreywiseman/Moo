@@ -13,6 +13,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -53,16 +54,16 @@ public class PropertyFactoryTest {
 	@SuppressWarnings("unused")
 	private static class CollectionMethodPropertyContainer {
 		@com.codiform.moo.annotation.Property
-		public static void setExplicitStaticMethod( Collection<String> collection ) {
+		public static void setExplicitStaticMethod(Collection<String> collection) {
 			// do nothing
 		}
 
-		public static void setImplicitStaticMethod( Collection<String> collection ) {
+		public static void setImplicitStaticMethod(Collection<String> collection) {
 			// do nothing
 		}
-		
+
 		@com.codiform.moo.annotation.Property
-		public void execute( List<Runnable> runnable ) {
+		public void execute(List<Runnable> runnable) {
 			// do nothing
 		}
 
@@ -74,13 +75,22 @@ public class PropertyFactoryTest {
 		private void setExplicitMethod(Set<String> explicitCollectionField) {
 			// do nothing
 		}
-		
+
 		private void setGettable(Collection<Object> collection) {
 			// do nothing
 		}
-		
+
 		private void setImplicitMethod(List<Integer> collection) {
 			// do nothing
+		}
+
+		@com.codiform.moo.annotation.Property(update=true)
+		private void setUpdatable(List<String> strings) {
+			// do nothing
+		}
+
+		private List<String> getUpdateable() {
+			return null;
 		}
 
 	}
@@ -176,6 +186,15 @@ public class PropertyFactoryTest {
 		@com.codiform.moo.annotation.Property
 		public void setTwoValues(int id, String name) {
 			// do nothing
+		}
+
+		@com.codiform.moo.annotation.Property(update = true)
+		public void setUpdatable(Date date) {
+			// do nothing
+		}
+
+		public Date getUpdatable() {
+			return null;
 		}
 	}
 
@@ -399,7 +418,7 @@ public class PropertyFactoryTest {
 				AccessMode.FIELD );
 		assertNotNull( property );
 		assertEquals( "copyMe", property.getName() );
-		assertFalse( property.shouldBeTranslated() );
+		assertFalse( property.shouldUpdate() );
 	}
 
 	@Test
@@ -506,7 +525,8 @@ public class PropertyFactoryTest {
 			throws NoSuchMethodException {
 		try {
 			Property property = PropertyFactory.createProperty(
-					getCollectionMethod( "execute", List.class ), AccessMode.METHOD );
+					getCollectionMethod( "execute", List.class ),
+					AccessMode.METHOD );
 			fail( "Should not have created a property for a method not starting with 'set': "
 					+ property );
 		} catch( InvalidPropertyException ipe ) {
@@ -537,7 +557,8 @@ public class PropertyFactoryTest {
 			throws NoSuchMethodException {
 		try {
 			Property property = PropertyFactory.createProperty(
-					getCollectionMethod( "setExplicitStaticMethod", Collection.class ),
+					getCollectionMethod( "setExplicitStaticMethod",
+							Collection.class ),
 					AccessMode.METHOD );
 			fail( "Should not have created a property for a static method: "
 					+ property );
@@ -652,7 +673,8 @@ public class PropertyFactoryTest {
 	public void testNoPropertyOrExceptionIfImplicitCollectionMethodIsStatic()
 			throws NoSuchMethodException {
 		Property property = PropertyFactory.createProperty(
-				getCollectionMethod( "setImplicitStaticMethod", Collection.class ),
+				getCollectionMethod( "setImplicitStaticMethod",
+						Collection.class ),
 				AccessMode.METHOD );
 		assertNull( property );
 	}
@@ -699,7 +721,7 @@ public class PropertyFactoryTest {
 				getMethod( "setGettable", Float.class ), AccessMode.METHOD );
 		assertProperty( "gettable", false, false, Float.class, true, property );
 	}
-	
+
 	@Test
 	public void testSetterWithoutGetterCreatesUngettableCollectionMethodProperty()
 			throws NoSuchMethodException {
@@ -708,4 +730,45 @@ public class PropertyFactoryTest {
 				AccessMode.METHOD );
 		assertFalse( property.canGetValue() );
 	}
+
+	@Test
+	public void testMethodPropertyCanDetectLackOfUpdating()
+			throws NoSuchMethodException {
+		Property property = PropertyFactory.createProperty(
+				getMethod( "setExplicitMethod", String.class ),
+				AccessMode.METHOD );
+		assertNotNull( property );
+		assertFalse( property.shouldUpdate() );
+	}
+
+	@Test
+	public void testCollectionMethodPropertyDetectsLackOfUpdating()
+			throws NoSuchMethodException {
+		CollectionProperty property = (CollectionProperty) PropertyFactory.createProperty(
+				getCollectionMethod( "setExplicitMethod", Set.class ),
+				AccessMode.METHOD );
+		assertNotNull( property );
+		assertFalse( property.shouldUpdate() );
+	}
+
+	@Test
+	public void testCollectionMethodPropertyDetectsUpdatability()
+			throws NoSuchMethodException {
+		CollectionProperty property = (CollectionProperty) PropertyFactory.createProperty(
+				getCollectionMethod( "setUpdatable", List.class ),
+				AccessMode.METHOD );
+		assertNotNull( property );
+		assertTrue( "Collection method property should be updatable.", property.shouldUpdate() );
+	}
+
+	@Test
+	public void testMethodPropertyCanDetectUpdatability()
+			throws NoSuchMethodException {
+		Property property = PropertyFactory.createProperty(
+				getMethod( "setUpdatable", Date.class ),
+				AccessMode.METHOD );
+		assertNotNull( property );
+		assertTrue( property.shouldUpdate() );
+	}
+
 }
