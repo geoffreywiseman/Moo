@@ -14,6 +14,7 @@ import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
@@ -94,7 +95,12 @@ public class PropertyFactoryTest {
 		}
 
 		@TranslateCollection(Date.class)
-		private void setTranslatable(List<Date> strings) {
+		private void setTranslatable(List<Date> dates) {
+			// do nothing
+		}
+		
+		@MatchWith(HashCodeMatcher.class)
+		private void setMatchable(Collection<Date> dates) {
 			// do nothing
 		}
 	}
@@ -829,6 +835,29 @@ public class PropertyFactoryTest {
 		assertNotNull( property );
 		assertEquals( "translatable", property.getName() );
 		assertTrue( property.shouldBeTranslated() );
+	}
+
+	@Test
+	public void testCollectionMethodPropertyDetectsLackOfMatcher()
+			throws NoSuchMethodException {
+		CollectionProperty property = (CollectionProperty) PropertyFactory.createProperty(
+				getCollectionMethod( "setExplicitMethod", Set.class ),
+				AccessMode.METHOD );
+		assertNotNull( property );
+		assertEquals( "explicitMethod", property.getName() );
+		assertFalse( property.hasMatcher() );
+	}
+
+	@Test
+	public void testCollectionMethodPropertyDetectsMatcher()
+			throws NoSuchMethodException {
+		CollectionProperty property = (CollectionProperty) PropertyFactory.createProperty(
+				getCollectionMethod( "setMatchable", Collection.class ),
+				AccessMode.METHOD );
+		assertNotNull( property );
+		assertEquals( "matchable", property.getName() );
+		assertTrue( property.hasMatcher() );
+		assertEquals( HashCodeMatcher.class, property.getMatcherClass() );
 	}
 
 }
