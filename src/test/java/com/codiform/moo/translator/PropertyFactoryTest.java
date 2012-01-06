@@ -41,13 +41,48 @@ public class PropertyFactoryTest {
 		@TranslateCollection(Double.class)
 		private Set<Float> translatable;
 
-		@com.codiform.moo.annotation.Property(update=true)
+		@com.codiform.moo.annotation.Property(update = true)
 		private Set<Float> updatable;
 
 		private List<Integer> copyMe;
-		
+
 		@MatchWith(HashCodeMatcher.class)
 		private Collection<Boolean> matchable;
+	}
+
+	@SuppressWarnings("unused")
+	private static class CollectionMethodPropertyContainer {
+		@com.codiform.moo.annotation.Property
+		public static void setExplicitStaticMethod( Collection<String> collection ) {
+			// do nothing
+		}
+
+		public static void setImplicitStaticMethod( Collection<String> collection ) {
+			// do nothing
+		}
+		
+		@com.codiform.moo.annotation.Property
+		public void execute( List<Runnable> runnable ) {
+			// do nothing
+		}
+
+		private Collection<Object> getGettable() {
+			return null;
+		}
+
+		@com.codiform.moo.annotation.Property
+		private void setExplicitMethod(Set<String> explicitCollectionField) {
+			// do nothing
+		}
+		
+		private void setGettable(Collection<Object> collection) {
+			// do nothing
+		}
+		
+		private void setImplicitMethod(List<Integer> collection) {
+			// do nothing
+		}
+
 	}
 
 	@SuppressWarnings("unused")
@@ -75,7 +110,8 @@ public class PropertyFactoryTest {
 		private Integer copyMe;
 	}
 
-	public static class HashCodeMatcher implements CollectionMatcher<Object, Object> {
+	public static class HashCodeMatcher implements
+			CollectionMatcher<Object, Object> {
 
 		@Override
 		public Object getTarget(Object source) {
@@ -173,6 +209,14 @@ public class PropertyFactoryTest {
 	private Field getCollectionField(String fieldName)
 			throws NoSuchFieldException {
 		return CollectionFieldPropertyContainer.class.getDeclaredField( fieldName );
+	}
+
+	private Method getCollectionMethod(String methodName,
+			Class<?>... parameters)
+			throws NoSuchMethodException {
+		return CollectionMethodPropertyContainer.class.getDeclaredMethod(
+				methodName,
+				parameters );
 	}
 
 	private Field getField(String fieldName) throws NoSuchFieldException {
@@ -273,6 +317,28 @@ public class PropertyFactoryTest {
 				AccessMode.METHOD );
 		assertCollectionProperty( "explicitCollectionField", true, false,
 				Collection.class, true,
+				property );
+	}
+
+	@Test
+	public void testExplicitCollectionMethodCreatesPropertyIfAccessModeIsField()
+			throws NoSuchMethodException {
+		Property property = PropertyFactory.createProperty(
+				getCollectionMethod( "setExplicitMethod", Set.class ),
+				AccessMode.FIELD );
+		assertCollectionProperty( "explicitMethod", true, false, Set.class,
+				false,
+				property );
+	}
+
+	@Test
+	public void testExplicitCollectionMethodCreatesPropertyIfAccessModeIsMethod()
+			throws NoSuchMethodException {
+		Property property = PropertyFactory.createProperty(
+				getCollectionMethod( "setExplicitMethod", Set.class ),
+				AccessMode.METHOD );
+		assertCollectionProperty( "explicitMethod", true, false, Set.class,
+				false,
 				property );
 	}
 
@@ -379,6 +445,27 @@ public class PropertyFactoryTest {
 	}
 
 	@Test
+	public void testImplicitCollectionMethodCreatesCollectionFieldPropertyIfAccessModeIsMethod()
+			throws NoSuchMethodException {
+		Property property = PropertyFactory.createProperty(
+				getCollectionMethod( "setImplicitMethod", List.class ),
+				AccessMode.METHOD );
+		assertCollectionProperty( "implicitMethod", false, false, List.class,
+				false,
+				property );
+	}
+
+	@Test
+	public void testImplicitCollectionMethodIgnoredIfAccessModeIsField()
+			throws NoSuchMethodException {
+		Method field = getCollectionMethod( "setImplicitMethod", List.class );
+		assertNotNull( field );
+		Property property = PropertyFactory.createProperty(
+				field, AccessMode.FIELD );
+		assertNull( property );
+	}
+
+	@Test
 	public void testImplicitFieldCreatesFieldPropertyIfAccessModeIsField()
 			throws NoSuchFieldException {
 		Property property = PropertyFactory.createProperty(
@@ -415,6 +502,21 @@ public class PropertyFactoryTest {
 	}
 
 	@Test
+	public void testInvalidPropertyExceptionIfCollectionMethodDoesntBeginWithSet()
+			throws NoSuchMethodException {
+		try {
+			Property property = PropertyFactory.createProperty(
+					getCollectionMethod( "execute", List.class ), AccessMode.METHOD );
+			fail( "Should not have created a property for a method not starting with 'set': "
+					+ property );
+		} catch( InvalidPropertyException ipe ) {
+			assertEquals( "execute", ipe.getPropertyName() );
+			assertThat( ipe.getMessage(),
+					org.hamcrest.Matchers.containsString( "'set<Name>'" ) );
+		}
+	}
+
+	@Test
 	public void testInvalidPropertyExceptionIfExplicitCollectionFieldIsStatic()
 			throws NoSuchFieldException {
 		try {
@@ -427,6 +529,22 @@ public class PropertyFactoryTest {
 			assertEquals( "explicitStaticField", ipe.getPropertyName() );
 			assertThat( ipe.getMessage(),
 					org.hamcrest.Matchers.containsString( "static field" ) );
+		}
+	}
+
+	@Test
+	public void testInvalidPropertyExceptionIfExplicitCollectionMethodIsStatic()
+			throws NoSuchMethodException {
+		try {
+			Property property = PropertyFactory.createProperty(
+					getCollectionMethod( "setExplicitStaticMethod", Collection.class ),
+					AccessMode.METHOD );
+			fail( "Should not have created a property for a static method: "
+					+ property );
+		} catch( InvalidPropertyException ipe ) {
+			assertEquals( "explicitStaticMethod", ipe.getPropertyName() );
+			assertThat( ipe.getMessage(),
+					org.hamcrest.Matchers.containsString( "static method" ) );
 		}
 	}
 
@@ -531,6 +649,15 @@ public class PropertyFactoryTest {
 	}
 
 	@Test
+	public void testNoPropertyOrExceptionIfImplicitCollectionMethodIsStatic()
+			throws NoSuchMethodException {
+		Property property = PropertyFactory.createProperty(
+				getCollectionMethod( "setImplicitStaticMethod", Collection.class ),
+				AccessMode.METHOD );
+		assertNull( property );
+	}
+
+	@Test
 	public void testNoPropertyOrExceptionIfImplicitFieldIsStatic()
 			throws NoSuchFieldException {
 		Property property = PropertyFactory.createProperty(
@@ -556,10 +683,29 @@ public class PropertyFactoryTest {
 	}
 
 	@Test
+	public void testSetterGetterPairCreatesGettableCollectionMethodProperty()
+			throws NoSuchMethodException {
+		Property property = PropertyFactory.createProperty(
+				getCollectionMethod( "setGettable", Collection.class ),
+				AccessMode.METHOD );
+		assertCollectionProperty( "gettable", false, false, Collection.class,
+				true, property );
+	}
+
+	@Test
 	public void testSetterGetterPairCreatesGettableMethodProperty()
 			throws NoSuchMethodException {
 		Property property = PropertyFactory.createProperty(
 				getMethod( "setGettable", Float.class ), AccessMode.METHOD );
 		assertProperty( "gettable", false, false, Float.class, true, property );
+	}
+	
+	@Test
+	public void testSetterWithoutGetterCreatesUngettableCollectionMethodProperty()
+			throws NoSuchMethodException {
+		Property property = PropertyFactory.createProperty(
+				getCollectionMethod( "setExplicitMethod", Set.class ),
+				AccessMode.METHOD );
+		assertFalse( property.canGetValue() );
 	}
 }
