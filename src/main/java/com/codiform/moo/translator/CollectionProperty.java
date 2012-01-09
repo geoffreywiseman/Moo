@@ -33,6 +33,6 @@ public interface CollectionProperty extends Property {
 	 * @return the matcher
 	 * @see #hasMatcher()
 	 */
-	Class<CollectionMatcher<Object, Object>> getMatcherClass();
+	Class<CollectionMatcher<Object, Object>> getMatcherType();
 	
 }

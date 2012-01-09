@@ -14,7 +14,7 @@ import junit.framework.Assert;
 
 import org.junit.Test;
 
-import com.codiform.moo.annotation.TranslateCollection;
+import com.codiform.moo.annotation.CollectionProperty;
 import com.codiform.moo.curry.Translate;
 
 /**
@@ -145,7 +145,7 @@ public class CollectionPropertyTranslationTest {
 	}
 
 	public static class OrdinalListDto {
-		@TranslateCollection(OrdinalDto.class)
+		@CollectionProperty(itemTranslation = OrdinalDto.class)
 		private List<OrdinalDto> ordinals;
 
 		public List<OrdinalDto> getOrdinals() {
@@ -154,7 +154,7 @@ public class CollectionPropertyTranslationTest {
 	}
 
 	public static class OrdinalSetDto {
-		@TranslateCollection(OrdinalDto.class)
+		@CollectionProperty(itemTranslation = OrdinalDto.class)
 		private SortedSet<OrdinalDto> ordinals;
 
 		public SortedSet<OrdinalDto> getOrdinals() {

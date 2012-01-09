@@ -17,6 +17,7 @@ public class CollectionMethodProperty extends AbstractCollectionProperty {
 
 	public CollectionMethodProperty(Method setter, String name,
 			String expression, boolean explicit, boolean ignore) {
+		super( setter.getAnnotation( com.codiform.moo.annotation.CollectionProperty.class ) );
 		this.setter = setter;
 		this.name = name;
 		this.expression = expression;

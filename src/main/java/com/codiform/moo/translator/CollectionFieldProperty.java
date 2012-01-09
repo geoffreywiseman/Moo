@@ -13,13 +13,16 @@ public class CollectionFieldProperty extends AbstractCollectionProperty {
 	private boolean explicit;
 	private boolean ignore;
 
-	public CollectionFieldProperty(Field field, String name, String expression, boolean explicit, boolean ignore) {
+	public CollectionFieldProperty(Field field, String name, String expression,
+			boolean explicit, boolean ignore) {
+		super(
+				field.getAnnotation( com.codiform.moo.annotation.CollectionProperty.class ) );
 		this.field = field;
 		this.name = name;
 		this.expression = expression;
 		this.explicit = explicit;
 		this.ignore = ignore;
-		
+
 		if( !field.isAccessible() )
 			field.setAccessible( true );
 	}

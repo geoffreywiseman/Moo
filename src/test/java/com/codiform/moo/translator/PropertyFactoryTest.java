@@ -14,7 +14,6 @@ import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
@@ -22,33 +21,33 @@ import org.junit.Test;
 import org.mvel2.sh.Command;
 
 import com.codiform.moo.InvalidPropertyException;
+import com.codiform.moo.annotation.Access;
 import com.codiform.moo.annotation.AccessMode;
-import com.codiform.moo.annotation.MatchWith;
-import com.codiform.moo.annotation.TranslateCollection;
+import com.codiform.moo.annotation.InvalidAnnotationException;
 
 public class PropertyFactoryTest {
 
 	@SuppressWarnings("unused")
 	private static class CollectionFieldPropertyContainer {
-		@com.codiform.moo.annotation.Property
+		@com.codiform.moo.annotation.CollectionProperty
 		private Collection<String> explicitCollectionField;
 
 		private Set<Double> implicitField;
 
 		private static List<Object> implicitStaticField;
 
-		@com.codiform.moo.annotation.Property
+		@com.codiform.moo.annotation.CollectionProperty
 		private static Collection<Integer> explicitStaticField;
 
-		@TranslateCollection(Double.class)
+		@com.codiform.moo.annotation.CollectionProperty(itemTranslation = Double.class)
 		private Set<Float> translatable;
 
-		@com.codiform.moo.annotation.Property(update = true)
+		@com.codiform.moo.annotation.CollectionProperty(update = true)
 		private Set<Float> updatable;
 
 		private List<Integer> copyMe;
 
-		@MatchWith(HashCodeMatcher.class)
+		@com.codiform.moo.annotation.CollectionProperty(matcher = HashCodeMatcher.class)
 		private Collection<Boolean> matchable;
 	}
 
@@ -63,7 +62,7 @@ public class PropertyFactoryTest {
 			// do nothing
 		}
 
-		@com.codiform.moo.annotation.Property
+		@com.codiform.moo.annotation.CollectionProperty
 		public void execute(List<Runnable> runnable) {
 			// do nothing
 		}
@@ -72,7 +71,7 @@ public class PropertyFactoryTest {
 			return null;
 		}
 
-		@com.codiform.moo.annotation.Property
+		@com.codiform.moo.annotation.CollectionProperty
 		private void setExplicitMethod(Set<String> explicitCollectionField) {
 			// do nothing
 		}
@@ -85,7 +84,7 @@ public class PropertyFactoryTest {
 			// do nothing
 		}
 
-		@com.codiform.moo.annotation.Property(update=true)
+		@com.codiform.moo.annotation.CollectionProperty(update = true)
 		private void setUpdatable(List<String> strings) {
 			// do nothing
 		}
@@ -94,12 +93,12 @@ public class PropertyFactoryTest {
 			return null;
 		}
 
-		@TranslateCollection(Date.class)
+		@com.codiform.moo.annotation.CollectionProperty(itemTranslation = Date.class)
 		private void setTranslatable(List<Date> dates) {
 			// do nothing
 		}
-		
-		@MatchWith(HashCodeMatcher.class)
+
+		@com.codiform.moo.annotation.CollectionProperty(matcher = HashCodeMatcher.class)
 		private void setMatchable(Collection<Date> dates) {
 			// do nothing
 		}
@@ -206,7 +205,7 @@ public class PropertyFactoryTest {
 		public Date getUpdatable() {
 			return null;
 		}
-		
+
 		@com.codiform.moo.annotation.Property(translate = true)
 		public void setTranslatable(Float value) {
 			// do nothing
@@ -215,6 +214,20 @@ public class PropertyFactoryTest {
 		public void setUntranslatable(Float value) {
 			// do nothing
 		}
+	}
+	
+	@Access(AccessMode.FIELD)
+	public static class StringWithCollectionPropertyAnnotation {
+		@SuppressWarnings("unused")
+		@com.codiform.moo.annotation.CollectionProperty
+		private String invalid;
+	}
+
+	@Access(AccessMode.FIELD)
+	public static class ListWithPropertyAnnotation {
+		@SuppressWarnings("unused")
+		@com.codiform.moo.annotation.Property
+		private List<String> invalid;
 	}
 
 	private void assertCollectionProperty(String name, boolean explicit,
@@ -310,7 +323,7 @@ public class PropertyFactoryTest {
 		assertNotNull( property );
 		assertEquals( "matchable", property.getName() );
 		assertTrue( property.hasMatcher() );
-		assertEquals( HashCodeMatcher.class, property.getMatcherClass() );
+		assertEquals( HashCodeMatcher.class, property.getMatcherType() );
 	}
 
 	@Test
@@ -778,7 +791,8 @@ public class PropertyFactoryTest {
 				getCollectionMethod( "setUpdatable", List.class ),
 				AccessMode.METHOD );
 		assertNotNull( property );
-		assertTrue( "Collection method property should be updatable.", property.shouldUpdate() );
+		assertTrue( "Collection method property should be updatable.",
+				property.shouldUpdate() );
 	}
 
 	@Test
@@ -857,7 +871,17 @@ public class PropertyFactoryTest {
 		assertNotNull( property );
 		assertEquals( "matchable", property.getName() );
 		assertTrue( property.hasMatcher() );
-		assertEquals( HashCodeMatcher.class, property.getMatcherClass() );
+		assertEquals( HashCodeMatcher.class, property.getMatcherType() );
+	}
+	
+	@Test(expected=InvalidAnnotationException.class)
+	public void testCollectionWithPropertyAnnotationThrowsInvalidAnnotationException() throws SecurityException, NoSuchFieldException {
+		PropertyFactory.createProperty( ListWithPropertyAnnotation.class.getDeclaredField( "invalid" ), AccessMode.FIELD );
+	}
+
+	@Test(expected=InvalidAnnotationException.class)
+	public void testNonCollectionWithCollectionPropertyAnnotationThrowsInvalidAnnotationException() throws SecurityException, NoSuchFieldException {
+		PropertyFactory.createProperty( StringWithCollectionPropertyAnnotation.class.getDeclaredField( "invalid" ), AccessMode.FIELD );
 	}
 
 }

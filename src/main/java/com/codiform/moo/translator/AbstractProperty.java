@@ -4,6 +4,7 @@ import java.lang.annotation.Annotation;
 
 import com.codiform.moo.IncompatibleTypeTranslationException;
 import com.codiform.moo.TranslationException;
+import com.codiform.moo.annotation.Optionality;
 
 public abstract class AbstractProperty implements Property {
 
@@ -16,10 +17,15 @@ public abstract class AbstractProperty implements Property {
 	@Override
 	public boolean isSourceRequired(boolean defaultSetting) {
 		com.codiform.moo.annotation.Property annotation = getAnnotation(com.codiform.moo.annotation.Property.class);
-		if( annotation == null ) {
+		return isSourceRequired( defaultSetting, annotation == null ? null : annotation.optionality() );
+	}
+
+	protected boolean isSourceRequired(boolean defaultSetting,
+			Optionality optionality) {
+		if( optionality == null ) {
 			return defaultSetting;
 		} else {
-			switch( annotation.optionality() ) {
+			switch( optionality ) {
 			case REQUIRED:
 				return true;
 			case OPTIONAL:
@@ -28,7 +34,6 @@ public abstract class AbstractProperty implements Property {
 				return defaultSetting;
 			}
 		}
-		
 	}
 
 	protected void checkValue(Object value) {

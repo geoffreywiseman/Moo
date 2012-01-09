@@ -17,9 +17,7 @@ import java.util.Set;
 
 import org.junit.Test;
 
-import com.codiform.moo.annotation.MatchWith;
-import com.codiform.moo.annotation.Property;
-import com.codiform.moo.annotation.TranslateCollection;
+import com.codiform.moo.annotation.CollectionProperty;
 import com.codiform.moo.curry.Update;
 import com.codiform.moo.translator.CollectionMatcher;
 
@@ -357,8 +355,7 @@ public class CollectionUpdateTest {
 	}
 
 	public static class ValueList {
-		@TranslateCollection(Value.class)
-		@Property(update = true)
+		@CollectionProperty(itemTranslation = Value.class,update=true)
 		private List<Value> values;
 
 		public ValueList(Value... items) {
@@ -399,8 +396,7 @@ public class CollectionUpdateTest {
 	}
 
 	public static class ValueMap {
-		@TranslateCollection(Value.class)
-		@Property(update = true)
+		@CollectionProperty(itemTranslation = Value.class, update=true)
 		private Map<String, Value> values;
 
 		public ValueMap() {
@@ -425,9 +421,7 @@ public class CollectionUpdateTest {
 	}
 
 	public static class FieldValueSet implements Iterable<Value> {
-		@MatchWith(ValueIdMatcher.class)
-		@TranslateCollection(value = Value.class)
-		@Property(update = true)
+		@CollectionProperty(itemTranslation = Value.class, matcher = ValueIdMatcher.class, update=true)
 		private Set<Value> values;
 
 		public FieldValueSet() {
@@ -481,15 +475,13 @@ public class CollectionUpdateTest {
 		public Iterator<Value> iterator() {
 			return values.iterator();
 		}
-		
+
 		public Set<Value> getValues() {
 			return values;
 		}
-		
-		@MatchWith(ValueIdMatcher.class)
-		@TranslateCollection(value = Value.class)
-		@Property(update = true)
-		public void setValues( Set<Value> values ) {
+
+		@CollectionProperty(itemTranslation = Value.class, matcher = ValueIdMatcher.class, update=true)
+		public void setValues(Set<Value> values) {
 			this.values = values;
 		}
 	}
@@ -498,9 +490,9 @@ public class CollectionUpdateTest {
 			CollectionMatcher<ValueDto, Value> {
 
 		private Map<Integer, Value> valueById;
-		
+
 		public ValueIdMatcher() {
-			valueById = new HashMap<Integer,Value>();
+			valueById = new HashMap<Integer, Value>();
 		}
 
 		@Override

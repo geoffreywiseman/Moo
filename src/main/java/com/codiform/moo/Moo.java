@@ -29,7 +29,7 @@ import com.codiform.moo.source.TranslationSource;
  * <p>
  * Moo supports a limited amount of configuration through annotations, in 
  * particular {@link com.codiform.moo.annotation.Translation}, {@link com.codiform.moo.curry.Translate} 
- * and {@link com.codiform.moo.annotation.TranslateCollection}.
+ * and {@link com.codiform.moo.annotation.CollectionProperty}.
  * </p>
  * 
  * <p>

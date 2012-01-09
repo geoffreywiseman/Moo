@@ -2,12 +2,15 @@ package com.codiform.moo;
 
 import static org.junit.Assert.fail;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import org.junit.Test;
 
 import com.codiform.moo.annotation.Access;
 import com.codiform.moo.annotation.AccessMode;
+import com.codiform.moo.annotation.CollectionProperty;
 import com.codiform.moo.annotation.Ignore;
 import com.codiform.moo.annotation.Optionality;
 import com.codiform.moo.annotation.Property;
@@ -239,12 +242,16 @@ public class MissingSourcePropertyTest {
 
 		private Date creationDate;
 
+		private List<Date> accessDates;
+
 		public OptionalMethodDestination() {
 			// no-arg constructor for moo
+			this.accessDates = new ArrayList<Date>();
 		}
 
 		public OptionalMethodDestination(int id, String name,
 				Date creationDate) {
+			this();
 			this.id = id;
 			this.name = name;
 			this.creationDate = creationDate;
@@ -265,6 +272,15 @@ public class MissingSourcePropertyTest {
 		@Property(optionality = Optionality.OPTIONAL)
 		public void setCreationDate(Date creationDate) {
 			this.creationDate = creationDate;
+		}
+
+		@CollectionProperty(optionality = Optionality.OPTIONAL)
+		public void setAccessDates(List<Date> accessDates) {
+			this.accessDates = accessDates;
+		}
+		
+		public List<Date> getAccessDates() {
+			return accessDates;
 		}
 
 		public void setId(Integer id) {

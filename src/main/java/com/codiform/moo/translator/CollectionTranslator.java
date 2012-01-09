@@ -15,7 +15,7 @@ import java.util.TreeSet;
 
 import com.codiform.moo.TranslationException;
 import com.codiform.moo.UnsupportedTranslationException;
-import com.codiform.moo.annotation.TranslateCollection;
+import com.codiform.moo.translator.CollectionProperty;
 import com.codiform.moo.configuration.Configuration;
 import com.codiform.moo.curry.Update;
 import com.codiform.moo.source.TranslationSource;
@@ -57,7 +57,7 @@ public class CollectionTranslator {
 	 * @param value
 	 *            the source collection
 	 * @param annotation
-	 *            the {@link TranslateCollection} annotation, if present
+	 *            the {@link CollectionProperty} annotation, if present
 	 * @param cache
 	 *            the translation cache of previously-translated elements
 	 * @return the translated collection
@@ -260,7 +260,7 @@ public class CollectionTranslator {
 			Collection<Object> destinationCollection,
 			TranslationSource translationSource,
 			CollectionProperty property) {
-		Class<CollectionMatcher<Object, Object>> matcherClass = property.getMatcherClass();
+		Class<CollectionMatcher<Object, Object>> matcherClass = property.getMatcherType();
 		try {
 			Collection<Object> unmatched = new ArrayList<Object>(
 					destinationCollection );

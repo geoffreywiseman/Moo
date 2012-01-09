@@ -1,40 +1,60 @@
 package com.codiform.moo.translator;
 
-import com.codiform.moo.annotation.MatchWith;
-import com.codiform.moo.annotation.TranslateCollection;
+import com.codiform.moo.annotation.Optionality;
 
-public abstract class AbstractCollectionProperty extends AbstractProperty implements
+public abstract class AbstractCollectionProperty extends AbstractProperty
+		implements
 		CollectionProperty {
+
+	private final Class<?> itemTranslation;
+	private final Class<CollectionMatcher<Object, Object>> matcher;
+	private final Optionality optionality;
+
+	@SuppressWarnings("unchecked")
+	public AbstractCollectionProperty(
+			com.codiform.moo.annotation.CollectionProperty annotation) {
+		if( annotation != null ) {
+			itemTranslation = annotation.itemTranslation() == Object.class ? null
+					: annotation.itemTranslation();
+			matcher = (Class<CollectionMatcher<Object, Object>>) (annotation.matcher() == IndexMatcher.class ? null
+					: annotation.matcher());
+			optionality = annotation.optionality();
+		} else {
+			itemTranslation = null;
+			matcher = null;
+			optionality = null;
+		}
+	}
 
 	@Override
 	public Class<?> getItemTranslationType() {
-		TranslateCollection annotation = getAnnotation( TranslateCollection.class );
-		return annotation == null ? null : annotation.value();
+		return itemTranslation;
 	}
 
 	@Override
 	public boolean hasMatcher() {
-		MatchWith annotation = getAnnotation( MatchWith.class );
-		return annotation != null;
+		return matcher != null;
 	}
 
 	@Override
 	public boolean shouldItemsBeTranslated() {
-		TranslateCollection annotation = getAnnotation( TranslateCollection.class );
-		return annotation != null;
+		return itemTranslation != null;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
-	public Class<CollectionMatcher<Object, Object>> getMatcherClass() {
-		MatchWith annotation = getAnnotation( MatchWith.class );
-		if( annotation == null ) {
-			return null;
-		} else {
-			Class<? extends CollectionMatcher<?, ?>> matcher = annotation.value();
-			return (Class<CollectionMatcher<Object, Object>>) matcher;
-		}
+	public Class<CollectionMatcher<Object, Object>> getMatcherType() {
+		return matcher;
 	}
 
+	@Override
+	public boolean shouldUpdate() {
+		com.codiform.moo.annotation.CollectionProperty annotation = getAnnotation( com.codiform.moo.annotation.CollectionProperty.class );
+		return annotation == null ? false : annotation.update();
+	}
+
+	@Override
+	public boolean isSourceRequired(boolean defaultSetting) {
+		return isSourceRequired( defaultSetting, optionality );
+	}
 
 }
