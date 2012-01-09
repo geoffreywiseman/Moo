@@ -223,6 +223,13 @@ public class CollectionTranslator {
 			}
 		}
 
+		if( property.shouldRemoveOrphans() ) {
+			removeOrphans( sourceMap, destinationMap );
+		}
+	}
+
+	private void removeOrphans(Map<Object, Object> sourceMap,
+			Map<Object, Object> destinationMap) {
 		Set<Object> toRemove = new HashSet<Object>( destinationMap.keySet() );
 		toRemove.removeAll( sourceMap.keySet() );
 		for( Object key : toRemove ) {
@@ -280,8 +287,10 @@ public class CollectionTranslator {
 					Update.from( source ).to( destination );
 				}
 			}
-			for( Object item : unmatched ) {
-				destinationCollection.remove( item );
+			if( property.shouldRemoveOrphans() ) {
+				for( Object item : unmatched ) {
+					destinationCollection.remove( item );
+				}
 			}
 		} catch( InstantiationException e ) {
 			throw new TranslationException( "Could not create matcher: "
@@ -314,7 +323,8 @@ public class CollectionTranslator {
 					destinationCollection.add( source.next() );
 				}
 			}
-		} else if( destination.hasNext() && !source.hasNext() ) {
+		} else if( destination.hasNext() && !source.hasNext()
+				&& property.shouldRemoveOrphans() ) {
 			while( destination.hasNext() ) {
 				destination.next();
 				destination.remove();

@@ -9,6 +9,7 @@ public abstract class AbstractCollectionProperty extends AbstractProperty
 	private final Class<?> itemTranslation;
 	private final Class<CollectionMatcher<Object, Object>> matcher;
 	private final Optionality optionality;
+	private final boolean removeOrphans;
 
 	@SuppressWarnings("unchecked")
 	public AbstractCollectionProperty(
@@ -19,10 +20,12 @@ public abstract class AbstractCollectionProperty extends AbstractProperty
 			matcher = (Class<CollectionMatcher<Object, Object>>) (annotation.matcher() == IndexMatcher.class ? null
 					: annotation.matcher());
 			optionality = annotation.optionality();
+			removeOrphans = annotation.removeOrphans();
 		} else {
 			itemTranslation = null;
 			matcher = null;
 			optionality = null;
+			removeOrphans = true;
 		}
 	}
 
@@ -55,6 +58,11 @@ public abstract class AbstractCollectionProperty extends AbstractProperty
 	@Override
 	public boolean isSourceRequired(boolean defaultSetting) {
 		return isSourceRequired( defaultSetting, optionality );
+	}
+
+	@Override
+	public boolean shouldRemoveOrphans() {
+		return removeOrphans;
 	}
 
 }

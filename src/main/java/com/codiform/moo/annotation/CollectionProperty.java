@@ -54,4 +54,10 @@ public @interface CollectionProperty {
 	 */
 	Optionality optionality() default Optionality.DEFAULT;
 
+	/**
+	 * Whether or not Orphans (items in the destination that have no match in the source) should be removed during a collection update.
+	 * 
+	 * @return true if they should be removed, false otherwise
+	 */
+	boolean removeOrphans() default true;
 }
