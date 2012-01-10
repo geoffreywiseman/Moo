@@ -15,9 +15,7 @@ import java.util.TreeSet;
 
 import com.codiform.moo.TranslationException;
 import com.codiform.moo.UnsupportedTranslationException;
-import com.codiform.moo.translator.CollectionProperty;
 import com.codiform.moo.configuration.Configuration;
-import com.codiform.moo.curry.Update;
 import com.codiform.moo.source.TranslationSource;
 
 /**
@@ -284,7 +282,7 @@ public class CollectionTranslator {
 					}
 				} else {
 					unmatched.remove( destination );
-					Update.from( source ).to( destination );
+					translationSource.update( source, destination );
 				}
 			}
 			if( property.shouldRemoveOrphans() ) {
