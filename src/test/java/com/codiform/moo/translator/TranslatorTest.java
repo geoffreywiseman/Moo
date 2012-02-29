@@ -1,11 +1,15 @@
 package com.codiform.moo.translator;
 
+import static org.mockito.Mockito.when;
+
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import com.codiform.moo.annotation.AccessMode;
 import com.codiform.moo.configuration.Configuration;
 import com.codiform.moo.source.TranslationSource;
 
@@ -14,19 +18,27 @@ public class TranslatorTest {
 
 	@Mock
 	private Configuration configuration;
-	
+
 	@Mock
 	private TranslationSource translationSource;
 
-	private Translator<Destination> translator = new Translator<Destination>(
-			Destination.class, configuration);
+	private Translator<Destination> translator;
+
+	@Before
+	public void setUp() {
+		when( configuration.getDefaultAccessMode() ).thenReturn(
+				AccessMode.FIELD );
+		translator = new Translator<Destination>(
+				Destination.class, configuration );
+	}
 
 	@Test
 	public void testUpdate() {
+		Assert.assertNotNull( configuration );
 		Source source = new Source( "TranslatorTest" );
 		Destination destination = new Destination();
 		translator.update( source, destination, translationSource, null );
-		
+
 		Assert.assertEquals( "TranslatorTest", destination.getValue() );
 	}
 
@@ -35,13 +47,13 @@ public class TranslatorTest {
 		Source source = new Source( "TranslatorTest" );
 		Destination destination = new Destination();
 		translator.update( source, destination, translationSource, null );
-		
+
 		Assert.assertEquals( "TranslatorTest", destination.getValue() );
 	}
 
 	@Test
 	public void testCreate() {
-		Assert.assertNotNull(translator.create());
+		Assert.assertNotNull( translator.create() );
 	}
 
 	public static class Source {

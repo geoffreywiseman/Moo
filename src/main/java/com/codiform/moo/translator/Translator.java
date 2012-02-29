@@ -199,10 +199,16 @@ public class Translator<T> {
 		Map<String, Property> properties = new HashMap<String, Property>();
 		Class<?> current = destinationClass;
 		while( current != null ) {
-			merge( properties, getPropertiesForClass( current ) );
+			if( !shouldIgnoreClass( current ) ) {
+				merge( properties, getPropertiesForClass( current ) );
+			}
 			current = current.getSuperclass();
 		}
 		return new HashSet<Property>( properties.values() );
+	}
+
+	private boolean shouldIgnoreClass(Class<?> current) {
+		return current.getSimpleName().contains( "$$_javassist" );
 	}
 
 	private void merge(Map<String, Property> currentProperties,
@@ -223,7 +229,7 @@ public class Translator<T> {
 	private Set<Property> getPropertiesForClass(Class<?> clazz) {
 		Map<String, Property> properties = new HashMap<String, Property>();
 		Access access = clazz.getAnnotation( Access.class );
-		AccessMode mode = access == null ? AccessMode.FIELD : access.value();
+		AccessMode mode = access == null ? configuration.getDefaultAccessMode() : access.value();
 		for( Field item : clazz.getDeclaredFields() ) {
 			Property property = PropertyFactory.createProperty( item, mode );
 			if( property != null ) {
