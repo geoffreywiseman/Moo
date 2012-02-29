@@ -211,7 +211,8 @@
 
 	<scm>
 		<url>http://github.com/geoffreywiseman/Moo</url>
-		<connection>scm:git:git://github.com/geoffreywiseman/Moo.git</connection>
+		<connection>scm:git:git@github.com:geoffreywiseman/Moo.git</connection>
+		<developerConnection>scm:git:git@github.com:geoffreywiseman/Moo.git</developerConnection>
 	</scm>
 
 	<licenses>
