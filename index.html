@@ -43,7 +43,7 @@ Update.from( userDto ).to( currentUser );</pre>
 			</p>
 			<p>
 				If you're using Maven, you can add a dependency on Moo.  Stable releases are available in the Maven
-				<a href="http://repo1.maven.org/maven2/">central repository</a>, and snapshot versions can be
+				<a href="http://repo1.maven.org/maven2/com/codiform/moo">central repository</a>, and snapshot versions can be
 				<a href="http://oss.sonatype.org/index.html#nexus-search;gav~com.codiform~moo~~~">found</a> in the 
 				<a href="http://oss.sonatype.org/">sonatype opensource repository</a>.
 			</p>
@@ -58,15 +58,19 @@ Update.from( userDto ).to( currentUser );</pre>
 		    </p>
 		    
 		    <h2>Release History</h2>
-		    <p><b>Moo v1.2</b> (<i>2010-Jan-11</i>): Support for external objects in translation; this lets you bring in outside data or logic
-		    in the translation, which I needed to support a lookup against a data access object (DAO) in order to translate from a smaller
-		    client-side cached object to the real server-side domain object.</p>
-		    <p><b>Moo v1.1</b> (<i>2009-Nov-25</i>): Support for access modes.  Some of our DTOs flatten server-side hierarchies, and we 
-		    wanted to be able to invoke setters rather than directly access the fields at times.</p>
-		    <p><b>Moo v1.0</b> (<i>2009-Nov-03</i>): Initial release.  After selecting Hibernate and GWT for a client project, we discovered
-		    they don't play very well together.  I'd used an approach like Moo at several companies in the past, and it seemed worth doing 
-		    again, but this time as an open source project, so I wouldn't have to do it ever again.</p>
-		    
+				<p>There's a <a href="https://github.com/geoffreywiseman/Moo/wiki/Release-History">detailed release history</a> in the wiki, but in brief:</p>
+		    <ul>
+				<li><b>Moo v1.3</b> (<i>2012-Feb-29</i>): Addresses a number of weak points around nested updates, updates of collections and collection matching,
+					ignoring/optional properties, etc.</li>
+				<li><b>Moo v1.2</b> (<i>2010-Jan-11</i>): Support for external objects in translation; this lets you bring in outside data or logic
+		    		in the translation, which I needed to support a lookup against a data access object (DAO) in order to translate from a smaller
+		    		client-side cached object to the real server-side domain object.</li>
+			    <li><b>Moo v1.1</b> (<i>2009-Nov-25</i>): Support for access modes.  Some of our DTOs flatten server-side hierarchies, and we 
+			    wanted to be able to invoke setters rather than directly access the fields at times.</li>
+			    <li><b>Moo v1.0</b> (<i>2009-Nov-03</i>): Initial release.  After selecting Hibernate and GWT for a client project, we discovered
+			    they don't play very well together.  I'd used an approach like Moo at several companies in the past, and it seemed worth doing 
+			    again, but this time as an open source project, so I wouldn't have to do it ever again.</li>
+			</ul>
 		    
 			<h2>Moo is a Code Smell</h2>
 			<p>Although I've used Moo before and I'll undoubtedly use it again, I think it's 
@@ -91,7 +95,7 @@ Update.from( userDto ).to( currentUser );</pre>
 			Eventually, it may be possible to configure Moo without using annotations.</p>
 			
 			<h2>More Information</h2>
-			<p>The original concepts behind Moo were developed by Fuseboy first at Exchange Solutions, and then for The Syntegrity Group.
+			<p>The original concepts behind Moo were developed by <a href="http://twitter.com/fuseboy">Fuseboy</a> first at Exchange Solutions, and then for The Syntegrity Group.
 			Although this code is entirely new, Moo owes some conceptual debt to those implementations.  Moo has been developed for
 			open-source by <a href="http://geoffreywiseman.github.com">Geoffrey Wiseman</a>.</p>
 
