@@ -17,3 +17,7 @@ You can find more information by reading one of the following:
 
 More information on the copyright and license can be found in NOTICE and LICENSE respectively, but basically
 it's BSD licensed and Copyright (C) 2009, Geoffrey Wiseman.
+
+## Continuous Integration
+
+Moo is built by [Travis CI](http://travis-ci.org/#!/geoffreywiseman/Moo).
