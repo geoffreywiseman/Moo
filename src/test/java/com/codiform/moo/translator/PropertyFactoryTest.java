@@ -218,14 +218,12 @@ public class PropertyFactoryTest {
 	
 	@Access(AccessMode.FIELD)
 	public static class StringWithCollectionPropertyAnnotation {
-		@SuppressWarnings("unused")
 		@com.codiform.moo.annotation.CollectionProperty
 		private String invalid;
 	}
 
 	@Access(AccessMode.FIELD)
 	public static class ListWithPropertyAnnotation {
-		@SuppressWarnings("unused")
 		@com.codiform.moo.annotation.Property
 		private List<String> invalid;
 	}

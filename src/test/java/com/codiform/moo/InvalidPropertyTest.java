@@ -85,13 +85,11 @@ public class InvalidPropertyTest {
 	}
 
 	public static class FinalFieldDestination {
-		@SuppressWarnings("unused")
 		@Property
 		private final String value = "originalValue";
 	}
 
 	public static class StaticFieldDestination {
-		@SuppressWarnings("unused")
 		@Property
 		private static String value = "originalValue";
 	}

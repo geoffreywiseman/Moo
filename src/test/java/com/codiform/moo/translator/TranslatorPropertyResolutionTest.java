@@ -185,7 +185,6 @@ public class TranslatorPropertyResolutionTest {
 
 	@Access(AccessMode.METHOD)
 	public static class Golf {
-		@SuppressWarnings("unused")
 		@com.codiform.moo.annotation.Property
 		private String golf;
 
