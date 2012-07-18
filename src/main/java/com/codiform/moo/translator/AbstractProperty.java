@@ -1,7 +1,5 @@
 package com.codiform.moo.translator;
 
-import java.lang.annotation.Annotation;
-
 import com.codiform.moo.IncompatibleTypeTranslationException;
 import com.codiform.moo.TranslationException;
 import com.codiform.moo.annotation.Optionality;
@@ -12,14 +10,6 @@ public abstract class AbstractProperty implements Property {
 		return !getType().isPrimitive();
 	}
 	
-	protected abstract <A extends Annotation> A getAnnotation( Class<A> annotationType );
-
-	@Override
-	public boolean isSourceRequired(boolean defaultSetting) {
-		com.codiform.moo.annotation.Property annotation = getAnnotation(com.codiform.moo.annotation.Property.class);
-		return isSourceRequired( defaultSetting, annotation == null ? null : annotation.optionality() );
-	}
-
 	protected boolean isSourceRequired(boolean defaultSetting,
 			Optionality optionality) {
 		if( optionality == null ) {
@@ -54,16 +44,6 @@ public abstract class AbstractProperty implements Property {
 		} else if (!getType().isAssignableFrom(value.getClass())) {
 			throw new IncompatibleTypeTranslationException( value, getName(), getType() );
 		}
-	}
-
-	public boolean shouldBeTranslated() {
-		com.codiform.moo.annotation.Property annotation = getAnnotation(com.codiform.moo.annotation.Property.class);
-		return annotation != null && annotation.translate();
-	}
-	
-	public boolean shouldUpdate() {
-		com.codiform.moo.annotation.Property annotation = getAnnotation( com.codiform.moo.annotation.Property.class );
-		return annotation == null ? false : annotation.update();
 	}
 
 	@Override

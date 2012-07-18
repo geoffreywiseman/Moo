@@ -1,6 +1,5 @@
 package com.codiform.moo.translator;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 
 import com.codiform.moo.TranslationException;
@@ -13,10 +12,11 @@ public class CollectionFieldProperty extends AbstractCollectionProperty {
 	private boolean explicit;
 	private boolean ignore;
 
-	public CollectionFieldProperty(Field field, String name, String expression,
+	public CollectionFieldProperty(Field field,
+			com.codiform.moo.annotation.CollectionProperty annotation,
+			String name, String expression,
 			boolean explicit, boolean ignore) {
-		super(
-				field.getAnnotation( com.codiform.moo.annotation.CollectionProperty.class ) );
+		super( annotation );
 		this.field = field;
 		this.name = name;
 		this.expression = expression;
@@ -25,10 +25,6 @@ public class CollectionFieldProperty extends AbstractCollectionProperty {
 
 		if( !field.isAccessible() )
 			field.setAccessible( true );
-	}
-
-	public <A extends Annotation> A getAnnotation(Class<A> annotationClass) {
-		return field.getAnnotation( annotationClass );
 	}
 
 	public String getName() {

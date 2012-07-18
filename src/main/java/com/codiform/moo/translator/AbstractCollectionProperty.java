@@ -10,6 +10,7 @@ public abstract class AbstractCollectionProperty extends AbstractProperty
 	private final Class<CollectionMatcher<Object, Object>> matcher;
 	private final Optionality optionality;
 	private final boolean removeOrphans;
+	private final boolean update;
 
 	@SuppressWarnings("unchecked")
 	public AbstractCollectionProperty(
@@ -21,11 +22,13 @@ public abstract class AbstractCollectionProperty extends AbstractProperty
 					: annotation.matcher());
 			optionality = annotation.optionality();
 			removeOrphans = annotation.removeOrphans();
+			update = annotation.update();
 		} else {
 			itemTranslation = null;
 			matcher = null;
 			optionality = null;
 			removeOrphans = true;
+			update = false;
 		}
 	}
 
@@ -51,8 +54,7 @@ public abstract class AbstractCollectionProperty extends AbstractProperty
 
 	@Override
 	public boolean shouldUpdate() {
-		com.codiform.moo.annotation.CollectionProperty annotation = getAnnotation( com.codiform.moo.annotation.CollectionProperty.class );
-		return annotation == null ? false : annotation.update();
+		return update;
 	}
 
 	@Override
@@ -63,6 +65,11 @@ public abstract class AbstractCollectionProperty extends AbstractProperty
 	@Override
 	public boolean shouldRemoveOrphans() {
 		return removeOrphans;
+	}
+	
+	@Override
+	public boolean shouldBeTranslated() {
+		return false;
 	}
 
 }

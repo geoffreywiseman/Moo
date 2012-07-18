@@ -1,6 +1,5 @@
 package com.codiform.moo.translator;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
@@ -15,9 +14,11 @@ public class CollectionMethodProperty extends AbstractCollectionProperty {
 	private boolean explicit;
 	private boolean ignore;
 
-	public CollectionMethodProperty(Method setter, String name,
+	public CollectionMethodProperty(Method setter,
+			com.codiform.moo.annotation.CollectionProperty annotation,
+			String name,
 			String expression, boolean explicit, boolean ignore) {
-		super( setter.getAnnotation( com.codiform.moo.annotation.CollectionProperty.class ) );
+		super( annotation );
 		this.setter = setter;
 		this.name = name;
 		this.expression = expression;
@@ -62,10 +63,6 @@ public class CollectionMethodProperty extends AbstractCollectionProperty {
 			currentClass = currentClass.getSuperclass();
 		}
 		return getter;
-	}
-
-	public <A extends Annotation> A getAnnotation(Class<A> annotationClass) {
-		return setter.getAnnotation( annotationClass );
 	}
 
 	public String getName() {

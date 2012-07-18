@@ -1,11 +1,10 @@
 package com.codiform.moo.translator;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 
 import com.codiform.moo.TranslationException;
 
-public class FieldProperty extends AbstractProperty {
+public class FieldProperty extends AbstractItemProperty {
 
 	private Field field;
 	private String name;
@@ -14,9 +13,10 @@ public class FieldProperty extends AbstractProperty {
 	private boolean ignore;
 	private boolean supportsNull;
 
-	public FieldProperty(Field field, String name, String expression,
+	public FieldProperty(Field field, com.codiform.moo.annotation.Property annotation, String name, String expression,
 			boolean explicit,
 			boolean ignore) {
+		super( annotation );
 		this.field = field;
 		this.name = name;
 		this.expression = expression;
@@ -27,10 +27,6 @@ public class FieldProperty extends AbstractProperty {
 			field.setAccessible( true );
 
 		supportsNull = !getType().isPrimitive();
-	}
-
-	public <A extends Annotation> A getAnnotation(Class<A> annotationClass) {
-		return field.getAnnotation( annotationClass );
 	}
 
 	public String getName() {

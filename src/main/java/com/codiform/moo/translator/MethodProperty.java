@@ -1,12 +1,11 @@
 package com.codiform.moo.translator;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import com.codiform.moo.TranslationException;
 
-public class MethodProperty extends AbstractProperty implements Property {
+public class MethodProperty extends AbstractItemProperty {
 
 	private Method getter, setter;
 	private Class<?> type;
@@ -16,7 +15,10 @@ public class MethodProperty extends AbstractProperty implements Property {
 	private boolean explicit;
 	private boolean ignore;
 
-	public MethodProperty(Method setter, String name, String expression, boolean explicit, boolean ignore ) {
+	public MethodProperty(Method setter,
+			com.codiform.moo.annotation.Property annotation, String name,
+			String expression, boolean explicit, boolean ignore) {
+		super( annotation );
 		this.setter = setter;
 		this.name = name;
 		this.expression = expression;
@@ -46,7 +48,8 @@ public class MethodProperty extends AbstractProperty implements Property {
 		}
 		if( getter != null && !getter.getReturnType().isAssignableFrom( type ) ) {
 			getter = null;
-			getterFailure = "Getter return type is incompatible with " + type.getName();
+			getterFailure = "Getter return type is incompatible with "
+					+ type.getName();
 		}
 		if( getter != null && !getter.isAccessible() )
 			getter.setAccessible( true );
@@ -71,10 +74,6 @@ public class MethodProperty extends AbstractProperty implements Property {
 			currentClass = currentClass.getSuperclass();
 		}
 		return getter;
-	}
-
-	public <A extends Annotation> A getAnnotation(Class<A> annotationClass) {
-		return setter.getAnnotation( annotationClass );
 	}
 
 	public String getName() {
@@ -128,17 +127,21 @@ public class MethodProperty extends AbstractProperty implements Property {
 	@Override
 	public Object getValue(Object instance) {
 		if( getter == null ) {
-			throw new UnsupportedOperationException( "Cannot get value: " + getterFailure );
+			throw new UnsupportedOperationException( "Cannot get value: "
+					+ getterFailure );
 		} else {
 			try {
 				getter.setAccessible( true );
 				return getter.invoke( instance );
 			} catch( IllegalArgumentException exception ) {
-				throw new TranslationException( "Illegal argument to getter", exception );
+				throw new TranslationException( "Illegal argument to getter",
+						exception );
 			} catch( IllegalAccessException exception ) {
-				throw new TranslationException( "Cannot access getter", exception );
+				throw new TranslationException( "Cannot access getter",
+						exception );
 			} catch( InvocationTargetException exception ) {
-				throw new TranslationException( "Error while invoking getter", exception );
+				throw new TranslationException( "Error while invoking getter",
+						exception );
 			}
 		}
 	}

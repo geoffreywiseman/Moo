@@ -38,7 +38,8 @@ public class PropertyFactory {
 		if( explicit || mode == AccessMode.FIELD ) {
 			String errorMessage = validateField( field );
 			if( errorMessage == null ) {
-				return new CollectionFieldProperty( field, name, expression,
+				return new CollectionFieldProperty( field, propertyAnnotation,
+						name, expression,
 						explicit,
 						ignore );
 			} else if( explicit ) {
@@ -100,7 +101,8 @@ public class PropertyFactory {
 		if( explicit || mode == AccessMode.FIELD ) {
 			String errorMessage = validateField( field );
 			if( errorMessage == null ) {
-				return new FieldProperty( field, name, expression, explicit,
+				return new FieldProperty( field, propertyAnnotation, name,
+						expression, explicit,
 						ignore );
 			} else if( explicit ) {
 				throw new InvalidPropertyException( name,
@@ -192,27 +194,17 @@ public class PropertyFactory {
 			com.codiform.moo.annotation.CollectionProperty annotation,
 			String propertyName, boolean explicit, boolean ignore) {
 		String expression = getExpression( propertyName, annotation );
-		return createCollectionMethodProperty( method,
-				propertyName, expression, explicit, ignore );
+		return new CollectionMethodProperty( method, annotation, propertyName,
+				expression,
+				explicit, ignore );
 	}
 
 	private static Property createMethodProperty(Method method,
 			com.codiform.moo.annotation.Property annotation,
 			String propertyName, boolean explicit, boolean ignore) {
 		String expression = getExpression( propertyName, annotation );
-		return createMethodProperty( method, propertyName,
+		return new MethodProperty( method, annotation, propertyName,
 				expression, explicit, ignore );
-	}
-
-	private static Property createCollectionMethodProperty(Method method,
-			String name, String expression, boolean explicit, boolean ignore) {
-		return new CollectionMethodProperty( method, name, expression,
-				explicit, ignore );
-	}
-
-	private static Property createMethodProperty(Method method, String name,
-			String expression, boolean explicit, boolean ignore) {
-		return new MethodProperty( method, name, expression, explicit, ignore );
 	}
 
 	private static String validateMethod(String methodName,
