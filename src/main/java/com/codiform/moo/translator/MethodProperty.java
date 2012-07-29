@@ -3,7 +3,8 @@ package com.codiform.moo.translator;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import com.codiform.moo.TranslationException;
+import com.codiform.moo.GetPropertyException;
+import com.codiform.moo.SetPropertyException;
 
 public class MethodProperty extends AbstractItemProperty {
 
@@ -93,16 +94,14 @@ public class MethodProperty extends AbstractItemProperty {
 		try {
 			setter.invoke( instance, value );
 		} catch( IllegalArgumentException exception ) {
-			throw new TranslationException(
-					"Cannot set value for field property " + getName(),
+			throw new SetPropertyException( getName(), getType(), value,
 					exception );
 		} catch( IllegalAccessException exception ) {
-			throw new TranslationException(
-					"Cannot set value for field property " + getName(),
+			throw new SetPropertyException( getName(), getType(), value,
 					exception );
 		} catch( InvocationTargetException exception ) {
-			throw new TranslationException( "Cannot for method property "
-					+ getName(), exception );
+			throw new SetPropertyException( getName(), getType(), value,
+					exception );
 		}
 	}
 
@@ -134,14 +133,11 @@ public class MethodProperty extends AbstractItemProperty {
 				getter.setAccessible( true );
 				return getter.invoke( instance );
 			} catch( IllegalArgumentException exception ) {
-				throw new TranslationException( "Illegal argument to getter",
-						exception );
+				throw new GetPropertyException( getName(), getType(), exception );
 			} catch( IllegalAccessException exception ) {
-				throw new TranslationException( "Cannot access getter",
-						exception );
+				throw new GetPropertyException( getName(), getType(), exception );
 			} catch( InvocationTargetException exception ) {
-				throw new TranslationException( "Error while invoking getter",
-						exception );
+				throw new GetPropertyException( getName(), getType(), exception );
 			}
 		}
 	}

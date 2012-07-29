@@ -54,8 +54,8 @@ public class TranslationLookupTest {
 		assertEquals( "pwilliams", post.getAuthor().getUsername() );
 	}
 
-	@Test(expected=TranslationException.class)
-	public void testCanThrowExceptionOnLookupFailure() {
+	@Test(expected=MissingSourcePropertyException.class)
+	public void testCanThrowMissingSourcePropertyExceptionOnLookupFailure() {
 		PostDto postDto = new PostDto(
 				"Love on the High Seas", new AuthorDto( 45,
 						"Saul Madison", 1 ) );

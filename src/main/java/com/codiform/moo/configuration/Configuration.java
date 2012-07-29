@@ -73,7 +73,7 @@ public class Configuration implements TranslatorSource {
 	/**
 	 * Controls whether a source property is required for a translation to
 	 * succeed. If you wish translation to fail with a
-	 * {@link com.codiform.moo.TranslationException} when a property in the
+	 * {@link com.codiform.moo.MissingSourcePropertyException} when a property in the
 	 * source object cannot be found to correspond to a destination property,
 	 * set this value to true.
 	 * 

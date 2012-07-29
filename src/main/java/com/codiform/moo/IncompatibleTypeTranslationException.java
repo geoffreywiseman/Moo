@@ -1,5 +1,8 @@
 package com.codiform.moo;
 
+/**
+ * Indicates that a translation is not supported because the types are incompatible.
+ */
 public class IncompatibleTypeTranslationException extends UnsupportedTranslationException {
 
 	private static final long serialVersionUID = 5324683855325641246L;
@@ -8,16 +11,16 @@ public class IncompatibleTypeTranslationException extends UnsupportedTranslation
 
 	private String propertyName;
 
-	private Class<?> propertyClass;
+	private Class<?> propertyType;
 
 	public IncompatibleTypeTranslationException(Object value,
-			String propertyName, Class<?> propertyClass) {
+			String propertyName, Class<?> propertyType) {
 		super("Cannot put value " + value + " (" + value.getClass().getName()
 				+ ") into property '" + propertyName + "' ("
-				+ propertyClass.getName() + ")");
+				+ propertyType.getName() + ")");
 		this.value = value;
 		this.propertyName = propertyName;
-		this.propertyClass = propertyClass;
+		this.propertyType = propertyType;
 	}
 
 	public Object getValue() {
@@ -28,8 +31,8 @@ public class IncompatibleTypeTranslationException extends UnsupportedTranslation
 		return propertyName;
 	}
 
-	public Class<?> getPropertyClass() {
-		return propertyClass;
+	public Class<?> getPropertyType() {
+		return propertyType;
 	}
 
 }

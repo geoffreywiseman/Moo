@@ -2,7 +2,8 @@ package com.codiform.moo.translator;
 
 import java.lang.reflect.Field;
 
-import com.codiform.moo.TranslationException;
+import com.codiform.moo.GetPropertyException;
+import com.codiform.moo.SetPropertyException;
 
 public class CollectionFieldProperty extends AbstractCollectionProperty {
 
@@ -44,12 +45,10 @@ public class CollectionFieldProperty extends AbstractCollectionProperty {
 		try {
 			field.set( instance, value );
 		} catch( IllegalArgumentException exception ) {
-			throw new TranslationException(
-					"Cannot set value for field property " + getName(),
+			throw new SetPropertyException( getName(), getType(), value,
 					exception );
 		} catch( IllegalAccessException exception ) {
-			throw new TranslationException(
-					"Cannot set value for field property " + getName(),
+			throw new SetPropertyException( getName(), getType(), value,
 					exception );
 		}
 	}
@@ -81,11 +80,9 @@ public class CollectionFieldProperty extends AbstractCollectionProperty {
 		try {
 			return field.get( instance );
 		} catch( IllegalArgumentException exception ) {
-			throw new TranslationException( "Cannot get value for property",
-					exception );
+			throw new GetPropertyException( getName(), getType(), exception );
 		} catch( IllegalAccessException exception ) {
-			throw new TranslationException( "Cannot access getter property",
-					exception );
+			throw new GetPropertyException( getName(), getType(), exception );
 		}
 	}
 

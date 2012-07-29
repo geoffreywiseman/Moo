@@ -1,7 +1,7 @@
 package com.codiform.moo.translator;
 
 import com.codiform.moo.IncompatibleTypeTranslationException;
-import com.codiform.moo.TranslationException;
+import com.codiform.moo.NullUnsupportedTranslationException;
 import com.codiform.moo.annotation.Optionality;
 
 public abstract class AbstractProperty implements Property {
@@ -29,9 +29,7 @@ public abstract class AbstractProperty implements Property {
 	protected void checkValue(Object value) {
 		if (value == null) {
 			if (!canSupportNull()) {
-				throw new TranslationException(
-						"Cannot store null in primitive field " + getName()
-								+ " (" + getType().getSimpleName() + ")");
+				throw new NullUnsupportedTranslationException( getName(), getType() );
 			}
 		} else if (getType().isPrimitive()) {
 			if (!PrimitiveAssignment.isCompatible(getType(), value.getClass())) {

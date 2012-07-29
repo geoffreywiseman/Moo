@@ -17,7 +17,8 @@ import com.codiform.moo.InvalidPropertyException;
 import com.codiform.moo.MissingSourcePropertyException;
 import com.codiform.moo.NoSourceException;
 import com.codiform.moo.NothingToTranslateException;
-import com.codiform.moo.TranslationException;
+import com.codiform.moo.TranslationInitializationException;
+import com.codiform.moo.UnsupportedTranslationException;
 import com.codiform.moo.annotation.Access;
 import com.codiform.moo.annotation.AccessMode;
 import com.codiform.moo.configuration.Configuration;
@@ -114,23 +115,23 @@ public class Translator<T> {
 			constructor.setAccessible( true );
 			return constructor.newInstance();
 		} catch( NoSuchMethodException exception ) {
-			throw new TranslationException(
+			throw new TranslationInitializationException(
 					"No no-argument constructor in class "
 							+ destinationClass.getName(), exception );
 		} catch( InstantiationException exception ) {
-			throw new TranslationException( String.format(
+			throw new TranslationInitializationException( String.format(
 					"Error while instantiating %s", destinationClass ),
 					exception );
 		} catch( IllegalAccessException exception ) {
-			throw new TranslationException( String.format(
+			throw new TranslationInitializationException( String.format(
 					"Not allowed to instantiate %s", destinationClass ),
 					exception );
 		} catch( IllegalArgumentException exception ) {
-			throw new TranslationException( String.format(
+			throw new TranslationInitializationException( String.format(
 					"Error while instantiating %s", destinationClass ),
 					exception );
 		} catch( InvocationTargetException exception ) {
-			throw new TranslationException( String.format(
+			throw new TranslationInitializationException( String.format(
 					"Error thrown by constructor of %s", destinationClass ),
 					exception );
 		}
@@ -169,7 +170,7 @@ public class Translator<T> {
 						fieldType.getComponentType(), translationSource );
 			}
 		} else {
-			throw new TranslationException(
+			throw new UnsupportedTranslationException(
 					String
 							.format(
 									"Cannot translate from source array type %s[] to destination type %s",
@@ -229,7 +230,8 @@ public class Translator<T> {
 	private Set<Property> getPropertiesForClass(Class<?> clazz) {
 		Map<String, Property> properties = new HashMap<String, Property>();
 		Access access = clazz.getAnnotation( Access.class );
-		AccessMode mode = access == null ? configuration.getDefaultAccessMode() : access.value();
+		AccessMode mode = access == null ? configuration.getDefaultAccessMode()
+				: access.value();
 		for( Field item : clazz.getDeclaredFields() ) {
 			Property property = PropertyFactory.createProperty( item, mode );
 			if( property != null ) {

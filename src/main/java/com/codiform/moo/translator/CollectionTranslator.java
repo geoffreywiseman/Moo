@@ -13,7 +13,7 @@ import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
-import com.codiform.moo.TranslationException;
+import com.codiform.moo.MatcherInitializationException;
 import com.codiform.moo.UnsupportedTranslationException;
 import com.codiform.moo.configuration.Configuration;
 import com.codiform.moo.source.TranslationSource;
@@ -290,12 +290,10 @@ public class CollectionTranslator {
 					destinationCollection.remove( item );
 				}
 			}
-		} catch( InstantiationException e ) {
-			throw new TranslationException( "Could not create matcher: "
-					+ matcherClass, e );
-		} catch( IllegalAccessException e ) {
-			throw new TranslationException( "Could not create matcher: "
-					+ matcherClass, e );
+		} catch( InstantiationException exception ) {
+			throw new MatcherInitializationException( matcherClass, exception );
+		} catch( IllegalAccessException exception ) {
+			throw new MatcherInitializationException( matcherClass, exception );
 		}
 	}
 

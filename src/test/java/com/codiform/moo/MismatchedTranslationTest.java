@@ -30,7 +30,7 @@ public class MismatchedTranslationTest {
 			ArrayValue source = new ArrayValue( "one", "two" );
 			Translate.to( StringValue.class ).from( source );
 			Assert.fail( "Expected a translation exception which didn't occur." );
-		} catch( TranslationException exception ) {
+		} catch( UnsupportedTranslationException exception ) {
 			String expectedMessage = "Cannot translate from source array type class java.lang.String[] to destination type java.lang.String";
 			Assert.assertEquals( expectedMessage, exception.getMessage() );
 		}
