@@ -1,4 +1,5 @@
-#auto: true
-#server: true
+auto: true
+server: true
 pygments: true
 markdown: redcarpet
+baseurl: /Moo

@@ -19,8 +19,8 @@ Update.from( userDto ).to( currentUser );
 ```
 
 <div class="button-bar">
-	<a class="button" href="{{site.url}}/get-moo.html">Get It</a>
+	<a class="button" href="/Moo/get-moo.html">Get It</a>
 	<a class="button" href="https://github.com/geoffreywiseman/Moo/wiki">Learn More</a>
-	<a class="button" href="{{site.url}}/news.html">News</a>
+	<a class="button" href="/Moo/news.html">News</a>
 	<a class="button" href="https://github.com/geoffreywiseman/Moo/">Code</a>
 </div>
