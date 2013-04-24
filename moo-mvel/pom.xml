@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<artifactId>moo-mvel</artifactId>
+	<packaging>jar</packaging>
+	<name>Moo MVEL</name>
+	<description>Mapping Objects to Objects</description>
+	<url>http://geoffreywiseman.github.com/Moo</url>
+	<inceptionYear>2009</inceptionYear>
+
+	<distributionManagement>
+		<repository>
+			<id>codiform-releases</id>
+			<name>Staging Repository for Codiform Open-Source</name>
+			<url>http://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+		</repository>
+		<snapshotRepository>
+			<id>codiform-snapshots</id>
+			<name>Snapshot Repository for Codiform Open-Source</name>
+			<url>http://oss.sonatype.org/content/repositories/codiform-snapshots</url>
+		</snapshotRepository>
+	</distributionManagement>
+
+	<dependencies>
+
+		<!-- Testing -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.hamcrest</groupId>
+			<artifactId>hamcrest-library</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<!-- Logging: SLF4J and Logback -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+		</dependency>
+
+		<!-- MVEL Expression Language -->
+		<dependency>
+			<groupId>org.mvel</groupId>
+			<artifactId>mvel2</artifactId>
+			<version>2.1.4.Final</version>
+		</dependency>
+
+		<!--  Mockito -->
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-core</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>com.codiform</groupId>
+			<artifactId>moo-core</artifactId>
+			<version>2.0-SNAPSHOT</version>
+		</dependency>
+	</dependencies>
+
+	
+	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-scm-plugin</artifactId>
+					<version>1.3</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-release-plugin</artifactId>
+					<version>2.0</version>
+				</plugin>
+				<!-- tell m2e not to freak out about the license addition -->
+				<plugin>
+					<groupId>org.eclipse.m2e</groupId>
+					<artifactId>lifecycle-mapping</artifactId>
+					<version>1.0.0</version>
+					<configuration>
+						<lifecycleMappingMetadata>
+							<pluginExecutions>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>org.codehaus.mojo</groupId>
+										<artifactId>build-helper-maven-plugin</artifactId>
+										<versionRange>[1.4,)</versionRange>
+										<goals>
+											<goal>add-resource</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore />
+									</action>
+								</pluginExecution>
+							</pluginExecutions>
+						</lifecycleMappingMetadata>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+		<plugins>
+			<plugin>
+				<artifactId>maven-release-plugin</artifactId>
+				<configuration>
+					<mavenExecutorId>forked-path</mavenExecutorId>				
+				</configuration>
+			</plugin>
+		
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.6</source>
+					<target>1.6</target>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<artifactId>maven-eclipse-plugin</artifactId>
+				<version>2.7</version>
+				<configuration>
+					<downloadSources>true</downloadSources>
+					<downloadJavadocs>false</downloadJavadocs>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>build-helper-maven-plugin</artifactId>
+				<version>1.4</version>
+				<executions>
+					<execution>
+						<id>add-license</id>
+						<goals>
+							<goal>add-resource</goal>
+						</goals>
+						<configuration>
+							<resources>
+								<resource>
+									<directory>${project.basedir}</directory>
+									<includes>
+										<include>LICENSE</include>
+										<include>NOTICE</include>
+									</includes>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+		</plugins>
+	</build>
+	
+	<reporting>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>2.6.1</version>
+			</plugin>
+		</plugins>	
+	</reporting>
+
+	<contributors>
+		<contributor>
+			<name>Michael Prescott</name>
+			<email>michael.r.prescott@gmail.com</email>
+			<roles>
+				<role>original conceptualization</role>
+			</roles>
+		</contributor>
+		<contributor>
+			<name>Basil James Whitehouse III</name>
+			<email>basil.whitehouse@gmail.com</email>
+			<roles>
+				<role>build support</role>
+			</roles>
+		</contributor>
+	</contributors>
+
+	<developers>
+		<developer>
+			<name>Geoffrey Wiseman</name>
+			<email>geoffrey.wiseman@gmail.com</email>
+			<organization>codiform</organization>
+			<url>http://www.geoffreywiseman.ca</url>
+			<roles>
+				<role>founder</role>
+				<role>author</role>
+			</roles>
+		</developer>
+	</developers>
+
+	<issueManagement>
+		<system>GitHub</system>
+		<url>http://github.com/geoffreywiseman/Moo/issues</url>
+	</issueManagement>
+
+	<scm>
+		<url>http://github.com/geoffreywiseman/Moo</url>
+		<connection>scm:git:git@github.com:geoffreywiseman/Moo.git</connection>
+		<developerConnection>scm:git:git@github.com:geoffreywiseman/Moo.git</developerConnection>
+	</scm>
+
+	<licenses>
+		<license>
+			<name>BSD</name>
+			<url>http://www.opensource.org/licenses/bsd-license.php</url>
+			<distribution>repo</distribution>
+			<comments>
+				Simple, permissive, not too much legalese.  Basically, use it how you like, we provide no warranty,
+				and give us credit.  See LICENSE and NOTICE.
+			</comments>
+		</license>
+	</licenses>
+
+	<profiles>
+		<profile>
+			<id>release-sign-artifacts</id>
+			<activation>
+				<property>
+					<name>performRelease</name>
+					<value>true</value>
+				</property>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-gpg-plugin</artifactId>
+						<version>1.0-alpha-4</version>
+						<executions>
+							<execution>
+								<id>sign-artifacts</id>
+								<phase>verify</phase>
+								<goals>
+									<goal>sign</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+
+	<parent>
+		<groupId>com.codiform</groupId>
+		<artifactId>moo-parent</artifactId>
+		<version>2.0-SNAPSHOT</version>
+		<relativePath>..</relativePath>
+	</parent>
+</project>
