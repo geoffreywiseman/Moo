@@ -1,33 +1,28 @@
 package com.codiform.moo;
 
-import junit.framework.Assert;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
 
 public class PrimitivePropertyTranslationTest {
 
-	private TestDomain domain = new TestDomain(Integer.MAX_VALUE,
-			Long.MAX_VALUE, Boolean.TRUE, Float.MAX_VALUE, Double.MAX_VALUE);
+	private TestDomain domain = new TestDomain( Integer.MAX_VALUE, Long.MAX_VALUE, Boolean.TRUE, Float.MAX_VALUE, Double.MAX_VALUE );
 
 	@Test
 	public void testTranslateCopiesObjectPropertyValuesFromSourceToDestination() {
-		TestDto dto = new Moo().translate(domain, TestDto.class);
-		Assert.assertEquals(domain.getIntegerProperty(), dto
-				.getIntegerProperty());
-		Assert.assertEquals(domain.getLongProperty(), dto.getLongProperty());
-		Assert.assertEquals(domain.getBooleanProperty(), dto
-				.getBooleanProperty());
-		Assert.assertEquals(domain.getFloatProperty(), dto.getFloatProperty());
-		Assert
-				.assertEquals(domain.getDoubleProperty(), dto
-						.getDoubleProperty());
+		TestDto dto = new Moo().translate( domain, TestDto.class );
+		assertEquals( domain.getIntegerProperty(), dto.getIntegerProperty() );
+		assertEquals( domain.getLongProperty(), dto.getLongProperty() );
+		assertEquals( domain.getBooleanProperty(), dto.getBooleanProperty() );
+		assertThat( domain.getFloatProperty(), is( dto.getFloatProperty() ) );
+		assertThat( domain.getDoubleProperty(), is( dto.getDoubleProperty() ) );
 	}
 
 	public static class TestDomain {
 
-		public TestDomain(int integerProperty, long longProperty,
-				boolean booleanProperty, float floatProperty,
-				double doubleProperty) {
+		public TestDomain( int integerProperty, long longProperty, boolean booleanProperty, float floatProperty, double doubleProperty ) {
 			super();
 			this.integerProperty = integerProperty;
 			this.longProperty = longProperty;
