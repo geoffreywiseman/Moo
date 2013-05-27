@@ -159,7 +159,7 @@ public class Translator<T> {
 	}
 
 	private Object getValue(Object source, Property property, Map<String, Object> variables) {
-		SourceProperty origin = configuration.getOrigin( property );
+		SourceProperty origin = configuration.getSourceProperty( property );
 		if( variables == null || variables.isEmpty() ) {
 			return origin.getValue( source );
 		} else {

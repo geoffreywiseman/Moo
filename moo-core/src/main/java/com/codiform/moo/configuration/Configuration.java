@@ -135,34 +135,34 @@ public class Configuration implements TranslatorFactory {
 		}
 	}
 
-	public SourceProperty getOrigin( Property property ) {
+	public SourceProperty getSourceProperty( Property property ) {
 		String expression = property.getOriginExpression().trim();
 		String prefix = getPrefix( expression );
 		if ( prefix == null ) {
-			return getOrigin( expression );
+			return getSourceProperty( expression );
 		} else {
-			return getOrigin( prefix, expression );
+			return getSourceProperty( prefix, expression );
 		}
 	}
 
-	private SourceProperty getOrigin( String prefix, String expression ) {
+	private SourceProperty getSourceProperty( String prefix, String expression ) {
 		String unprefixed = expression.substring( prefix.length() + 1 );
 		for ( SourcePropertyFactory item : originSources ) {
 			if ( item.supportsPrefix( prefix ) ) {
-				SourceProperty origin = item.getSourceProperty( prefix, unprefixed );
-				if ( origin != null ) {
-					return origin;
+				SourceProperty property = item.getSourceProperty( prefix, unprefixed );
+				if ( property != null ) {
+					return property;
 				}
 			}
 		}
 		throw new MissingSourcePropertyException( expression );
 	}
 
-	private SourceProperty getOrigin( String expression ) {
+	private SourceProperty getSourceProperty( String expression ) {
 		for ( SourcePropertyFactory item : originSources ) {
-			SourceProperty origin = item.getSourceProperty( expression );
-			if ( origin != null ) {
-				return origin;
+			SourceProperty property = item.getSourceProperty( expression );
+			if ( property != null ) {
+				return property;
 			}
 		}
 		throw new MissingSourcePropertyException( expression );

@@ -33,7 +33,7 @@ public class TranslatorTest {
 	@Before
 	public void setUp() {
 		when( configuration.getDefaultAccessMode() ).thenReturn( AccessMode.FIELD );
-		when( configuration.getOrigin( Mockito.any( Property.class ) ) ).thenReturn( origin );
+		when( configuration.getSourceProperty( Mockito.any( Property.class ) ) ).thenReturn( origin );
 		when( origin.getValue( Mockito.any(Source.class) ) ).thenReturn( "TranslatorTest" );
 		translator = new Translator<Destination>( Destination.class, configuration );
 	}
