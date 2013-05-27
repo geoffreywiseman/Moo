@@ -29,7 +29,7 @@ public class Configuration implements TranslatorFactory {
 	private boolean performingDefensiveCopies = true;
 	private boolean sourcePropertyRequired = true;
 	private AccessMode defaultAccessMode = AccessMode.FIELD;
-	private List<SourcePropertyFactory> originSources = new ArrayList<SourcePropertyFactory>();
+	private List<SourcePropertyFactory> sourcePropertyFactories = new ArrayList<SourcePropertyFactory>();
 	private Logger log = LoggerFactory.getLogger( getClass() );
 
 	/**
@@ -38,8 +38,8 @@ public class Configuration implements TranslatorFactory {
 	public Configuration() {
 		collectionTranslator = new CollectionTranslator( this );
 		arrayTranslator = new ArrayTranslator( this );
-		originSources = new ArrayList<SourcePropertyFactory>();
-		originSources.add( new ReflectionSourcePropertyFactory() );
+		sourcePropertyFactories = new ArrayList<SourcePropertyFactory>();
+		sourcePropertyFactories.add( new ReflectionSourcePropertyFactory() );
 		configureExtensions();
 	}
 
@@ -49,7 +49,7 @@ public class Configuration implements TranslatorFactory {
 	private void configureExtensions() {
 		try {
 			Class<?> originClass = Class.forName( "com.codiform.moo.property.source.MvelSourcePropertyFactory" );
-			originSources.add( (SourcePropertyFactory)originClass.newInstance() );
+			sourcePropertyFactories.add( (SourcePropertyFactory)originClass.newInstance() );
 		} catch ( ClassNotFoundException e ) {
 			// No MVEL Extension. That's ok. In fact, to be expected.
 		} catch ( InstantiationException exception ) {
@@ -147,7 +147,7 @@ public class Configuration implements TranslatorFactory {
 
 	private SourceProperty getSourceProperty( String prefix, String expression ) {
 		String unprefixed = expression.substring( prefix.length() + 1 );
-		for ( SourcePropertyFactory item : originSources ) {
+		for ( SourcePropertyFactory item : sourcePropertyFactories ) {
 			if ( item.supportsPrefix( prefix ) ) {
 				SourceProperty property = item.getSourceProperty( prefix, unprefixed );
 				if ( property != null ) {
@@ -159,7 +159,7 @@ public class Configuration implements TranslatorFactory {
 	}
 
 	private SourceProperty getSourceProperty( String expression ) {
-		for ( SourcePropertyFactory item : originSources ) {
+		for ( SourcePropertyFactory item : sourcePropertyFactories ) {
 			SourceProperty property = item.getSourceProperty( expression );
 			if ( property != null ) {
 				return property;
@@ -175,6 +175,15 @@ public class Configuration implements TranslatorFactory {
 		} else {
 			return null;
 		}
+	}
+	
+	/* package */ boolean containsSourcePropertyFactory( Class<? extends SourcePropertyFactory> factoryType ) {
+		for( SourcePropertyFactory factory : sourcePropertyFactories ) {
+			if( factoryType.isInstance( factory ) ) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 }
