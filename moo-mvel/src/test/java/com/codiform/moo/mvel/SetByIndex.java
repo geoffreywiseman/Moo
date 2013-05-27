@@ -10,6 +10,11 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.mvel2.MVEL;
 
+/**
+ * Test for accessing Set elements by index using MVEL.
+ * 
+ * This doesn't test any Moo code, just MVEL.
+ */
 public class SetByIndex {
 
 	@Test
