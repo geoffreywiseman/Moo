@@ -91,5 +91,10 @@ public class FieldProperty extends AbstractItemProperty {
 			throw new GetPropertyException( getName(), getType(), exception );
 		}
 	}
+	
+	@Override
+	public String toString() {
+		return "FieldProperty<" + name + ">";
+	}
 
 }

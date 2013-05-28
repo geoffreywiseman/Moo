@@ -141,5 +141,10 @@ public class MethodProperty extends AbstractItemProperty {
 			}
 		}
 	}
+	
+	@Override
+	public String toString() {
+		return "MethodProperty<" + name + ">";
+	}
 
 }
