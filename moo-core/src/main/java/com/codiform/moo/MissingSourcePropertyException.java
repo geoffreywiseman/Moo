@@ -18,6 +18,11 @@ public class MissingSourcePropertyException extends TranslationException {
 		this.propertyExpression = propertyExpression;
 	}
 
+	public MissingSourcePropertyException( String propertyExpression, Throwable cause ) {
+		super( getMessage( propertyExpression ), cause );
+		this.propertyExpression = propertyExpression;
+	}
+
 	private static String getMessage( String propertyExpression ) {
 		return String.format( MESSAGE, propertyExpression );
 	}
