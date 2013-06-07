@@ -82,7 +82,7 @@ public class CollectionTranslator {
 			CollectionProperty property, TranslationSource translationSource) {
 		if( property.shouldItemsBeTranslated() ) {
 			return translationSource.getEachTranslation( value,
-					property.getItemTranslationType() );
+					property.getItemClass() );
 		} else if( configuration.isPerformingDefensiveCopies() ) {
 			return new ArrayList<Object>(
 					value );
@@ -95,7 +95,7 @@ public class CollectionTranslator {
 			TranslationSource translationSource) {
 		if( property.shouldItemsBeTranslated() ) {
 			return translationSource.getEachTranslation( value,
-					property.getItemTranslationType() );
+					property.getItemClass() );
 		} else if( configuration.isPerformingDefensiveCopies() ) {
 			return new ArrayList<Object>(
 					value );
@@ -141,7 +141,7 @@ public class CollectionTranslator {
 			TranslationSource translationSource) {
 		if( property.shouldItemsBeTranslated() ) {
 			return translationSource.getEachTranslation( values, property
-					.getItemTranslationType() );
+					.getItemClass(), property.getItemExpression() );
 		} else if( configuration.isPerformingDefensiveCopies() ) {
 			return new HashSet<Object>( values );
 		} else {
@@ -158,7 +158,7 @@ public class CollectionTranslator {
 				return original;
 			}
 		} else if( original.comparator() == null ) {
-			Class<?> annotationValue = property.getItemTranslationType();
+			Class<?> annotationValue = property.getItemClass();
 			if( Comparable.class.isAssignableFrom( annotationValue ) ) {
 				return copyAndTranslateSortedSet( original, translationSource,
 						annotationValue );
@@ -212,11 +212,11 @@ public class CollectionTranslator {
 			Object sourceValue = item.getValue();
 			if( destinationValue != null && sourceValue != null ) {
 				translationSource.update( sourceValue, destinationValue );
-			} else if( property.getItemTranslationType() != null
+			} else if( property.getItemClass() != null
 					&& sourceValue != null ) {
 				destinationMap.put( item.getKey(),
 						translationSource.getTranslation( sourceValue,
-								property.getItemTranslationType() ) );
+								property.getItemClass() ) );
 			} else {
 				destinationMap.put( item.getKey(), sourceValue );
 			}
@@ -277,7 +277,7 @@ public class CollectionTranslator {
 				if( destination == null ) {
 					if( property.shouldItemsBeTranslated() ) {
 						destinationCollection.add( translationSource.getTranslation(
-								source, property.getItemTranslationType() ) );
+								source, property.getItemClass() ) );
 					} else {
 						destinationCollection.add( source );
 					}
@@ -314,7 +314,7 @@ public class CollectionTranslator {
 				if( property.shouldItemsBeTranslated() ) {
 					Object translation = translationSource.getTranslation(
 							source.next(),
-							property.getItemTranslationType() );
+							property.getItemClass() );
 					destinationCollection.add( translation );
 				} else {
 					destinationCollection.add( source.next() );

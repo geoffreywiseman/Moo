@@ -1,7 +1,9 @@
 package com.codiform.moo.configuration;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,13 +11,15 @@ import org.slf4j.LoggerFactory;
 import com.codiform.moo.MissingSourcePropertyException;
 import com.codiform.moo.annotation.AccessMode;
 import com.codiform.moo.property.Property;
+import com.codiform.moo.property.source.ReflectionSourcePropertyFactory;
 import com.codiform.moo.property.source.SourceProperty;
 import com.codiform.moo.property.source.SourcePropertyFactory;
-import com.codiform.moo.property.source.ReflectionSourcePropertyFactory;
 import com.codiform.moo.translator.ArrayTranslator;
 import com.codiform.moo.translator.CollectionTranslator;
+import com.codiform.moo.translator.StringValueTypeTranslator;
 import com.codiform.moo.translator.Translator;
 import com.codiform.moo.translator.TranslatorFactory;
+import com.codiform.moo.translator.ValueTypeTranslator;
 
 /**
  * Represents a configuration of Moo; this can contain no information, at which point Moo work from
@@ -25,6 +29,7 @@ import com.codiform.moo.translator.TranslatorFactory;
 public class Configuration implements TranslatorFactory {
 
 	private CollectionTranslator collectionTranslator;
+	private Map<Class<?>, ValueTypeTranslator<?>> valueTypeTranslators;
 	private ArrayTranslator arrayTranslator;
 	private boolean performingDefensiveCopies = true;
 	private boolean sourcePropertyRequired = true;
@@ -37,10 +42,17 @@ public class Configuration implements TranslatorFactory {
 	 */
 	public Configuration() {
 		collectionTranslator = new CollectionTranslator( this );
+		valueTypeTranslators = new HashMap<Class<?>,ValueTypeTranslator<?>>();
 		arrayTranslator = new ArrayTranslator( this );
 		sourcePropertyFactories = new ArrayList<SourcePropertyFactory>();
-		sourcePropertyFactories.add( new ReflectionSourcePropertyFactory() );
+		
+		configureDefaults( );
 		configureExtensions();
+	}
+
+	private void configureDefaults() {
+		sourcePropertyFactories.add( new ReflectionSourcePropertyFactory() );
+		valueTypeTranslators.put( String.class, new StringValueTypeTranslator() );
 	}
 
 	/**
@@ -137,15 +149,19 @@ public class Configuration implements TranslatorFactory {
 
 	public SourceProperty getSourceProperty( Property property ) {
 		String expression = property.getSourcePropertyExpression().trim();
+		return getSourceProperty( expression );
+	}
+
+	public SourceProperty getSourceProperty( String expression ) {
 		String prefix = getPrefix( expression );
 		if ( prefix == null ) {
-			return getSourceProperty( expression );
+			return getUnprefixedSourceProperty( expression );
 		} else {
-			return getSourceProperty( prefix, expression );
+			return getPrefixedSourceProperty( prefix, expression );
 		}
 	}
 
-	private SourceProperty getSourceProperty( String prefix, String expression ) {
+	private SourceProperty getPrefixedSourceProperty( String prefix, String expression ) {
 		String unprefixed = expression.substring( prefix.length() + 1 );
 		for ( SourcePropertyFactory item : sourcePropertyFactories ) {
 			if ( item.supportsPrefix( prefix ) ) {
@@ -158,7 +174,7 @@ public class Configuration implements TranslatorFactory {
 		throw new MissingSourcePropertyException( expression );
 	}
 
-	private SourceProperty getSourceProperty( String expression ) {
+	private SourceProperty getUnprefixedSourceProperty( String expression ) {
 		for ( SourcePropertyFactory item : sourcePropertyFactories ) {
 			SourceProperty property = item.getSourceProperty( expression );
 			if ( property != null ) {
@@ -184,6 +200,11 @@ public class Configuration implements TranslatorFactory {
 			}
 		}
 		return false;
+	}
+
+	@SuppressWarnings( "unchecked" )
+	public <V> ValueTypeTranslator<V> getValueTypeTranslator( Class<V> destinationType ) {
+		return (ValueTypeTranslator<V>)valueTypeTranslators.get( destinationType );
 	}
 
 }

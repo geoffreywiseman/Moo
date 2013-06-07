@@ -36,8 +36,22 @@ public interface TranslationSource {
 	 * @param <T>
 	 *            the type that binds the return values to the destination class
 	 */
-	public <T> List<T> getEachTranslation(List<?> sources,
-			Class<T> destinationClass);
+	public <T> List<T> getEachTranslation(List<?> sources, Class<T> destinationClass);
+	
+	/**
+	 * Creates a list of translations from a list of source objects, first
+	 * checking the cache and then, if needed, creating the translation.
+	 * 
+	 * @param sources
+	 *      the source objects to be translated
+	 * @param destinationClass
+	 *		the class to which the translation should be performed
+	 * @param <T>
+	 *		the type that binds the return values to the destination class
+	 * @param itemExpression
+	 * 		the expression to be used to retrieve the source object from each item in the source list 
+	 */
+	public <T> List<T> getEachTranslation(List<?> sources, Class<T> destinationClass, String itemExpression );
 
 	/**
 	 * Creates a set of translations from a set of source objects, first
@@ -54,6 +68,21 @@ public interface TranslationSource {
 			Class<T> destinationClass);
 
 	/**
+	 * Creates a set of translations from a set of source objects, first
+	 * checking the cache and then, if needed, creating the translation.
+	 * 
+	 * @param sources
+	 *            the source objects to be translated
+	 * @param destinationClass
+	 *            the class to which the translation should be performed
+	 * @param <T>
+	 *            the type that binds the return values to the destination class
+	 * @param itemExpression
+	 * 		the expression to be used to retrieve the source object from each item in the source list 
+	 */
+	public <T> Set<T> getEachTranslation(Set<?> sources, Class<T> destinationClass, String itemExpression );
+	
+	/**
 	 * Creates a collection of translations from a collection of source objects,
 	 * first checking the cache and then, if needed, creating the translation.
 	 * 
@@ -67,6 +96,21 @@ public interface TranslationSource {
 	public <T> Collection<T> getEachTranslation(Collection<?> sources,
 			Class<T> destinationClass);
 
+	/**
+	 * Creates a collection of translations from a collection of source objects,
+	 * first checking the cache and then, if needed, creating the translation.
+	 * 
+	 * @param sources
+	 *            the source objects to be translated
+	 * @param destinationClass
+	 *            the class to which the translation should be performed
+	 * @param <T>
+	 *            the type that binds the return values to the destination class
+	 * @param itemExpression
+	 * 		the expression to be used to retrieve the source object from each item in the source list 
+	 */
+	public <T> Collection<T> getEachTranslation(Collection<?> sources,
+			Class<T> destinationClass, String itemExpression);
 	/**
 	 * Performs an update using a translator acquired by the translation source
 	 * from the source object to the destination.

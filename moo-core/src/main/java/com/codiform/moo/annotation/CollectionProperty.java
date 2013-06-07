@@ -61,4 +61,13 @@ public @interface CollectionProperty {
 	 * @return true if they should be removed, false otherwise
 	 */
 	boolean removeOrphans() default true;
+	
+	/**
+	 * The expression to be used to get the real source item from each element within the source collection. If no expression
+	 * is specified here, the default would be to use the collection element as the source item. This is useful if you wish to
+	 * convert the type contained within the collection or extract some of its total data without taking all elements.
+	 * 
+	 * @return the expression to be used to retrieve the source item; empty string if default to be used.
+	 */
+	String itemExpression() default "";
 }

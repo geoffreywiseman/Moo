@@ -11,7 +11,7 @@ public interface CollectionProperty extends Property {
 	 * @returns a class if the items should be translated indicating what they should be translated to; null if no translation required
 	 * @see #shouldTranslateItems()
 	 */
-	Class<?> getItemTranslationType();
+	Class<?> getItemClass();
 	
 	/**
 	 * Indicates if this collection property has an update matcher configured, or if items should be
@@ -43,5 +43,12 @@ public interface CollectionProperty extends Property {
 	 * @return true if orphans should be removed (default); false otherwise
 	 */
 	boolean shouldRemoveOrphans();
+
+	/**
+	 * Get the translation expression for items found within the collection; this is mostly useful
+	 * when you want to extract some sub-element or transform the item entirely using something
+	 * like a static method.
+	 */
+	String getItemExpression();
 	
 }

@@ -336,7 +336,7 @@ public class PropertyFactoryTest {
 		assertEquals( "translatable", property.getName() );
 		assertFalse( property.shouldBeTranslated() );
 		assertTrue( property.shouldItemsBeTranslated() );
-		assertEquals( Double.class, property.getItemTranslationType() );
+		assertEquals( Double.class, property.getItemClass() );
 	}
 
 	@Test
@@ -826,7 +826,7 @@ public class PropertyFactoryTest {
 		assertEquals( "translatable", property.getName() );
 		assertFalse( property.shouldBeTranslated() );
 		assertTrue( property.shouldItemsBeTranslated() );
-		assertEquals( Date.class, property.getItemTranslationType() );
+		assertEquals( Date.class, property.getItemClass() );
 	}
 
 	@Test

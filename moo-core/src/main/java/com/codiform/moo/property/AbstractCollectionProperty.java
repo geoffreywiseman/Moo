@@ -8,35 +8,40 @@ public abstract class AbstractCollectionProperty extends AbstractProperty
 		implements
 		CollectionProperty {
 
-	private final Class<?> itemTranslation;
+	private final Class<?> itemClass;
 	private final Class<CollectionMatcher<Object, Object>> matcher;
 	private final Optionality optionality;
 	private final boolean removeOrphans;
 	private final boolean update;
+	private String itemExpression;
 
 	@SuppressWarnings("unchecked")
 	public AbstractCollectionProperty(
 			com.codiform.moo.annotation.CollectionProperty annotation) {
 		if( annotation != null ) {
-			itemTranslation = annotation.itemClass() == Object.class ? null
+			itemClass = annotation.itemClass() == Object.class ? null
 					: annotation.itemClass();
 			matcher = (Class<CollectionMatcher<Object, Object>>) (annotation.matcher() == IndexMatcher.class ? null
 					: annotation.matcher());
 			optionality = annotation.optionality();
 			removeOrphans = annotation.removeOrphans();
 			update = annotation.update();
+			itemExpression = annotation.itemExpression().trim();
+			if( itemExpression.length() == 0 )
+				itemExpression = null;
 		} else {
-			itemTranslation = null;
+			itemClass = null;
 			matcher = null;
 			optionality = null;
 			removeOrphans = true;
 			update = false;
+			itemExpression = null;
 		}
 	}
 
 	@Override
-	public Class<?> getItemTranslationType() {
-		return itemTranslation;
+	public Class<?> getItemClass() {
+		return itemClass;
 	}
 
 	@Override
@@ -46,7 +51,7 @@ public abstract class AbstractCollectionProperty extends AbstractProperty
 
 	@Override
 	public boolean shouldItemsBeTranslated() {
-		return itemTranslation != null;
+		return itemClass != null;
 	}
 
 	@Override
@@ -72,6 +77,10 @@ public abstract class AbstractCollectionProperty extends AbstractProperty
 	@Override
 	public boolean shouldBeTranslated() {
 		return false;
+	}
+	
+	public String getItemExpression() {
+		return itemExpression;
 	}
 
 }
