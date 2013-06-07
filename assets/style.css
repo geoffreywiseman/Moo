@@ -82,3 +82,10 @@ pre {
 a {
 	color: #444;
 }
+
+#footer {
+	padding-top: 50px;
+	text-align: center;
+	font-style: italic; 
+	color: #999;
+}
