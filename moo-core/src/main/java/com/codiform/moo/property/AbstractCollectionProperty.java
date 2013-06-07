@@ -18,8 +18,8 @@ public abstract class AbstractCollectionProperty extends AbstractProperty
 	public AbstractCollectionProperty(
 			com.codiform.moo.annotation.CollectionProperty annotation) {
 		if( annotation != null ) {
-			itemTranslation = annotation.itemTranslation() == Object.class ? null
-					: annotation.itemTranslation();
+			itemTranslation = annotation.itemClass() == Object.class ? null
+					: annotation.itemClass();
 			matcher = (Class<CollectionMatcher<Object, Object>>) (annotation.matcher() == IndexMatcher.class ? null
 					: annotation.matcher());
 			optionality = annotation.optionality();

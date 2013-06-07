@@ -142,7 +142,7 @@ public class CollectionPropertyTranslationTest {
 	}
 
 	public static class OrdinalListDto {
-		@CollectionProperty(itemTranslation = OrdinalDto.class)
+		@CollectionProperty(itemClass = OrdinalDto.class)
 		private List<OrdinalDto> ordinals;
 
 		public List<OrdinalDto> getOrdinals() {
@@ -151,7 +151,7 @@ public class CollectionPropertyTranslationTest {
 	}
 
 	public static class OrdinalSetDto {
-		@CollectionProperty(itemTranslation = OrdinalDto.class)
+		@CollectionProperty(itemClass = OrdinalDto.class)
 		private SortedSet<OrdinalDto> ordinals;
 
 		public SortedSet<OrdinalDto> getOrdinals() {

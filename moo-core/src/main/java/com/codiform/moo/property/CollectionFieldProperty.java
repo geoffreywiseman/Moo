@@ -32,7 +32,7 @@ public class CollectionFieldProperty extends AbstractCollectionProperty {
 		return name;
 	}
 
-	public String getOriginExpression() {
+	public String getSourcePropertyExpression() {
 		return expression;
 	}
 

@@ -41,7 +41,7 @@ public class PropertyFactoryTest {
 		@com.codiform.moo.annotation.CollectionProperty
 		private static Collection<Integer> explicitStaticField;
 
-		@com.codiform.moo.annotation.CollectionProperty(itemTranslation = Double.class)
+		@com.codiform.moo.annotation.CollectionProperty(itemClass = Double.class)
 		private Set<Float> translatable;
 
 		@com.codiform.moo.annotation.CollectionProperty(update = true)
@@ -95,7 +95,7 @@ public class PropertyFactoryTest {
 			return null;
 		}
 
-		@com.codiform.moo.annotation.CollectionProperty(itemTranslation = Date.class)
+		@com.codiform.moo.annotation.CollectionProperty(itemClass = Date.class)
 		private void setTranslatable(List<Date> dates) {
 			// do nothing
 		}

@@ -12,18 +12,19 @@ import com.codiform.moo.translator.IndexMatcher;
 
 /**
  * Configuration annotation to tell Moo that the values within the collection
- * should be translated to a the class specified in {@link #itemTranslation()}.
+ * should be translated to a the class specified in {@link #itemClass()}.
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.FIELD, ElementType.METHOD })
 public @interface CollectionProperty {
+	
 	/**
 	 * The type to which items should be translated.
 	 * 
 	 * @return A class object representing the type to which they should be translated, or Object.class if the items don't need to be translated and can simply be copied.
 	 */
-	Class<?> itemTranslation() default Object.class;
+	Class<?> itemClass() default Object.class;
 	
 	/**
 	 * The class that should be used to match source and destination items if they can't be matched by collection order.
@@ -34,10 +35,10 @@ public @interface CollectionProperty {
 	Class<? extends CollectionMatcher> matcher() default IndexMatcher.class;
 
 	/**
-	 * Defines the translation expression used to locate the field in the source; if no expression specified, the translation
+	 * Defines the expression used to locate the source property; if no expression specified, the source property name
 	 * will simply be the destination property name.
 	 */
-	String translation() default "";
+	String source() default "";
 
 	/**
 	 * Indicates whether the items in the collection should be subject to updates, or if they should simply be replaced.

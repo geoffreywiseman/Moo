@@ -81,7 +81,7 @@ public class MethodProperty extends AbstractItemProperty {
 		return name;
 	}
 
-	public String getOriginExpression() {
+	public String getSourcePropertyExpression() {
 		return expression;
 	}
 

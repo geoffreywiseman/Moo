@@ -43,7 +43,7 @@ public interface Property {
 	 * 
 	 * @return the expression
 	 */
-	String getOriginExpression();
+	String getSourcePropertyExpression();
 
 	/**
 	 * Indicates if the property should be translated (has translate=true in the

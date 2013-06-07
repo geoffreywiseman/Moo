@@ -24,7 +24,7 @@ import com.codiform.moo.translator.CollectionMatcher;
 public class CollectionUpdateTest {
 
 	public static class FieldValueSet implements Iterable<Value> {
-		@CollectionProperty(itemTranslation = Value.class, matcher = ValueIdMatcher.class, update = true)
+		@CollectionProperty(itemClass = Value.class, matcher = ValueIdMatcher.class, update = true)
 		private Set<Value> values;
 
 		public FieldValueSet() {
@@ -79,7 +79,7 @@ public class CollectionUpdateTest {
 			return values.iterator();
 		}
 
-		@CollectionProperty(itemTranslation = Value.class, matcher = ValueIdMatcher.class, update = true)
+		@CollectionProperty(itemClass = Value.class, matcher = ValueIdMatcher.class, update = true)
 		public void setValues(Set<Value> values) {
 			this.values = values;
 		}
@@ -99,7 +99,7 @@ public class CollectionUpdateTest {
 		}
 
 		@Override
-		@CollectionProperty(itemTranslation = Value.class, matcher = ValueIdMatcher.class, update = true, removeOrphans = false)
+		@CollectionProperty(itemClass = Value.class, matcher = ValueIdMatcher.class, update = true, removeOrphans = false)
 		public void setValues(Set<Value> values) {
 			super.setValues( values );
 		}
@@ -215,7 +215,7 @@ public class CollectionUpdateTest {
 	}
 
 	public static class ValueList {
-		@CollectionProperty(itemTranslation = Value.class, update = true)
+		@CollectionProperty(itemClass = Value.class, update = true)
 		private List<Value> values;
 
 		public ValueList(Value... items) {
@@ -236,7 +236,7 @@ public class CollectionUpdateTest {
 	}
 
 	public static class RetainValueList {
-		@CollectionProperty(itemTranslation = Value.class, update = true, removeOrphans = false)
+		@CollectionProperty(itemClass = Value.class, update = true, removeOrphans = false)
 		private List<Value> values;
 
 		public RetainValueList(Value... items) {
@@ -257,7 +257,7 @@ public class CollectionUpdateTest {
 	}
 
 	public static class ValueMap {
-		@CollectionProperty(itemTranslation = Value.class, update = true)
+		@CollectionProperty(itemClass = Value.class, update = true)
 		private Map<String, Value> values;
 
 		public ValueMap() {
@@ -282,7 +282,7 @@ public class CollectionUpdateTest {
 	}
 
 	public static class RetainValueMap {
-		@CollectionProperty(itemTranslation = Value.class, update = true, removeOrphans = false)
+		@CollectionProperty(itemClass = Value.class, update = true, removeOrphans = false)
 		private Map<String, Value> values;
 
 		public RetainValueMap() {

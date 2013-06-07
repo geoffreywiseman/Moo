@@ -76,7 +76,7 @@ public class EnumCollectionPropertyTranslationTest {
 	@SuppressWarnings("unused")
 	private static class ShallowCopyDto {
 
-		@CollectionProperty(translation = "java.util.EnumSet.copyOf(this.letters)")
+		@CollectionProperty(source = "java.util.EnumSet.copyOf(this.letters)")
 		private Set<NatoLetter> letters;
 
 		public ShallowCopyDto() {
@@ -91,7 +91,7 @@ public class EnumCollectionPropertyTranslationTest {
 	@SuppressWarnings("unused")
 	private static class StringTranslationDto {
 
-		@CollectionProperty(translation = "com.codiform.moo.EnumCollectionPropertyTranslationTest$EnumUtil.toString(this.letters)")
+		@CollectionProperty(source = "com.codiform.moo.EnumCollectionPropertyTranslationTest$EnumUtil.toString(this.letters)")
 		private Set<String> letters;
 
 		public StringTranslationDto() {

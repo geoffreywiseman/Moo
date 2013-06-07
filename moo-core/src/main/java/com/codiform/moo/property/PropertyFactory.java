@@ -135,11 +135,11 @@ public class PropertyFactory {
 
 	private static String getExpression(String name,
 			com.codiform.moo.annotation.CollectionProperty annotation) {
-		if( annotation == null || annotation.translation() == null
-				|| annotation.translation().isEmpty() ) {
+		if( annotation == null || annotation.source() == null
+				|| annotation.source().isEmpty() ) {
 			return name;
 		} else {
-			return annotation.translation();
+			return annotation.source();
 		}
 	}
 

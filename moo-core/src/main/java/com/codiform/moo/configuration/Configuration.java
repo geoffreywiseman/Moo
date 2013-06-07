@@ -136,7 +136,7 @@ public class Configuration implements TranslatorFactory {
 	}
 
 	public SourceProperty getSourceProperty( Property property ) {
-		String expression = property.getOriginExpression().trim();
+		String expression = property.getSourcePropertyExpression().trim();
 		String prefix = getPrefix( expression );
 		if ( prefix == null ) {
 			return getSourceProperty( expression );
