@@ -4,9 +4,12 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -69,7 +72,7 @@ public class Translator<T> {
 	public void update( Object source, T destination, TranslationSource translationSource, Map<String, Object> variables ) {
 		assureSource( source );
 		boolean updated = false;
-		Set<Property> properties = getProperties( destinationClass );
+		List<Property> properties = getProperties( destinationClass );
 		for ( Property item : properties ) {
 			if ( !item.isIgnored() ) {
 				if ( updateProperty( source, destination, translationSource, item, variables ) ) {
@@ -158,17 +161,17 @@ public class Translator<T> {
 		return configuration.getCollectionTranslator().translate( value, property, translationSource );
 	}
 
-	private Object getValue(Object source, Property property, Map<String, Object> variables) {
+	private Object getValue( Object source, Property property, Map<String, Object> variables ) {
 		SourceProperty origin = configuration.getSourceProperty( property );
-		if( variables == null || variables.isEmpty() ) {
+		if ( variables == null || variables.isEmpty() ) {
 			return origin.getValue( source );
 		} else {
 			return origin.getValue( source, variables );
 		}
 	}
 
-	/* package */Set<Property> getProperties( Class<T> destinationClass ) {
-		Map<String, Property> properties = new HashMap<String, Property>();
+	/* package */List<Property> getProperties( Class<T> destinationClass ) {
+		Map<String, Property> properties = new LinkedHashMap<String, Property>();
 		Class<?> current = destinationClass;
 		while ( current != null ) {
 			if ( !shouldIgnoreClass( current ) ) {
@@ -176,7 +179,24 @@ public class Translator<T> {
 			}
 			current = current.getSuperclass();
 		}
-		return new HashSet<Property>( properties.values() );
+		return getOrderedProperties( properties );
+	}
+
+	/**
+	 * LinkedHashMap will ensure iteration is in insertion order, but because we're reflecting from
+	 * bottom up, and we want the properties in superclass to subclass order, we need to reverse
+	 * that.
+	 * 
+	 * @param properties
+	 *            the {@link LinkedHashMap} containing the properties in insertion order
+	 * @return a list of properties in reversed order
+	 */
+	private List<Property> getOrderedProperties( Map<String, Property> properties ) {
+		List<Property> ordered = new ArrayList<Property>( properties.size() );
+		for ( Map.Entry<String, Property> entry : properties.entrySet() ) {
+			ordered.add( 0, entry.getValue() );
+		}
+		return ordered;
 	}
 
 	private boolean shouldIgnoreClass( Class<?> current ) {
@@ -188,6 +208,8 @@ public class Translator<T> {
 			if ( currentProperties.containsKey( item.getName() ) ) {
 				if ( item.isExplicit() ) {
 					if ( !currentProperties.get( item.getName() ).isExplicit() ) {
+						// ensure insertion ordering by removing first
+						currentProperties.remove( item.getName() );
 						currentProperties.put( item.getName(), item );
 					}
 				}

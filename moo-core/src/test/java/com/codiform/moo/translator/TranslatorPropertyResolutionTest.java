@@ -6,7 +6,7 @@ import static org.hamcrest.Matchers.hasItem;
 import static org.junit.Assert.assertThat;
 
 import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
@@ -25,33 +25,33 @@ public class TranslatorPropertyResolutionTest {
 
 	@Test
 	public void resolvesFieldProperties() {
-		Set<Property> properties = getProperties(Alpha.class);
+		List<Property> properties = getProperties(Alpha.class);
 		assertThat(properties, Matchers.hasItem(propertyWithName("alpha")));
 	}
 
 	@Test
 	public void resolvesMethodProperties() {
-		Set<Property> properties = getProperties(Beta.class);
+		List<Property> properties = getProperties(Beta.class);
 		assertThat(properties, hasItem(propertyWithName("beta")));
 	}
 
 	@Test
 	public void resolvesFieldPropertiesInSuperclass() {
-		Set<Property> properties = getProperties(Charlie.class);
+		List<Property> properties = getProperties(Charlie.class);
 		assertThat(properties, Matchers.hasItem(propertyWithName("alpha")));
 		assertThat(properties, Matchers.hasItem(propertyWithName("charlie")));
 	}
 
 	@Test
 	public void resolvesMethodPropertiesInSuperclass() {
-		Set<Property> properties = getProperties(Delta.class);
+		List<Property> properties = getProperties(Delta.class);
 		assertThat(properties, hasItem(propertyWithName("beta")));
 		assertThat(properties, hasItem(propertyWithName("delta")));
 	}
 
 	@Test
 	public void resolvesFieldAndMethodPropertyByAccessMode() {
-		Set<Property> properties = getProperties(Echo.class);
+		List<Property> properties = getProperties(Echo.class);
 		assertThat(new HashSet<Object>(properties), hasItem(allOf(
 				isA(MethodProperty.class), propertyWithName("echo"))));
 
@@ -61,7 +61,7 @@ public class TranslatorPropertyResolutionTest {
 	}
 
 	public void resolvesFieldAndMethodPropertyByExplicitAnnotationOverAccessMode() {
-		Set<Property> properties = getProperties(Golf.class);
+		List<Property> properties = getProperties(Golf.class);
 		assertThat(new HashSet<Object>(properties), hasItem(allOf(
 				isA(FieldProperty.class), propertyWithName("golf"))));
 
@@ -72,7 +72,7 @@ public class TranslatorPropertyResolutionTest {
 
 	@Test
 	public void resolvesPropertyInFavorOfSubclass() {
-		Set<Property> properties = getProperties(India.class);
+		List<Property> properties = getProperties(India.class);
 		assertThat(properties, hasItem(allOf(propertyFromClass(India.class),
 				propertyWithName("alpha"))));
 
@@ -91,7 +91,7 @@ public class TranslatorPropertyResolutionTest {
 	
 	@Test
 	public void prefersExplicitAnnotationToSubclass() {
-		Set<Property> properties = getProperties(Mike.class);
+		List<Property> properties = getProperties(Mike.class);
 		assertThat(properties, hasItem(allOf(propertyFromClass(Golf.class),
 				propertyWithName("golf"))));
 
@@ -119,7 +119,7 @@ public class TranslatorPropertyResolutionTest {
 		};
 	}
 
-	private <T> Set<Property> getProperties(Class<T> classForProperties) {
+	private <T> List<Property> getProperties(Class<T> classForProperties) {
 		Translator<T> translator = new Translator<T>(classForProperties,
 				new Configuration());
 		return translator.getProperties(classForProperties);
