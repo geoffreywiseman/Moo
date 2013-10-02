@@ -1,5 +1,7 @@
 package com.codiform.moo.property;
 
+import com.codiform.moo.translator.TranslationTargetFactory;
+
 
 
 /**
@@ -127,5 +129,14 @@ public interface Property {
 	 * @return true if the property is of the type or a subtype
 	 */
 	boolean isTypeOrSubtype(Class<?> type);
+
+	/**
+	 * Gets the factory used to instantiate the translation target. This might
+	 * be the default translator, or something custom defined in the configuration
+	 * for this translation. 
+	 *  
+	 * @return the factory, an implementation of {@link TranslationTargetFactory}.
+	 */
+	Class<? extends TranslationTargetFactory> getFactory();
 
 }

@@ -1,8 +1,6 @@
 package com.codiform.moo.translator;
 
-import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -18,7 +16,6 @@ import com.codiform.moo.MissingSourcePropertyException;
 import com.codiform.moo.MissingSourcePropertyValueException;
 import com.codiform.moo.NoSourceException;
 import com.codiform.moo.NothingToTranslateException;
-import com.codiform.moo.TranslationInitializationException;
 import com.codiform.moo.UnsupportedTranslationException;
 import com.codiform.moo.annotation.Access;
 import com.codiform.moo.annotation.AccessMode;
@@ -37,7 +34,7 @@ import com.codiform.moo.session.TranslationSource;
  *            the destination type for the translator, the type to which all source objects will be
  *            translated
  */
-public class Translator<T> {
+public class ObjectTranslator<T> {
 
 	private Class<T> destinationClass;
 
@@ -52,7 +49,7 @@ public class Translator<T> {
 	 * @param configuration
 	 *            the configuration used during translation
 	 */
-	public Translator( Class<T> destination, Configuration configuration ) {
+	public ObjectTranslator( Class<T> destination, Configuration configuration ) {
 		this.destinationClass = destination;
 		this.configuration = configuration;
 	}
@@ -101,31 +98,7 @@ public class Translator<T> {
 		update( source, destinationClass.cast( from ), translationSource, variables );
 	}
 
-	/**
-	 * Create a new instance of the destination class; this is the first step in creating a new
-	 * translation.
-	 * 
-	 * @return the new instance
-	 */
-	public T create() {
-		try {
-			Constructor<T> constructor = destinationClass.getDeclaredConstructor();
-			constructor.setAccessible( true );
-			return constructor.newInstance();
-		} catch ( NoSuchMethodException exception ) {
-			throw new TranslationInitializationException( "No no-argument constructor in class " + destinationClass.getName(), exception );
-		} catch ( InstantiationException exception ) {
-			throw new TranslationInitializationException( String.format( "Error while instantiating %s", destinationClass ), exception );
-		} catch ( IllegalAccessException exception ) {
-			throw new TranslationInitializationException( String.format( "Not allowed to instantiate %s", destinationClass ), exception );
-		} catch ( IllegalArgumentException exception ) {
-			throw new TranslationInitializationException( String.format( "Error while instantiating %s", destinationClass ), exception );
-		} catch ( InvocationTargetException exception ) {
-			throw new TranslationInitializationException( String.format( "Error thrown by constructor of %s", destinationClass ), exception );
-		}
-	}
-
-	private Object transform( Object value, Property property, TranslationSource translationSource ) {
+	private Object getPropertyValueTranslation( Object value, Property property, TranslationSource translationSource ) {
 		if ( value == null ) {
 			return null;
 		} else if ( property instanceof CollectionProperty ) {
@@ -133,7 +106,7 @@ public class Translator<T> {
 		} else if ( value.getClass().isArray() ) {
 			return transformArray( (Object[])value, property, translationSource );
 		} else if ( property.shouldBeTranslated() ) {
-			return translationSource.getTranslation( value, property.getType() );
+			return translationSource.getTranslation( value, property.getFactory(), property.getType() );
 		} else {
 			return value;
 		}
@@ -253,8 +226,8 @@ public class Translator<T> {
 	private <V> boolean updateProperty( Object source, T destination, TranslationSource translationSource, Property property,
 			Map<String, Object> variables ) {
 		try {
-			Object value = getValue( source, property, variables );
-			updateOrReplaceProperty( destination, value, property, translationSource );
+			Object sourceValue = getValue( source, property, variables );
+			updateOrReplaceProperty( destination, sourceValue, property, translationSource );
 			return true;
 		} catch ( MissingSourcePropertyValueException exception ) {
 			if ( property.isSourceRequired( configuration.isSourcePropertyRequired() ) ) {
@@ -270,19 +243,19 @@ public class Translator<T> {
 	}
 
 	@SuppressWarnings( "unchecked" )
-	private void updateOrReplaceProperty( T destination, Object value, Property property, TranslationSource translationSource ) {
+	private void updateOrReplaceProperty( T destination, Object sourceValue, Property property, TranslationSource translationSource ) {
 		Object destinationValue = property.canGetValue() ? property.getValue( destination ) : null;
-		if ( property.shouldUpdate() && value != null && destinationValue != null ) {
+		if ( property.shouldUpdate() && sourceValue != null && destinationValue != null ) {
 			if ( property.isTypeOrSubtype( Collection.class ) ) {
-				updateCollection( value, (Collection<Object>)destinationValue, (CollectionProperty)property, translationSource );
+				updateCollection( sourceValue, (Collection<Object>)destinationValue, (CollectionProperty)property, translationSource );
 			} else if ( property.isTypeOrSubtype( Map.class ) ) {
-				updateMap( value, (Map<Object, Object>)destinationValue, (CollectionProperty)property, translationSource );
+				updateMap( sourceValue, (Map<Object, Object>)destinationValue, (CollectionProperty)property, translationSource );
 			} else {
-				translationSource.update( value, destinationValue );
+				translationSource.update( sourceValue, destinationValue );
 			}
 		} else {
-			value = transform( value, property, translationSource );
-			property.setValue( destination, value );
+			destinationValue = getPropertyValueTranslation( sourceValue, property, translationSource );
+			property.setValue( destination, destinationValue );
 		}
 	}
 

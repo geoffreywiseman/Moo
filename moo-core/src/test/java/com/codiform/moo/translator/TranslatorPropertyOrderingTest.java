@@ -25,8 +25,8 @@ public class TranslatorPropertyOrderingTest {
 		assertEquals( "baz", properties.get( 2 ).getName() );
 	}
 	
-	private Translator<Bottom> getBottomTranslator(	) {
-		return new Translator<Bottom>( Bottom.class, new Configuration() );
+	private ObjectTranslator<Bottom> getBottomTranslator(	) {
+		return new ObjectTranslator<Bottom>( Bottom.class, new Configuration() );
 	}
 
 	@Access(AccessMode.METHOD)

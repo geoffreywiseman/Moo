@@ -14,7 +14,7 @@ public interface TranslatorFactory {
 	 * @param destinationClass the type to which we'd like to perform translation
 	 * @return a translator capable of translating to the destination class
 	 */
-	<T> Translator<T> getTranslator(Class<T> destinationClass);
+	<T> ObjectTranslator<T> getTranslator(Class<T> destinationClass);
 
 	/**
 	 * Gets the translator responsible for dealing with collections, typically

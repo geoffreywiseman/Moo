@@ -28,14 +28,14 @@ public class TranslatorTest {
 	@Mock
 	private TranslationSource translationSource;
 
-	private Translator<Destination> translator;
+	private ObjectTranslator<Destination> translator;
 
 	@Before
 	public void setUp() {
 		when( configuration.getDefaultAccessMode() ).thenReturn( AccessMode.FIELD );
 		when( configuration.getSourceProperty( Mockito.any( Property.class ) ) ).thenReturn( origin );
 		when( origin.getValue( Mockito.any(Source.class) ) ).thenReturn( "TranslatorTest" );
-		translator = new Translator<Destination>( Destination.class, configuration );
+		translator = new ObjectTranslator<Destination>( Destination.class, configuration );
 	}
 
 	@Test
@@ -55,11 +55,6 @@ public class TranslatorTest {
 		translator.update( source, destination, translationSource, null );
 
 		Assert.assertEquals( "TranslatorTest", destination.getValue() );
-	}
-
-	@Test
-	public void testCreate() {
-		Assert.assertNotNull( translator.create() );
 	}
 
 	public static class Source {

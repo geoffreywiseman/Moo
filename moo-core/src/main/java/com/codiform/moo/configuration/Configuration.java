@@ -17,7 +17,7 @@ import com.codiform.moo.property.source.SourcePropertyFactory;
 import com.codiform.moo.translator.ArrayTranslator;
 import com.codiform.moo.translator.CollectionTranslator;
 import com.codiform.moo.translator.StringValueTypeTranslator;
-import com.codiform.moo.translator.Translator;
+import com.codiform.moo.translator.ObjectTranslator;
 import com.codiform.moo.translator.TranslatorFactory;
 import com.codiform.moo.translator.ValueTypeTranslator;
 
@@ -99,8 +99,8 @@ public class Configuration implements TranslatorFactory {
 		return this.performingDefensiveCopies;
 	}
 
-	public <T> Translator<T> getTranslator( Class<T> destinationClass ) {
-		return new Translator<T>( destinationClass, this );
+	public <T> ObjectTranslator<T> getTranslator( Class<T> destinationClass ) {
+		return new ObjectTranslator<T>( destinationClass, this );
 	}
 
 	public CollectionTranslator getCollectionTranslator() {

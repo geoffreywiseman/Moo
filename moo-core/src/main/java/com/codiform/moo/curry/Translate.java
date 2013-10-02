@@ -15,7 +15,7 @@ import com.codiform.moo.session.TranslationSession;
  * 
  * <p>
  * Practically speaking, this could also be implemented through the
- * {@link com.codiform.moo.translator.Translator} class, but this is a
+ * {@link com.codiform.moo.translator.ObjectTranslator} class, but this is a
  * higher-level facade class. The translator class is internal implementation
  * and much more subject to change.
  * </p>

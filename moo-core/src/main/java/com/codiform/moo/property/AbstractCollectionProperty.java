@@ -3,6 +3,7 @@ package com.codiform.moo.property;
 import com.codiform.moo.annotation.Optionality;
 import com.codiform.moo.translator.CollectionMatcher;
 import com.codiform.moo.translator.IndexMatcher;
+import com.codiform.moo.translator.TranslationTargetFactory;
 
 public abstract class AbstractCollectionProperty extends AbstractProperty
 		implements
@@ -81,6 +82,12 @@ public abstract class AbstractCollectionProperty extends AbstractProperty
 	
 	public String getItemExpression() {
 		return itemExpression;
+	}
+
+	@Override
+	public Class<? extends TranslationTargetFactory> getFactory() {
+		// TODO: add support for collection factories  
+		return null;
 	}
 
 }

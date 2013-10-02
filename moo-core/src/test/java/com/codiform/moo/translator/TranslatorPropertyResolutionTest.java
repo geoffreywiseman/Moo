@@ -120,7 +120,7 @@ public class TranslatorPropertyResolutionTest {
 	}
 
 	private <T> List<Property> getProperties(Class<T> classForProperties) {
-		Translator<T> translator = new Translator<T>(classForProperties,
+		ObjectTranslator<T> translator = new ObjectTranslator<T>(classForProperties,
 				new Configuration());
 		return translator.getProperties(classForProperties);
 	}
