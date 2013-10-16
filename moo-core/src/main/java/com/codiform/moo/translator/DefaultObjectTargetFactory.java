@@ -9,7 +9,7 @@ import com.codiform.moo.TranslationInitializationException;
  * The default target factory for properties annotated with @Property, this simply
  * instantiates whatever class was defined in the destination method or field.
  */
-public class DefaultTargetFactory implements TranslationTargetFactory {
+public class DefaultObjectTargetFactory implements TranslationTargetFactory {
 	
 	@Override
 	public <T> T getTranslationTargetInstance( Object source, Class<T> targetType ) {

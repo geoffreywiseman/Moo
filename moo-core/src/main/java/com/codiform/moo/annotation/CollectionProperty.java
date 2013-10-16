@@ -8,7 +8,9 @@ import java.lang.annotation.Target;
 
 import com.codiform.moo.configuration.Configuration;
 import com.codiform.moo.translator.CollectionMatcher;
+import com.codiform.moo.translator.DefaultCollectionTargetFactory;
 import com.codiform.moo.translator.IndexMatcher;
+import com.codiform.moo.translator.TranslationTargetFactory;
 
 /**
  * Configuration annotation to tell Moo that the values within the collection
@@ -70,4 +72,6 @@ public @interface CollectionProperty {
 	 * @return the expression to be used to retrieve the source item; empty string if default to be used.
 	 */
 	String itemExpression() default "";
+	
+	Class<? extends TranslationTargetFactory> factory() default DefaultCollectionTargetFactory.class;
 }

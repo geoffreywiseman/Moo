@@ -5,7 +5,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import com.codiform.moo.translator.DefaultTargetFactory;
+import com.codiform.moo.translator.DefaultObjectTargetFactory;
 import com.codiform.moo.translator.TranslationTargetFactory;
 
 @Target({ElementType.METHOD,ElementType.FIELD})
@@ -15,5 +15,5 @@ public @interface Property {
 	boolean translate() default false;
 	boolean update() default false;
 	Optionality optionality() default Optionality.DEFAULT;
-	Class<? extends TranslationTargetFactory> factory() default DefaultTargetFactory.class;
+	Class<? extends TranslationTargetFactory> factory() default DefaultObjectTargetFactory.class;
 }

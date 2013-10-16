@@ -1,23 +1,23 @@
 package com.codiform.moo.property;
 
 import com.codiform.moo.annotation.Optionality;
-import com.codiform.moo.translator.DefaultTargetFactory;
+import com.codiform.moo.translator.DefaultObjectTargetFactory;
 import com.codiform.moo.translator.TranslationTargetFactory;
 
-public abstract class AbstractItemProperty extends AbstractProperty {
+public abstract class AbstractObjectProperty extends AbstractProperty {
 
 	private final Optionality optionality;
 	private final boolean translate;
 	private final boolean update;
 	private final Class<? extends TranslationTargetFactory> factory;
 	
-	public AbstractItemProperty( com.codiform.moo.annotation.Property annotation ) {
+	public AbstractObjectProperty( com.codiform.moo.annotation.Property annotation ) {
 		super();
 		if( annotation == null ) {
 			optionality = null;
 			translate = false;
 			update = false;
-			factory = DefaultTargetFactory.class;
+			factory = DefaultObjectTargetFactory.class;
 		} else {
 			optionality = annotation.optionality();
 			translate = annotation.translate();

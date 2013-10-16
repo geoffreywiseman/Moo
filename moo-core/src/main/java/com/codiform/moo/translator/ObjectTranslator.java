@@ -135,11 +135,11 @@ public class ObjectTranslator<T> {
 	}
 
 	private Object getValue( Object source, Property property, Map<String, Object> variables ) {
-		SourceProperty origin = configuration.getSourceProperty( property );
+		SourceProperty sourceProperty = configuration.getSourceProperty( property );
 		if ( variables == null || variables.isEmpty() ) {
-			return origin.getValue( source );
+			return sourceProperty.getValue( source );
 		} else {
-			return origin.getValue( source, variables );
+			return sourceProperty.getValue( source, variables );
 		}
 	}
 

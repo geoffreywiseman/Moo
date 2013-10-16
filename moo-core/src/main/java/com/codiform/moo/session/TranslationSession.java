@@ -11,8 +11,7 @@ import java.util.Set;
 import com.codiform.moo.NoDestinationException;
 import com.codiform.moo.TranslationException;
 import com.codiform.moo.configuration.Configuration;
-import com.codiform.moo.property.source.SourceProperty;
-import com.codiform.moo.translator.DefaultTargetFactory;
+import com.codiform.moo.translator.DefaultObjectTargetFactory;
 import com.codiform.moo.translator.ObjectTranslator;
 import com.codiform.moo.translator.TranslationTargetFactory;
 import com.codiform.moo.translator.ValueTypeTranslator;
@@ -61,7 +60,7 @@ public class TranslationSession implements TranslationSource {
 	}
 
 	public <T> T getTranslation( Object source, Class<T> destinationClass ) {
-		return getTranslation( source, DefaultTargetFactory.class, destinationClass );
+		return getTranslation( source, DefaultObjectTargetFactory.class, destinationClass );
 	}
 
 	public <T> T getTranslation( Object source, Class<? extends TranslationTargetFactory> factory, Class<T> destinationClass ) {
@@ -117,7 +116,7 @@ public class TranslationSession implements TranslationSource {
 		return translated;
 	}
 
-	private TranslationTargetFactory getTranslationTargetFactory( Class<? extends TranslationTargetFactory> factoryType ) {
+	public TranslationTargetFactory getTranslationTargetFactory( Class<? extends TranslationTargetFactory> factoryType ) {
 		if ( translationTargetFactoryCache.containsKey( factoryType ) )
 			return translationTargetFactoryCache.get( factoryType );
 		else {
@@ -138,53 +137,30 @@ public class TranslationSession implements TranslationSource {
 	}
 
 	@Override
-	public <T> List<T> getEachTranslation( List<?> sources, Class<T> destinationClass, String itemExpression ) {
-		List<T> results = new ArrayList<T>();
-		for ( Object item : sources ) {
-			Object source = applyExpression( item, itemExpression );
-			results.add( getTranslation( source, destinationClass ) );
-		}
-		return results;
-	}
-
-	private Object applyExpression( Object item, String itemExpression ) {
-		if ( itemExpression == null )
-			return item;
-
-		SourceProperty property = configuration.getSourceProperty( itemExpression );
-		return property.getValue( item );
-	}
-
-	@Override
-	public <T> Set<T> getEachTranslation( Set<?> sources, Class<T> destinationClass, String itemExpression ) {
-		Set<T> results = new HashSet<T>();
-		for ( Object item : sources ) {
-			Object source = applyExpression( item, itemExpression );
-			results.add( getTranslation( source, destinationClass ) );
-		}
-		return results;
-	}
-
-	@Override
-	public <T> Collection<T> getEachTranslation( Collection<?> sources, Class<T> destinationClass, String itemExpression ) {
-		List<T> results = new ArrayList<T>();
-		for ( Object item : sources ) {
-			Object source = applyExpression( item, itemExpression );
-			results.add( getTranslation( source, destinationClass ) );
-		}
-		return results;
-	}
-
 	public <T> List<T> getEachTranslation( List<?> sources, Class<T> destinationClass ) {
-		return getEachTranslation( sources, destinationClass, null );
+		List<T> results = new ArrayList<T>();
+		for ( Object source : sources ) {
+			results.add( getTranslation( source, destinationClass ) );
+		}
+		return results;
 	}
 
-	public <T> Collection<T> getEachTranslation( Collection<?> sources, Class<T> destinationClass ) {
-		return getEachTranslation( sources, destinationClass, null );
-	}
-
+	@Override
 	public <T> Set<T> getEachTranslation( Set<?> sources, Class<T> destinationClass ) {
-		return getEachTranslation( sources, destinationClass, null );
+		Set<T> results = new HashSet<T>();
+		for ( Object source : sources ) {
+			results.add( getTranslation( source, destinationClass ) );
+		}
+		return results;
+	}
+
+	@Override
+	public <T> Collection<T> getEachTranslation( Collection<?> sources, Class<T> destinationClass ) {
+		List<T> results = new ArrayList<T>();
+		for ( Object source : sources ) {
+			results.add( getTranslation( source, destinationClass ) );
+		}
+		return results;
 	}
 
 }

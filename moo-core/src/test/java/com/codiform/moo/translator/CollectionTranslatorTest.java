@@ -14,7 +14,9 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import com.codiform.moo.configuration.Configuration;
 import com.codiform.moo.property.CollectionProperty;
@@ -31,6 +33,11 @@ public class CollectionTranslatorTest {
 	private TranslationSource session = new TranslationSession(configuration);
 	
 	private CollectionProperty property = mock(CollectionProperty.class);
+	
+	@Before
+	public void setUp() {
+		Mockito.doReturn( DefaultCollectionTargetFactory.class ).when( property ).getFactory();
+	}
 
 	@SuppressWarnings("unchecked")
 	@Test
@@ -40,6 +47,8 @@ public class CollectionTranslatorTest {
 		rhyme.add("two");
 		rhyme.add("buckle my shoe");
 
+		Mockito.doReturn( Set.class ).when( property ).getType();
+		
 		Set<String> translated = (Set<String>) translator.translate(rhyme,
 				property, session);
 
@@ -57,6 +66,8 @@ public class CollectionTranslatorTest {
 		rhyme.add("Pee");
 
 		assertOrder(rhyme, "Ay", "Pee", "Zed");
+
+		Mockito.doReturn( SortedSet.class ).when( property ).getType();
 
 		SortedSet<String> translated = (SortedSet<String>) translator
 				.translate(rhyme, property, session);
@@ -89,6 +100,8 @@ public class CollectionTranslatorTest {
 
 		configuration.setPerformingDefensiveCopies(false);
 
+		Mockito.doReturn( List.class ).when( property ).getType();
+
 		List<String> translated = (List<String>) translator.translate(rhyme,
 				property, session);
 
@@ -107,6 +120,7 @@ public class CollectionTranslatorTest {
 		when( property.shouldItemsBeTranslated() ).thenReturn( true );
 		// Mockito doesn't love Class<?> return types.
 		doReturn( Bar.class ).when( property ).getItemClass();
+		Mockito.doReturn( Collection.class ).when( property ).getType();
 		
 		Collection<Bar> translated = (Collection<Bar>) translator.translate(
 				rhyme, property, session);

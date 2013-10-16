@@ -2,6 +2,7 @@ package com.codiform.moo.property;
 
 import com.codiform.moo.annotation.Optionality;
 import com.codiform.moo.translator.CollectionMatcher;
+import com.codiform.moo.translator.DefaultCollectionTargetFactory;
 import com.codiform.moo.translator.IndexMatcher;
 import com.codiform.moo.translator.TranslationTargetFactory;
 
@@ -15,6 +16,7 @@ public abstract class AbstractCollectionProperty extends AbstractProperty
 	private final boolean removeOrphans;
 	private final boolean update;
 	private String itemExpression;
+	private Class<? extends TranslationTargetFactory> factory;
 
 	@SuppressWarnings("unchecked")
 	public AbstractCollectionProperty(
@@ -28,6 +30,7 @@ public abstract class AbstractCollectionProperty extends AbstractProperty
 			removeOrphans = annotation.removeOrphans();
 			update = annotation.update();
 			itemExpression = annotation.itemExpression().trim();
+			factory = annotation.factory();
 			if( itemExpression.length() == 0 )
 				itemExpression = null;
 		} else {
@@ -37,6 +40,7 @@ public abstract class AbstractCollectionProperty extends AbstractProperty
 			removeOrphans = true;
 			update = false;
 			itemExpression = null;
+			factory = DefaultCollectionTargetFactory.class;
 		}
 	}
 
@@ -86,8 +90,7 @@ public abstract class AbstractCollectionProperty extends AbstractProperty
 
 	@Override
 	public Class<? extends TranslationTargetFactory> getFactory() {
-		// TODO: add support for collection factories  
-		return null;
+		return factory;
 	}
 
 }

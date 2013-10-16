@@ -6,7 +6,7 @@ import java.lang.reflect.Method;
 import com.codiform.moo.GetPropertyException;
 import com.codiform.moo.SetPropertyException;
 
-public class MethodProperty extends AbstractItemProperty {
+public class MethodProperty extends AbstractObjectProperty {
 
 	private Method getter, setter;
 	private Class<?> type;

@@ -5,7 +5,7 @@ import java.lang.reflect.Field;
 import com.codiform.moo.GetPropertyException;
 import com.codiform.moo.SetPropertyException;
 
-public class FieldProperty extends AbstractItemProperty {
+public class FieldProperty extends AbstractObjectProperty {
 
 	private Field field;
 	private String name;
