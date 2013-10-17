@@ -17,6 +17,7 @@ import com.codiform.moo.configuration.Configuration;
 import com.codiform.moo.property.CollectionProperty;
 import com.codiform.moo.property.source.NoOpSourceProperty;
 import com.codiform.moo.property.source.SourceProperty;
+import com.codiform.moo.property.source.SourcePropertyFactory;
 import com.codiform.moo.session.TranslationSource;
 
 /**
@@ -36,14 +37,16 @@ public class CollectionTranslator {
 
 	private Configuration configuration;
 	private Logger log;
+	private SourcePropertyFactory sourcePropertyFactory;
 
 	/**
 	 * Create a collection translator with a known configuration.
 	 * 
 	 * @param configuration
 	 */
-	public CollectionTranslator( Configuration configuration ) {
+	public CollectionTranslator( Configuration configuration, SourcePropertyFactory sourcePropertyFactory ) {
 		this.configuration = configuration;
+		this.sourcePropertyFactory = sourcePropertyFactory;
 		this.log = LoggerFactory.getLogger( getClass() );
 	}
 
@@ -134,7 +137,7 @@ public class CollectionTranslator {
 		if( itemExpression == null )
 			return new NoOpSourceProperty();
 		else
-			return configuration.getSourceProperty( itemExpression ); 
+			return sourcePropertyFactory.getSourceProperty( itemExpression ); 
 	}
 
 	private Object createTargetCollection( Object value, CollectionProperty property, TranslationSource cache ) {

@@ -12,8 +12,8 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import com.codiform.moo.annotation.AccessMode;
 import com.codiform.moo.configuration.Configuration;
-import com.codiform.moo.property.Property;
 import com.codiform.moo.property.source.SourceProperty;
+import com.codiform.moo.property.source.SourcePropertyFactory;
 import com.codiform.moo.session.TranslationSource;
 
 @RunWith( MockitoJUnitRunner.class )
@@ -21,6 +21,12 @@ public class TranslatorTest {
 
 	@Mock
 	private Configuration configuration;
+	
+	@Mock
+	private SourcePropertyFactory spf;
+	
+	@Mock
+	private TranslatorFactory tf;
 
 	@Mock
 	private SourceProperty origin;
@@ -33,9 +39,9 @@ public class TranslatorTest {
 	@Before
 	public void setUp() {
 		when( configuration.getDefaultAccessMode() ).thenReturn( AccessMode.FIELD );
-		when( configuration.getSourceProperty( Mockito.any( Property.class ) ) ).thenReturn( origin );
+		when( spf.getSourceProperty( Mockito.any( String.class ) ) ).thenReturn( origin );
 		when( origin.getValue( Mockito.any(Source.class) ) ).thenReturn( "TranslatorTest" );
-		translator = new ObjectTranslator<Destination>( Destination.class, configuration );
+		translator = new ObjectTranslator<Destination>( Destination.class, configuration, tf, spf );
 	}
 
 	@Test

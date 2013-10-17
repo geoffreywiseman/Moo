@@ -10,10 +10,11 @@ import java.util.Set;
 
 import com.codiform.moo.NoDestinationException;
 import com.codiform.moo.TranslationException;
-import com.codiform.moo.configuration.Configuration;
+import com.codiform.moo.translator.CachingTranslatorFactory;
 import com.codiform.moo.translator.DefaultObjectTargetFactory;
 import com.codiform.moo.translator.ObjectTranslator;
 import com.codiform.moo.translator.TranslationTargetFactory;
+import com.codiform.moo.translator.TranslatorFactory;
 import com.codiform.moo.translator.ValueTypeTranslator;
 
 /**
@@ -29,33 +30,40 @@ import com.codiform.moo.translator.ValueTypeTranslator;
 public class TranslationSession implements TranslationSource {
 
 	protected TranslationCache translationCache;
-	private Configuration configuration;
+	private TranslatorFactory translatorFactory;
 	private Map<String, Object> variables;
 	protected Map<Class<? extends TranslationTargetFactory>, TranslationTargetFactory> translationTargetFactoryCache;
 
 	/**
-	 * Creates a translation session with a known configuration.
-	 * 
-	 * @param configuration
-	 *            the {@link Configuration} of the translation session
+	 * Creates a translation session using a default caching translator factory.
 	 */
-	public TranslationSession( Configuration configuration ) {
+	public TranslationSession() {
+		this( new CachingTranslatorFactory() );
+	}
+
+	/**
+	 * Creates a translation session.
+	 * 
+	 * @param translatorFactory
+	 *            an {@link TranslatorFactory} the translation session can use to create translators
+	 */
+	public TranslationSession( TranslatorFactory translatorFactory ) {
 		translationCache = new TranslationCache();
-		this.configuration = configuration;
+		this.translatorFactory = translatorFactory;
 		translationTargetFactoryCache = new HashMap<Class<? extends TranslationTargetFactory>, TranslationTargetFactory>();
 	}
 
 	/**
 	 * Creates a translation session with a known configuration and with context variables.
 	 * 
-	 * @param configuration
-	 *            the {@link Configuration} of the translation session
+	 * @param translatorFactory
+	 *            an {@link TranslatorFactory} the translation session can use to create translators
 	 * @param variables
 	 *            variables which can be used by translations to get external data or perform
 	 *            external logic
 	 */
-	public TranslationSession( Configuration configuration, Map<String, Object> variables ) {
-		this( configuration );
+	public TranslationSession( TranslatorFactory translatorFactory, Map<String, Object> variables ) {
+		this( translatorFactory );
 		this.variables = variables;
 	}
 
@@ -82,7 +90,7 @@ public class TranslationSession implements TranslationSource {
 	@Override
 	public void update( Object source, Object destination ) {
 		assureDestination( destination );
-		configuration.getTranslator( destination.getClass() ).castAndUpdate( source, destination, this, variables );
+		translatorFactory.getTranslator( destination.getClass() ).castAndUpdate( source, destination, this, variables );
 	}
 
 	private void assureDestination( Object destination ) {
@@ -96,7 +104,7 @@ public class TranslationSession implements TranslationSource {
 			return null;
 		} else {
 			// Is it a value type or an object?
-			ValueTypeTranslator<T> vtt = configuration.getValueTypeTranslator( destinationClass );
+			ValueTypeTranslator<T> vtt = translatorFactory.getValueTypeTranslator( destinationClass );
 			if ( vtt != null ) {
 				return vtt.getTranslation( source, destinationClass );
 			} else {
@@ -109,7 +117,7 @@ public class TranslationSession implements TranslationSource {
 		ObjectTranslator<T> translator = getTranslator( destinationClass );
 		TranslationTargetFactory factory = getTranslationTargetFactory( factoryType );
 		T translated = factory.getTranslationTargetInstance( source, destinationClass );
-		if( translated == null )
+		if ( translated == null )
 			throw new TranslationException( "Translation target factory (" + factory + ") returned null instance; cannot translate." );
 		translationCache.putTranslation( source, translated );
 		translator.update( source, translated, this, variables );
@@ -133,7 +141,7 @@ public class TranslationSession implements TranslationSource {
 	}
 
 	private <T> ObjectTranslator<T> getTranslator( Class<T> destination ) {
-		return configuration.getTranslator( destination );
+		return translatorFactory.getTranslator( destination );
 	}
 
 	@Override

@@ -1,9 +1,9 @@
 package com.codiform.moo.translator;
 
-
 /**
- * A source from which translators may be retrieved.  This helps to abstract the fact that Configuration is
- * the source of translators, although that may also be an unnecessary abstraction.
+ * A source from which Moo's translators may be retrieved. This helps to 
+ * abstract the source of these, whether or not they are cached,
+ * and so forth. That may also be an unnecessary abstraction.
  */
 public interface TranslatorFactory {
 
@@ -31,4 +31,12 @@ public interface TranslatorFactory {
 	 */
 	ArrayTranslator getArrayTranslator();
 
+	/**
+	 * Get the value type translator corresponding to a destination type.
+	 * 
+	 * @param destinationType the destination type for the value type translator
+	 * @return the value type translator corresponding to the destination type
+	 */
+	<V> ValueTypeTranslator<V> getValueTypeTranslator( Class<V> destinationType );
+	
 }

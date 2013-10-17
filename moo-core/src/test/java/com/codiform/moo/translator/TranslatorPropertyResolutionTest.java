@@ -16,126 +16,111 @@ import org.junit.Test;
 
 import com.codiform.moo.annotation.Access;
 import com.codiform.moo.annotation.AccessMode;
-import com.codiform.moo.configuration.Configuration;
 import com.codiform.moo.property.FieldProperty;
 import com.codiform.moo.property.MethodProperty;
 import com.codiform.moo.property.Property;
 
-public class TranslatorPropertyResolutionTest {
+public class TranslatorPropertyResolutionTest extends TestWithTranslatorFactory {
 
 	@Test
 	public void resolvesFieldProperties() {
-		List<Property> properties = getProperties(Alpha.class);
-		assertThat(properties, Matchers.hasItem(propertyWithName("alpha")));
+		List<Property> properties = getProperties( Alpha.class );
+		assertThat( properties, Matchers.hasItem( propertyWithName( "alpha" ) ) );
 	}
 
 	@Test
 	public void resolvesMethodProperties() {
-		List<Property> properties = getProperties(Beta.class);
-		assertThat(properties, hasItem(propertyWithName("beta")));
+		List<Property> properties = getProperties( Beta.class );
+		assertThat( properties, hasItem( propertyWithName( "beta" ) ) );
 	}
 
 	@Test
 	public void resolvesFieldPropertiesInSuperclass() {
-		List<Property> properties = getProperties(Charlie.class);
-		assertThat(properties, Matchers.hasItem(propertyWithName("alpha")));
-		assertThat(properties, Matchers.hasItem(propertyWithName("charlie")));
+		List<Property> properties = getProperties( Charlie.class );
+		assertThat( properties, Matchers.hasItem( propertyWithName( "alpha" ) ) );
+		assertThat( properties, Matchers.hasItem( propertyWithName( "charlie" ) ) );
 	}
 
 	@Test
 	public void resolvesMethodPropertiesInSuperclass() {
-		List<Property> properties = getProperties(Delta.class);
-		assertThat(properties, hasItem(propertyWithName("beta")));
-		assertThat(properties, hasItem(propertyWithName("delta")));
+		List<Property> properties = getProperties( Delta.class );
+		assertThat( properties, hasItem( propertyWithName( "beta" ) ) );
+		assertThat( properties, hasItem( propertyWithName( "delta" ) ) );
 	}
 
 	@Test
 	public void resolvesFieldAndMethodPropertyByAccessMode() {
-		List<Property> properties = getProperties(Echo.class);
-		assertThat(new HashSet<Object>(properties), hasItem(allOf(
-				isA(MethodProperty.class), propertyWithName("echo"))));
+		List<Property> properties = getProperties( Echo.class );
+		assertThat( new HashSet<Object>( properties ), hasItem( allOf( isA( MethodProperty.class ), propertyWithName( "echo" ) ) ) );
 
-		properties = getProperties(Foxtrot.class);
-		assertThat(new HashSet<Object>(properties), hasItem(allOf(
-				isA(FieldProperty.class), propertyWithName("foxtrot"))));
+		properties = getProperties( Foxtrot.class );
+		assertThat( new HashSet<Object>( properties ), hasItem( allOf( isA( FieldProperty.class ), propertyWithName( "foxtrot" ) ) ) );
 	}
 
 	public void resolvesFieldAndMethodPropertyByExplicitAnnotationOverAccessMode() {
-		List<Property> properties = getProperties(Golf.class);
-		assertThat(new HashSet<Object>(properties), hasItem(allOf(
-				isA(FieldProperty.class), propertyWithName("golf"))));
+		List<Property> properties = getProperties( Golf.class );
+		assertThat( new HashSet<Object>( properties ), hasItem( allOf( isA( FieldProperty.class ), propertyWithName( "golf" ) ) ) );
 
-		properties = getProperties(Hotel.class);
-		assertThat(new HashSet<Object>(properties), hasItem(allOf(
-				isA(MethodProperty.class), propertyWithName("hotel"))));
+		properties = getProperties( Hotel.class );
+		assertThat( new HashSet<Object>( properties ), hasItem( allOf( isA( MethodProperty.class ), propertyWithName( "hotel" ) ) ) );
 	}
 
 	@Test
 	public void resolvesPropertyInFavorOfSubclass() {
-		List<Property> properties = getProperties(India.class);
-		assertThat(properties, hasItem(allOf(propertyFromClass(India.class),
-				propertyWithName("alpha"))));
+		List<Property> properties = getProperties( India.class );
+		assertThat( properties, hasItem( allOf( propertyFromClass( India.class ), propertyWithName( "alpha" ) ) ) );
 
-		properties = getProperties(Juliet.class);
-		assertThat(properties, hasItem(allOf(propertyFromClass(Juliet.class),
-				propertyWithName("alpha"))));
+		properties = getProperties( Juliet.class );
+		assertThat( properties, hasItem( allOf( propertyFromClass( Juliet.class ), propertyWithName( "alpha" ) ) ) );
 
-		properties = getProperties(Kilo.class);
-		assertThat(properties, hasItem(allOf(propertyFromClass(Kilo.class),
-				propertyWithName("beta"))));
+		properties = getProperties( Kilo.class );
+		assertThat( properties, hasItem( allOf( propertyFromClass( Kilo.class ), propertyWithName( "beta" ) ) ) );
 
-		properties = getProperties(Lima.class);
-		assertThat(properties, hasItem(allOf(propertyFromClass(Lima.class),
-				propertyWithName("beta"))));
+		properties = getProperties( Lima.class );
+		assertThat( properties, hasItem( allOf( propertyFromClass( Lima.class ), propertyWithName( "beta" ) ) ) );
 	}
-	
+
 	@Test
 	public void prefersExplicitAnnotationToSubclass() {
-		List<Property> properties = getProperties(Mike.class);
-		assertThat(properties, hasItem(allOf(propertyFromClass(Golf.class),
-				propertyWithName("golf"))));
+		List<Property> properties = getProperties( Mike.class );
+		assertThat( properties, hasItem( allOf( propertyFromClass( Golf.class ), propertyWithName( "golf" ) ) ) );
 
-		properties = getProperties(November.class);
-		assertThat(properties, hasItem(allOf(propertyFromClass(Hotel.class),
-				propertyWithName("hotel"))));
-}
+		properties = getProperties( November.class );
+		assertThat( properties, hasItem( allOf( propertyFromClass( Hotel.class ), propertyWithName( "hotel" ) ) ) );
+	}
 
 	// resolves overridden property in favor of explicitness (even if in super)
 
-	private Matcher<Property> propertyFromClass(final Class<?> fromClass) {
+	private Matcher<Property> propertyFromClass( final Class<?> fromClass ) {
 		return new TypeSafeMatcher<Property>() {
 			Class<?> expectedDeclaringClass = fromClass;
 
 			@Override
-			public boolean matchesSafely(Property property) {
-				return expectedDeclaringClass.equals(property
-						.getDeclaringClass());
+			public boolean matchesSafely( Property property ) {
+				return expectedDeclaringClass.equals( property.getDeclaringClass() );
 			}
 
-			public void describeTo(Description description) {
-				description.appendText("Property declared in "
-						+ expectedDeclaringClass.getSimpleName());
+			public void describeTo( Description description ) {
+				description.appendText( "Property declared in " + expectedDeclaringClass.getSimpleName() );
 			}
 		};
 	}
 
-	private <T> List<Property> getProperties(Class<T> classForProperties) {
-		ObjectTranslator<T> translator = new ObjectTranslator<T>(classForProperties,
-				new Configuration());
-		return translator.getProperties(classForProperties);
+	private <T> List<Property> getProperties( Class<T> classForProperties ) {
+		return translatorFactory.getTranslator( classForProperties ).getProperties( classForProperties );
 	}
 
-	private Matcher<Property> propertyWithName(final String propertyName) {
+	private Matcher<Property> propertyWithName( final String propertyName ) {
 		return new TypeSafeMatcher<Property>() {
 			String name = propertyName;
 
 			@Override
-			public boolean matchesSafely(Property property) {
-				return name.equals(property.getName());
+			public boolean matchesSafely( Property property ) {
+				return name.equals( property.getName() );
 			}
 
-			public void describeTo(Description description) {
-				description.appendText("Property named " + name);
+			public void describeTo( Description description ) {
+				description.appendText( "Property named " + name );
 			}
 		};
 	}
@@ -144,98 +129,98 @@ public class TranslatorPropertyResolutionTest {
 		protected String alpha;
 	}
 
-	@Access(AccessMode.METHOD)
+	@Access( AccessMode.METHOD )
 	public static class Beta {
-		public void setBeta(String beta) {
+		public void setBeta( String beta ) {
 		}
 	}
 
 	public static class Charlie extends Alpha {
-		@SuppressWarnings("unused")
+		@SuppressWarnings( "unused" )
 		private String charlie;
 	}
 
-	@Access(AccessMode.METHOD)
+	@Access( AccessMode.METHOD )
 	public static class Delta extends Beta {
-		public void setDelta(String delta) {
+		public void setDelta( String delta ) {
 		}
 	}
 
-	@Access(AccessMode.METHOD)
+	@Access( AccessMode.METHOD )
 	public static class Echo {
-		@SuppressWarnings("unused")
+		@SuppressWarnings( "unused" )
 		private String echo;
 
-		public void setEcho(String echo) {
+		public void setEcho( String echo ) {
 			this.echo = echo;
 		}
 	}
 
-	@Access(AccessMode.FIELD)
+	@Access( AccessMode.FIELD )
 	public static class Foxtrot {
-		@SuppressWarnings("unused")
+		@SuppressWarnings( "unused" )
 		private String foxtrot;
 
-		public void setFoxtrot(String foxtrot) {
+		public void setFoxtrot( String foxtrot ) {
 			this.foxtrot = foxtrot;
 		}
 	}
 
-	@Access(AccessMode.METHOD)
+	@Access( AccessMode.METHOD )
 	public static class Golf {
 		@com.codiform.moo.annotation.Property
 		private String golf;
 
-		public void setGolf(String golf) {
+		public void setGolf( String golf ) {
 			this.golf = golf;
 		}
 	}
 
-	@Access(AccessMode.FIELD)
+	@Access( AccessMode.FIELD )
 	public static class Hotel {
-		@SuppressWarnings("unused")
+		@SuppressWarnings( "unused" )
 		private String hotel;
 
 		@com.codiform.moo.annotation.Property
-		public void setHotel(String hotel) {
+		public void setHotel( String hotel ) {
 			this.hotel = hotel;
 		}
 	}
 
 	public static class India extends Alpha {
-		@SuppressWarnings("unused")
+		@SuppressWarnings( "unused" )
 		private String alpha;
 	}
 
-	@Access(AccessMode.METHOD)
+	@Access( AccessMode.METHOD )
 	public static class Juliet extends Alpha {
-		public void setAlpha(String alpha) {
+		public void setAlpha( String alpha ) {
 			this.alpha = alpha;
 		}
 	}
 
 	public static class Kilo extends Beta {
-		@SuppressWarnings("unused")
+		@SuppressWarnings( "unused" )
 		private String beta;
 	}
 
-	@Access(AccessMode.METHOD)
+	@Access( AccessMode.METHOD )
 	public static class Lima extends Beta {
-		public void setBeta(String beta) {
-			super.setBeta(beta);
+		public void setBeta( String beta ) {
+			super.setBeta( beta );
 		}
 	}
-	
-	@Access(AccessMode.METHOD)
+
+	@Access( AccessMode.METHOD )
 	public static class Mike extends Golf {
 		public void setGolf( String golf ) {
 			super.setGolf( golf );
 		}
 	}
-	
-	@Access(AccessMode.FIELD)
+
+	@Access( AccessMode.FIELD )
 	public static class November extends Hotel {
-		@SuppressWarnings("unused")
+		@SuppressWarnings( "unused" )
 		private String hotel;
 	}
 }

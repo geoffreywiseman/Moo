@@ -24,6 +24,7 @@ import com.codiform.moo.property.CollectionProperty;
 import com.codiform.moo.property.Property;
 import com.codiform.moo.property.PropertyFactory;
 import com.codiform.moo.property.source.SourceProperty;
+import com.codiform.moo.property.source.SourcePropertyFactory;
 import com.codiform.moo.session.TranslationSource;
 
 /**
@@ -40,6 +41,9 @@ public class ObjectTranslator<T> {
 
 	private Configuration configuration;
 
+	private TranslatorFactory translatorFactory;
+	private SourcePropertyFactory sourcePropertyFactory;
+
 	/**
 	 * Create a translator that will translate objects to the specified destination type, using the
 	 * specified configuration.
@@ -48,10 +52,17 @@ public class ObjectTranslator<T> {
 	 *            the destination type
 	 * @param configuration
 	 *            the configuration used during translation
+	 * @param translatorFactory
+	 *            a factory for translators
+	 * @param sourcePropertyFactory
+	 *            a factory for source properties
 	 */
-	public ObjectTranslator( Class<T> destination, Configuration configuration ) {
+	public ObjectTranslator( Class<T> destination, Configuration configuration, TranslatorFactory translatorFactory,
+			SourcePropertyFactory sourcePropertyFactory ) {
 		this.destinationClass = destination;
 		this.configuration = configuration;
+		this.translatorFactory = translatorFactory;
+		this.sourcePropertyFactory = sourcePropertyFactory;
 	}
 
 	/**
@@ -117,12 +128,12 @@ public class ObjectTranslator<T> {
 		Class<?> valueType = value.getClass();
 
 		if ( valueType.isAssignableFrom( fieldType ) ) {
-			return configuration.getArrayTranslator().defensiveCopy( value );
+			return translatorFactory.getArrayTranslator().defensiveCopy( value );
 		} else if ( fieldType.isArray() ) {
 			if ( valueType.isAssignableFrom( fieldType.getComponentType() ) ) {
-				return configuration.getArrayTranslator().copyTo( value, fieldType );
+				return translatorFactory.getArrayTranslator().copyTo( value, fieldType );
 			} else {
-				return configuration.getArrayTranslator().translate( value, fieldType.getComponentType(), translationSource );
+				return translatorFactory.getArrayTranslator().translate( value, fieldType.getComponentType(), translationSource );
 			}
 		} else {
 			throw new UnsupportedTranslationException( String.format( "Cannot translate from source array type %s[] to destination type %s",
@@ -131,11 +142,11 @@ public class ObjectTranslator<T> {
 	}
 
 	private Object transformCollection( Object value, CollectionProperty property, TranslationSource translationSource ) {
-		return configuration.getCollectionTranslator().translate( value, property, translationSource );
+		return translatorFactory.getCollectionTranslator().translate( value, property, translationSource );
 	}
 
 	private Object getValue( Object source, Property property, Map<String, Object> variables ) {
-		SourceProperty sourceProperty = configuration.getSourceProperty( property );
+		SourceProperty sourceProperty = sourcePropertyFactory.getSourceProperty( property.getSourcePropertyExpression() );
 		if ( variables == null || variables.isEmpty() ) {
 			return sourceProperty.getValue( source );
 		} else {
@@ -260,12 +271,12 @@ public class ObjectTranslator<T> {
 	}
 
 	private void updateMap( Object source, Map<Object, Object> destinationMap, CollectionProperty property, TranslationSource translationSource ) {
-		configuration.getCollectionTranslator().updateMap( source, destinationMap, translationSource, property );
+		translatorFactory.getCollectionTranslator().updateMap( source, destinationMap, translationSource, property );
 
 	}
 
 	private void updateCollection( Object source, Collection<Object> destinationCollection, CollectionProperty property,
 			TranslationSource translationSource ) {
-		configuration.getCollectionTranslator().updateCollection( source, destinationCollection, translationSource, property );
+		translatorFactory.getCollectionTranslator().updateCollection( source, destinationCollection, translationSource, property );
 	}
 }

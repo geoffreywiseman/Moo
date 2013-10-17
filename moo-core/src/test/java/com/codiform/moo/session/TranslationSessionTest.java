@@ -11,16 +11,16 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import com.codiform.moo.configuration.Configuration;
 import com.codiform.moo.domain.OrdinalDto;
 import com.codiform.moo.domain.TestFactory;
 import com.codiform.moo.translator.ObjectTranslator;
+import com.codiform.moo.translator.TranslatorFactory;
 
 @RunWith( MockitoJUnitRunner.class )
 public class TranslationSessionTest {
 
 	@Mock
-	private Configuration configuration;
+	private TranslatorFactory translatorFactory;
 
 	@Mock
 	private TranslationCache cache;
@@ -32,7 +32,7 @@ public class TranslationSessionTest {
 
 	@Before
 	public void setUpSession() {
-		session = new TestableTranslationSession( configuration );
+		session = new TestableTranslationSession( translatorFactory );
 		session.setTranslationCache( cache );
 		session.cacheTranslationTargetFactory( TestFactory.class, factory );
 	}
@@ -41,7 +41,7 @@ public class TranslationSessionTest {
 	public void testGetTranslationChecksCacheThenTranslates() {
 		OrdinalDto translation = new OrdinalDto( 1, "First" );
 		ObjectTranslator<OrdinalDto> translator = mockTranslator( OrdinalDto.class );
-		Mockito.when( configuration.getTranslator( OrdinalDto.class ) ).thenReturn( translator );
+		Mockito.when( translatorFactory.getTranslator( OrdinalDto.class ) ).thenReturn( translator );
 		Mockito.when( factory.getTranslationTargetInstance( "One", OrdinalDto.class ) ).thenReturn( translation );
 		
 		session.getTranslation( "One", TestFactory.class, OrdinalDto.class );
@@ -53,7 +53,7 @@ public class TranslationSessionTest {
 	@Test
 	public void testStoresMissingTranslationInCache() {
 		ObjectTranslator<OrdinalDto> translator = mockTranslator( OrdinalDto.class );
-		Mockito.when( configuration.getTranslator( OrdinalDto.class ) ).thenReturn( translator );
+		Mockito.when( translatorFactory.getTranslator( OrdinalDto.class ) ).thenReturn( translator );
 
 		session.getTranslation( "One", OrdinalDto.class );
 		
@@ -65,7 +65,7 @@ public class TranslationSessionTest {
 	public void testGetTranslationReturnsTranslatedValue() {
 		Integer translation = Integer.valueOf( 1 );
 		ObjectTranslator<Integer> translator = mockTranslator( Integer.class );
-		Mockito.when( configuration.getTranslator( Integer.class ) ).thenReturn( translator );
+		Mockito.when( translatorFactory.getTranslator( Integer.class ) ).thenReturn( translator );
 		Mockito.when( factory.getTranslationTargetInstance( "One", Integer.class ) ).thenReturn(translation);
 
 		Integer result = session.getTranslation( "One", TestFactory.class, Integer.class );
@@ -83,7 +83,7 @@ public class TranslationSessionTest {
 
 		session.getTranslation( "One", Integer.class );
 		Mockito.verify( cache ).getTranslation( "One", Integer.class );
-		Mockito.verifyZeroInteractions( configuration );
+		Mockito.verifyZeroInteractions( translatorFactory );
 	}
 
 	@Test

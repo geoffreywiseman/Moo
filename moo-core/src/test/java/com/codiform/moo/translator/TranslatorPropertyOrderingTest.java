@@ -8,27 +8,22 @@ import org.junit.Test;
 
 import com.codiform.moo.annotation.Access;
 import com.codiform.moo.annotation.AccessMode;
-import com.codiform.moo.configuration.Configuration;
 import com.codiform.moo.property.Property;
 
 /**
  * Make sure the properties are ordered from superclass to subclass.
  */
-public class TranslatorPropertyOrderingTest {
+public class TranslatorPropertyOrderingTest extends TestWithTranslatorFactory {
 
 	@Test
 	public void testPropertiesOrderedSuperToSub() {
-		List<Property> properties = getBottomTranslator().getProperties( Bottom.class );
+		List<Property> properties = getTranslator( Bottom.class ).getProperties( Bottom.class );
 		assertEquals( 3, properties.size() );
 		assertEquals( "foo", properties.get( 0 ).getName() );
 		assertEquals( "bar", properties.get( 1 ).getName() );
 		assertEquals( "baz", properties.get( 2 ).getName() );
 	}
 	
-	private ObjectTranslator<Bottom> getBottomTranslator(	) {
-		return new ObjectTranslator<Bottom>( Bottom.class, new Configuration() );
-	}
-
 	@Access(AccessMode.METHOD)
 	private static class Top {
 		@SuppressWarnings( "unused" )

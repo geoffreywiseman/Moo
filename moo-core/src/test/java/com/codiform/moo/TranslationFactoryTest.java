@@ -34,7 +34,7 @@ public class TranslationFactoryTest {
 
 	@Before
 	public void setUp() {
-		TestableTranslationSession testSession = new TestableTranslationSession( new Configuration() );
+		TestableTranslationSession testSession = new TestableTranslationSession( );
 		testSession.cacheTranslationTargetFactory( TestFactory.class, factory );
 		session = testSession;
 	}

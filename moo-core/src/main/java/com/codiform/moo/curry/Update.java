@@ -3,8 +3,9 @@ package com.codiform.moo.curry;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.codiform.moo.configuration.Configuration;
 import com.codiform.moo.session.TranslationSession;
+import com.codiform.moo.translator.CachingTranslatorFactory;
+import com.codiform.moo.translator.TranslatorFactory;
 
 /**
  * A curried update operation, where the source of the update has been
@@ -22,15 +23,12 @@ public class Update {
 	 */
 	private Object source;
 
-	/**
-	 * The configuration backing the updates.
-	 */
-	private Configuration configuration;
-
 	private Map<String, Object> variables;
+	
+	private TranslatorFactory translatorFactory;
 
-	public Update(Configuration configuration, Object source) {
-		this.configuration = configuration;
+	public Update(TranslatorFactory factory, Object source) {
+		this.translatorFactory = factory;
 		this.source = source;
 		this.variables = new HashMap<String, Object>();
 	}
@@ -42,7 +40,7 @@ public class Update {
 	 *            the object to which updates should be applied.
 	 */
 	public void to(Object destination) {
-		new TranslationSession(configuration,variables).update(source, destination);
+		new TranslationSession(translatorFactory,variables).update(source, destination);
 	}
 
 	/**
@@ -53,7 +51,7 @@ public class Update {
 	 * @return the curried update operation
 	 */
 	public static Update from(Object source) {
-		return new Update(new Configuration(), source);
+		return new Update(new CachingTranslatorFactory(), source);
 	}
 
 	/**

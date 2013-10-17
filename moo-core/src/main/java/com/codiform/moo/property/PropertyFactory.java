@@ -129,7 +129,7 @@ public class PropertyFactory {
 				|| annotation.source().isEmpty() ) {
 			return name;
 		} else {
-			return annotation.source();
+			return annotation.source().trim();
 		}
 	}
 
@@ -139,7 +139,7 @@ public class PropertyFactory {
 				|| annotation.source().isEmpty() ) {
 			return name;
 		} else {
-			return annotation.source();
+			return annotation.source().trim();
 		}
 	}
 
