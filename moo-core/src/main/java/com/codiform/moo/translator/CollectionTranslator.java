@@ -2,10 +2,7 @@ package com.codiform.moo.translator;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -92,13 +89,6 @@ public class CollectionTranslator {
 			} else {
 				throw new TranslationException( "Cannot translate collection to target of type: " + target.getClass().getName() );
 			}
-		} else if( value instanceof Map ) {
-			if( target instanceof Map ) {
-				Map<Object,Object> targetMap = (Map<Object,Object>) target;
-				targetMap.putAll( (Map<Object,Object>) value );
-			} else {
-				throw new TranslationException( "Cannot translate Map to target of type: " + target.getClass().getName() );
-			}
 		} else {
 			throw new TranslationException( "Cannot translate collection from type: " + value.getClass().getName() );
 		}
@@ -123,13 +113,8 @@ public class CollectionTranslator {
 			} else {
 				throw new TranslationException( "Cannot translate collection to target of type: " + target.getClass().getName() );
 			}
-		} else if ( value instanceof Map ) {
-			if ( target instanceof Map ) {
-				throw new UnsupportedTranslationException(
-						"Support for translating the contents of maps is not yet part of Moo (see GitHub issues #37)." );
-			} else {
-				throw new TranslationException( "Cannot translate map to target of type: " + target.getClass().getName() );
-			}
+		} else {
+			throw new TranslationException( "Cannot translate from collection of type: " + target.getClass().getName() );
 		}
 	}
 
@@ -146,43 +131,6 @@ public class CollectionTranslator {
 		Object targetCollection = factory.getTranslationTargetInstance( value, property.getType() );
 		log.trace( "Target factory type {} created target collection of type {} for source {}", factoryType, targetCollection.getClass(), value );
 		return targetCollection;
-	}
-
-	@SuppressWarnings( "unchecked" )
-	public void updateMap( Object source, Map<Object, Object> destinationMap, TranslationSource translationSource, CollectionProperty property ) {
-		if ( source instanceof Map ) {
-			Map<Object, Object> sourceMap = (Map<Object, Object>)source;
-			updateMapByKey( sourceMap, destinationMap, translationSource, property );
-		} else {
-			throw new UnsupportedTranslationException( "Cannot update Map from " + source.getClass().getName() );
-		}
-	}
-
-	private void updateMapByKey( Map<Object, Object> sourceMap, Map<Object, Object> destinationMap, TranslationSource translationSource,
-			CollectionProperty property ) {
-		for ( Map.Entry<Object, Object> item : sourceMap.entrySet() ) {
-			Object destinationValue = destinationMap.get( item.getKey() );
-			Object sourceValue = item.getValue();
-			if ( destinationValue != null && sourceValue != null ) {
-				translationSource.update( sourceValue, destinationValue );
-			} else if ( property.getItemClass() != null && sourceValue != null ) {
-				destinationMap.put( item.getKey(), translationSource.getTranslation( sourceValue, property.getItemClass() ) );
-			} else {
-				destinationMap.put( item.getKey(), sourceValue );
-			}
-		}
-
-		if ( property.shouldRemoveOrphans() ) {
-			removeOrphans( sourceMap, destinationMap );
-		}
-	}
-
-	private void removeOrphans( Map<Object, Object> sourceMap, Map<Object, Object> destinationMap ) {
-		Set<Object> toRemove = new HashSet<Object>( destinationMap.keySet() );
-		toRemove.removeAll( sourceMap.keySet() );
-		for ( Object key : toRemove ) {
-			destinationMap.remove( key );
-		}
 	}
 
 	@SuppressWarnings( "unchecked" )

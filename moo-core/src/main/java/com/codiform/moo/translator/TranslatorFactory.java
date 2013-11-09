@@ -38,5 +38,10 @@ public interface TranslatorFactory {
 	 * @return the value type translator corresponding to the destination type
 	 */
 	<V> ValueTypeTranslator<V> getValueTypeTranslator( Class<V> destinationType );
+
+	/**
+	 * Gets the translator used for making translations of maps.
+	 */
+	MapTranslator getMapTranslator();
 	
 }

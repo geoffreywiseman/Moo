@@ -2,13 +2,10 @@ package com.codiform.moo.translator;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 import com.codiform.moo.TranslationException;
 import com.codiform.moo.TranslationInitializationException;
@@ -17,7 +14,7 @@ import com.codiform.moo.TranslationInitializationException;
  * The default target factory for properties annotated with @Property, this simply instantiates
  * whatever class was defined in the destination method or field.
  */
-public class DefaultCollectionTargetFactory implements TranslationTargetFactory {
+public class DefaultMapTargetFactory implements TranslationTargetFactory {
 
 	@Override
 	public <T> T getTranslationTargetInstance( Object source, Class<T> targetType ) {
@@ -32,17 +29,13 @@ public class DefaultCollectionTargetFactory implements TranslationTargetFactory 
 	@SuppressWarnings( "unchecked" )
 	private <T> Class<? extends T> getDefaultTypeForTarget( Class<T> target ) {
 		if ( target.isInterface() ) {
-			if ( SortedSet.class.equals( target ) )
-				return (Class<? extends T>)TreeSet.class;
-			else if ( Set.class.equals( target ) )
-				return (Class<? extends T>)HashSet.class;
-			else if ( List.class.equals( target ) )
-				return (Class<? extends T>)ArrayList.class;
-			else if ( Collection.class.equals( target ) )
-				return (Class<? extends T>)ArrayList.class;
+			if ( SortedMap.class.equals( target ) )
+				return (Class<? extends T>)TreeMap.class;
+			else if ( Map.class.equals( target ) )
+				return (Class<? extends T>)HashMap.class;
 			else
 				return null;
-		} else if ( Collection.class.isAssignableFrom( target ) ) {
+		} else if ( Map.class.isAssignableFrom( target ) ) {
 			return target;
 		} else {
 			return null;

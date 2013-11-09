@@ -16,6 +16,7 @@ public class CachingTranslatorFactory implements TranslatorFactory {
 
 	private Configuration configuration;
 	private CollectionTranslator collectionTranslator;
+	private MapTranslator mapTranslator;
 	private Map<Class<?>, ValueTypeTranslator<?>> valueTypeTranslators;
 	private ArrayTranslator arrayTranslator;
 	private Map<Class<?>,ObjectTranslator<?>> translators;
@@ -28,6 +29,7 @@ public class CachingTranslatorFactory implements TranslatorFactory {
 	public CachingTranslatorFactory( Configuration configuration, SourcePropertyFactory sourcePropertyFactory ) {
 		this.configuration = configuration;
 		collectionTranslator = new CollectionTranslator( configuration, sourcePropertyFactory );
+		mapTranslator = new MapTranslator( configuration, sourcePropertyFactory );
 		arrayTranslator = new ArrayTranslator( configuration );
 		valueTypeTranslators = new HashMap<Class<?>, ValueTypeTranslator<?>>();
 		this.sourcePropertyFactory = sourcePropertyFactory;
@@ -65,6 +67,11 @@ public class CachingTranslatorFactory implements TranslatorFactory {
 	@SuppressWarnings( "unchecked" )
 	public <V> ValueTypeTranslator<V> getValueTypeTranslator( Class<V> destinationType ) {
 		return (ValueTypeTranslator<V>)valueTypeTranslators.get( destinationType );
+	}
+
+	@Override
+	public MapTranslator getMapTranslator() {
+		return mapTranslator;
 	}
 
 }

@@ -21,6 +21,7 @@ import com.codiform.moo.annotation.Access;
 import com.codiform.moo.annotation.AccessMode;
 import com.codiform.moo.configuration.Configuration;
 import com.codiform.moo.property.CollectionProperty;
+import com.codiform.moo.property.MapProperty;
 import com.codiform.moo.property.Property;
 import com.codiform.moo.property.PropertyFactory;
 import com.codiform.moo.property.source.SourceProperty;
@@ -114,6 +115,8 @@ public class ObjectTranslator<T> {
 			return null;
 		} else if ( property instanceof CollectionProperty ) {
 			return transformCollection( value, (CollectionProperty)property, translationSource );
+		} else if ( property instanceof MapProperty ) {
+			return transformMap( value, (MapProperty)property, translationSource );
 		} else if ( value.getClass().isArray() ) {
 			return transformArray( (Object[])value, property, translationSource );
 		} else if ( property.shouldBeTranslated() ) {
@@ -121,6 +124,10 @@ public class ObjectTranslator<T> {
 		} else {
 			return value;
 		}
+	}
+
+	private Object transformMap( Object value, MapProperty property, TranslationSource translationSource ) {
+		return translatorFactory.getMapTranslator().translate( value, property, translationSource );
 	}
 
 	private Object transformArray( Object[] value, Property property, TranslationSource translationSource ) {
@@ -260,7 +267,7 @@ public class ObjectTranslator<T> {
 			if ( property.isTypeOrSubtype( Collection.class ) ) {
 				updateCollection( sourceValue, (Collection<Object>)destinationValue, (CollectionProperty)property, translationSource );
 			} else if ( property.isTypeOrSubtype( Map.class ) ) {
-				updateMap( sourceValue, (Map<Object, Object>)destinationValue, (CollectionProperty)property, translationSource );
+				updateMap( sourceValue, (Map<Object, Object>)destinationValue, (MapProperty)property, translationSource );
 			} else {
 				translationSource.update( sourceValue, destinationValue );
 			}
@@ -270,8 +277,8 @@ public class ObjectTranslator<T> {
 		}
 	}
 
-	private void updateMap( Object source, Map<Object, Object> destinationMap, CollectionProperty property, TranslationSource translationSource ) {
-		translatorFactory.getCollectionTranslator().updateMap( source, destinationMap, translationSource, property );
+	private void updateMap( Object source, Map<Object, Object> destinationMap, MapProperty property, TranslationSource translationSource ) {
+		translatorFactory.getMapTranslator().updateMap( source, destinationMap, translationSource, property );
 
 	}
 

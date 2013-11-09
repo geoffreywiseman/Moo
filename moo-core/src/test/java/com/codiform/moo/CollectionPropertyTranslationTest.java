@@ -4,38 +4,21 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
 import org.junit.Assert;
-
 import org.junit.Test;
 
 import com.codiform.moo.annotation.CollectionProperty;
-import com.codiform.moo.curry.Translate;
 
 /**
  * Testing how properties that contain collection classes are translated.
  */
 public class CollectionPropertyTranslationTest {
-
-	@Test
-	public void testTranslateCopiesMap() {
-		StockPrices domain = new StockPrices();
-		domain.setPrice( "AAPL", 246.25 );
-		domain.setPrice( "MSFT", 28.98 );
-		domain.setPrice( "ORCL", 23.91 );
-
-		StockPricesDto dto = Translate.to( StockPricesDto.class ).from( domain );
-
-		assertNotSame( domain.getPrices(), dto.getPrices() );
-		assertEquals( domain.getPrices(), dto.getPrices() );
-	}
 
 	/**
 	 * Defensively copy collections.
@@ -196,25 +179,4 @@ public class CollectionPropertyTranslationTest {
 		}
 	}
 
-	public static class StockPrices {
-		private Map<String, Double> prices = new HashMap<String, Double>();
-
-		public void setPrice(String symbol, double price) {
-			prices.put( symbol, price );
-		}
-
-		public Map<String, Double> getPrices() {
-			return prices;
-		}
-
-	}
-
-	public static class StockPricesDto {
-		private Map<String, Double> prices = new HashMap<String, Double>();
-
-		public Map<String, Double> getPrices() {
-			return prices;
-		}
-
-	}
 }
