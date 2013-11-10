@@ -2,6 +2,7 @@ package com.codiform.moo;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 
@@ -25,7 +26,7 @@ import com.codiform.moo.session.TranslationSession;
  */
 @RunWith( MockitoJUnitRunner.class )
 @SuppressWarnings( "unused" )
-public class TranslationFactoryTest {
+public class TranslationTargetFactoryTest {
 
 	@Mock
 	private TestFactory factory;
@@ -64,6 +65,18 @@ public class TranslationFactoryTest {
 		assertEquals( CatDto.class, dto.getPet().getClass() );
 		assertEquals( "Chester Cheetah", dto.getPet().getName() );
 	}
+	
+	@Test
+	public void testFactorySetButTranslateIsFalse() {
+		PetOwner source = new PetOwner( new Animal( "Echo echo" ) );
+		
+		PetOwnerCopy destination = session.getTranslation( source, PetOwnerCopy.class );
+		
+		assertNotNull( destination );
+		assertNotNull( destination.getPet() );
+		assertEquals( source.getPet(), destination.getPet() );
+		assertSame( source.getPet(), destination.getPet() );
+	}
 
 	private static class PetOwner {
 		private Animal pet;
@@ -85,6 +98,16 @@ public class TranslationFactoryTest {
 			return pet;
 		}
 	}
+
+	private static class PetOwnerCopy {
+		@Property( translate = false, factory = TestFactory.class )
+		private Animal pet;
+
+		public Animal getPet() {
+			return pet;
+		}
+	}
+
 
 	private static class Animal {
 		private String name;
