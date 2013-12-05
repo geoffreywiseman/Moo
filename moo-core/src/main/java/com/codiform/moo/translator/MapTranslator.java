@@ -52,14 +52,37 @@ public class MapTranslator {
 		if ( value instanceof Map ) {
 			Object target = createTargetMap( value, property, translationSource );
 			if ( target instanceof Map ) {
-				throw new UnsupportedTranslationException(
-						"Support for translating the contents of maps is not yet part of Moo (see GitHub issues #37)." );
+				translateMap( (Map<Object,Object>) value, (Map<Object,Object>) target, property, translationSource );
+				return target;
 			} else {
 				throw new TranslationException( "Cannot translate map to target of type: " + target.getClass().getName() );
 			}
 		} else {
 			throw new TranslationException( "Cannot translate map from type: " + value.getClass().getName() );
 		}
+	}
+
+	private void translateMap( Map<Object, Object> source, Map<Object, Object> target, MapProperty property, TranslationSource translationSource ) {
+		for( Map.Entry<Object,Object> entry : source.entrySet() ) {
+			Object key, value;
+			key = getKeyOrTranslation( entry.getKey(), property, translationSource );
+			value = getValueOrTranslation( entry.getValue(), property, translationSource );
+			target.put( key, value );
+		}
+	}
+
+	private Object getValueOrTranslation( Object value, MapProperty property, TranslationSource translationSource ) {
+		if( property.getValueClass() == null )
+			return value;
+		else
+			throw new UnsupportedTranslationException( "Still working on map value translation (see GitHub Issues #37)" );
+	}
+
+	private Object getKeyOrTranslation( Object key, MapProperty property, TranslationSource translationSource ) {
+		if( property.getKeyClass() == null )
+			return key;
+		else
+			return translationSource.getTranslation( key, property.getKeyClass() );
 	}
 
 	@SuppressWarnings( "unchecked" )
@@ -98,27 +121,8 @@ public class MapTranslator {
 		return property.getFactory() == DefaultMapTargetFactory.class;
 	}
 
-	//		if ( property.shouldItemsBeTranslated() ) {
-	//			Object target = createTargetCollection( value, property, cache );
-	//			translateToTargetCollection( value, target, property, cache );
-	//			return target;
-	//		} else if ( !hasDefaultFactory( property ) || configuration.isPerformingDefensiveCopies() ) {
-	//			Object target = createTargetCollection( value, property, cache );
-	//			copyToTargetCollection( value, target, property );
-	//			return target;
-	//		} else {
-	//			Class<?> targetClass = property.getType();
-	//			if ( targetClass.isInstance( value ) ) {
-	//				return value;
-	//			} else {
-	//				Object target = createTargetCollection( value, property, cache );
-	//				copyToTargetCollection( value, target, property );
-	//				return target;
-	//			}
-	//		}
 	private boolean shouldTranslate( MapProperty property ) {
-		// TODO: Field and Value Translation
-		return false;
+		return property.getKeyClass() != null || property.getValueClass() != null;
 	}
 
 	@SuppressWarnings( "unchecked" )

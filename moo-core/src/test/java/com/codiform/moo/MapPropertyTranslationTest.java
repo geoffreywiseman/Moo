@@ -1,68 +1,152 @@
 package com.codiform.moo;
 
+import static org.hamcrest.Matchers.closeTo;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertThat;
 
+import java.security.Security;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.hamcrest.Matchers;
+import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
+import com.codiform.moo.CollectionPropertyCrossTranslationTest.StockPrices;
+import com.codiform.moo.annotation.MapProperty;
 import com.codiform.moo.configuration.Configuration;
 import com.codiform.moo.curry.Translate;
 
 public class MapPropertyTranslationTest {
 
+	private Portfolio source = new Portfolio();
+
+	@Before
+	public void testSetUpStocks() {
+		Calendar cal = Calendar.getInstance();
+
+		cal.set( 2013, Calendar.DECEMBER, 4, 19, 59, 00 );
+		source.add( new Security( "AAPL", "NASDAQ" ), new Position( 10000, 565.00f, cal.getTime() ) );
+
+		cal.set( Calendar.MINUTE, 57 );
+		source.add( new Security( "BB", "TSE" ), new Position( 3000, 38.94f, cal.getTime() ) );
+
+		cal.set( 2013, Calendar.DECEMBER, 4, 16, 0, 0 );
+		source.add( new Security( "ORCL", "NYSE" ), new Position( 5000, 35.07f, cal.getTime() ) );
+	}
+
 	@Test
 	public void testTranslateWithoutAnnotationsCopiesMap() {
-		StockPrices domain = new StockPrices();
-		domain.setPrice( "AAPL", 246.25 );
-		domain.setPrice( "MSFT", 28.98 );
-		domain.setPrice( "ORCL", 23.91 );
+		PortfolioCopy copy = Translate.to( PortfolioCopy.class ).from( source );
 
-		StockPricesCopy dto = Translate.to( StockPricesCopy.class ).from( domain );
-
-		assertNotSame( domain.getPrices(), dto.getPrices() );
-		assertEquals( domain.getPrices(), dto.getPrices() );
+		assertNotSame( source.getPositions(), copy.getPositions() );
+		assertEquals( source.getPositions(), copy.getPositions() );
 	}
 
 	@Test
 	public void testTranslateWithoutDefensiveCopyUsesSameMap() {
-		StockPrices domain = new StockPrices();
-		domain.setPrice( "JAVA", 112.04 );
-		domain.setPrice( "NODE", 35.12 );
-		domain.setPrice( "RUBY", 38.53 );
-
 		Configuration configuration = new Configuration();
 		configuration.setPerformingDefensiveCopies( false );
-		
-		StockPricesCopy dto = new Moo( configuration ).translate( domain, StockPricesCopy.class );
 
-		assertEquals( domain.getPrices(), dto.getPrices() );
-		assertSame( domain.getPrices(), dto.getPrices() );
+		PortfolioCopy copy = new Moo( configuration ).translate( source, PortfolioCopy.class );
+
+		assertEquals( source.getPositions(), copy.getPositions() );
+		assertSame( source.getPositions(), copy.getPositions() );
 	}
 
+	@Test
+	public void testTranslatePortfolioToPositionBySymbolByTranslatingMapKeyToString() {
+		PositionBySymbol pbs = Translate.to( PositionBySymbol.class ).from( source );
 
-	public static class StockPrices {
-		private Map<String, Double> prices = new HashMap<String, Double>();
-
-		public void setPrice(String symbol, double price) {
-			prices.put( symbol, price );
-		}
-
-		public Map<String, Double> getPrices() {
-			return prices;
-		}
-
+		assertThat( pbs.size(), equalTo( 3 ) );
+		assertNotNull( pbs.getPositionBySymbol( "AAPL" ) );
+		assertThat( pbs.getPositionBySymbol( "AAPL" ).getLastKnownValue(), is( closeTo( 5650000d, 1d ) ) );
+		assertThat( pbs.getPositionBySymbol( "BB" ).getLastKnownValue(), is( closeTo( 116820d, 1d ) ) );
+		assertThat( pbs.getPositionBySymbol( "ORCL" ).getLastKnownValue(), is( closeTo( 175350d, 1d ) ) );
 	}
 
-	public static class StockPricesCopy {
-		private Map<String, Double> prices = new HashMap<String, Double>();
+	public static class Portfolio {
+		private Map<Security, Position> positions = new HashMap<Security, Position>();
 
-		public Map<String, Double> getPrices() {
-			return prices;
+		public void add( Security symbol, Position position ) {
+			positions.put( symbol, position );
 		}
 
+		public Map<Security, Position> getPositions() {
+			return positions;
+		}
 	}
+
+	public static class PortfolioCopy {
+		private Map<Security, Position> positions = new HashMap<Security, Position>();
+
+		public Map<Security, Position> getPositions() {
+			return positions;
+		}
+	}
+
+	public static class MarketHoldings {
+		@MapProperty( keyClass = String.class )
+		private Map<String, Position> positions = new HashMap<String, Position>();
+
+		public Position getPositionByMarket( String market ) {
+			return positions.get( market );
+		}
+
+		public int size() {
+			return positions.size();
+		}
+	}
+
+	public static class PositionBySymbol {
+		@MapProperty( keyClass = String.class )
+		private Map<String, Position> positions = new HashMap<String, Position>();
+
+		public Position getPositionBySymbol( String symbol ) {
+			return positions.get( symbol );
+		}
+
+		public int size() {
+			return positions.size();
+		}
+	}
+
+	public static class Position {
+		private int shares;
+		private float lastKnownPrice;
+		private Date pricingDate;
+
+		public Position( int shares, float lastKnownPrice, Date pricingDate ) {
+			this.shares = shares;
+			this.lastKnownPrice = lastKnownPrice;
+			this.pricingDate = pricingDate;
+		}
+
+		public double getLastKnownValue() {
+			return ((double)shares) * ((double)lastKnownPrice);
+		}
+	}
+
+	public static class Security {
+		private String symbol;
+		private String market;
+
+		public Security( String symbol, String market ) {
+			this.symbol = symbol;
+			this.market = market;
+		}
+
+		public String toString() {
+			return symbol;
+		}
+	}
+
 }
