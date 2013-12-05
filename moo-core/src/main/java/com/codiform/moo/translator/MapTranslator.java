@@ -11,6 +11,8 @@ import com.codiform.moo.TranslationException;
 import com.codiform.moo.UnsupportedTranslationException;
 import com.codiform.moo.configuration.Configuration;
 import com.codiform.moo.property.MapProperty;
+import com.codiform.moo.property.source.NoOpSourceProperty;
+import com.codiform.moo.property.source.SourceProperty;
 import com.codiform.moo.property.source.SourcePropertyFactory;
 import com.codiform.moo.session.TranslationSource;
 
@@ -48,6 +50,7 @@ public class MapTranslator {
 		}
 	}
 
+	@SuppressWarnings( "unchecked" )
 	private Object translateMap( Object value, MapProperty property, TranslationSource translationSource ) {
 		if ( value instanceof Map ) {
 			Object target = createTargetMap( value, property, translationSource );
@@ -63,9 +66,11 @@ public class MapTranslator {
 	}
 
 	private void translateMap( Map<Object, Object> source, Map<Object, Object> target, MapProperty property, TranslationSource translationSource ) {
+		SourceProperty keySourceProperty = getSourceProperty( property.getKeySource() );
 		for( Map.Entry<Object,Object> entry : source.entrySet() ) {
 			Object key, value;
-			key = getKeyOrTranslation( entry.getKey(), property, translationSource );
+			key = keySourceProperty.getValue( entry.getKey() );
+			key = getKeyOrTranslation( key, property, translationSource );
 			value = getValueOrTranslation( entry.getValue(), property, translationSource );
 			target.put( key, value );
 		}
@@ -161,5 +166,13 @@ public class MapTranslator {
 			destinationMap.remove( key );
 		}
 	}
+	
+	private SourceProperty getSourceProperty( String sourceExpression ) {
+		if( sourceExpression == null )
+			return new NoOpSourceProperty();
+		else
+			return sourcePropertyFactory.getSourceProperty( sourceExpression ); 
+	}
+	
 
 }

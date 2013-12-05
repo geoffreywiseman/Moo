@@ -24,4 +24,11 @@ public interface MapProperty extends Property {
 	 * @return the type, or null 
 	 */
 	Class<?> getValueClass();
+
+	/**
+	 * Gets the source expression for the map key, if one was specified, null otherwise.
+	 * 
+	 * @return the source expression
+	 */
+	String getKeySource();
 }

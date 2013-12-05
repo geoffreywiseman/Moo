@@ -71,4 +71,12 @@ public @interface MapProperty {
 	 * property. By default, this is the DefaultCollectionTargetFactory.
 	 */
 	Class<? extends TranslationTargetFactory> factory() default DefaultMapTargetFactory.class;
+
+	/**
+	 * Source expression for the key, if the key's source is anything more complicated than the 
+	 * key itself. This would usually be used to extract a sub-component of the key. 
+	 * 
+	 * @return the source expression
+	 */
+	String keySource() default "";
 }

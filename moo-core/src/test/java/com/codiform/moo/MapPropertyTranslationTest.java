@@ -9,18 +9,14 @@ import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertThat;
 
-import java.security.Security;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.hamcrest.Matchers;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.codiform.moo.CollectionPropertyCrossTranslationTest.StockPrices;
 import com.codiform.moo.annotation.MapProperty;
 import com.codiform.moo.configuration.Configuration;
 import com.codiform.moo.curry.Translate;
@@ -67,11 +63,23 @@ public class MapPropertyTranslationTest {
 		PositionBySymbol pbs = Translate.to( PositionBySymbol.class ).from( source );
 
 		assertThat( pbs.size(), equalTo( 3 ) );
-		assertNotNull( pbs.getPositionBySymbol( "AAPL" ) );
-		assertThat( pbs.getPositionBySymbol( "AAPL" ).getLastKnownValue(), is( closeTo( 5650000d, 1d ) ) );
-		assertThat( pbs.getPositionBySymbol( "BB" ).getLastKnownValue(), is( closeTo( 116820d, 1d ) ) );
-		assertThat( pbs.getPositionBySymbol( "ORCL" ).getLastKnownValue(), is( closeTo( 175350d, 1d ) ) );
+		assertNotNull( pbs.getPosition( "AAPL" ) );
+		assertThat( pbs.getPosition( "AAPL" ).getLastKnownValue(), is( closeTo( 5650000d, 1d ) ) );
+		assertThat( pbs.getPosition( "BB" ).getLastKnownValue(), is( closeTo( 116820d, 1d ) ) );
+		assertThat( pbs.getPosition( "ORCL" ).getLastKnownValue(), is( closeTo( 175350d, 1d ) ) );
 	}
+
+	@Test
+	public void testTranslatePortfolioToMarketHoldingsByTranslatingMapKeyToStringWithMarketKeySource() {
+		MarketHoldings mh = Translate.to( MarketHoldings.class ).from( source );
+
+		assertThat( mh.size(), equalTo( 3 ) );
+		assertNotNull( mh.getPosition( "NASDAQ" ) );
+		assertThat( mh.getPosition( "NASDAQ" ).getLastKnownValue(), is( closeTo( 5650000d, 1d ) ) );
+		assertThat( mh.getPosition( "TSE" ).getLastKnownValue(), is( closeTo( 116820d, 1d ) ) );
+		assertThat( mh.getPosition( "NYSE" ).getLastKnownValue(), is( closeTo( 175350d, 1d ) ) );
+	}
+
 
 	public static class Portfolio {
 		private Map<Security, Position> positions = new HashMap<Security, Position>();
@@ -94,10 +102,10 @@ public class MapPropertyTranslationTest {
 	}
 
 	public static class MarketHoldings {
-		@MapProperty( keyClass = String.class )
+		@MapProperty( keyClass = String.class, keySource = "market" )
 		private Map<String, Position> positions = new HashMap<String, Position>();
 
-		public Position getPositionByMarket( String market ) {
+		public Position getPosition( String market ) {
 			return positions.get( market );
 		}
 
@@ -110,7 +118,7 @@ public class MapPropertyTranslationTest {
 		@MapProperty( keyClass = String.class )
 		private Map<String, Position> positions = new HashMap<String, Position>();
 
-		public Position getPositionBySymbol( String symbol ) {
+		public Position getPosition( String symbol ) {
 			return positions.get( symbol );
 		}
 
@@ -131,7 +139,7 @@ public class MapPropertyTranslationTest {
 		}
 
 		public double getLastKnownValue() {
-			return ((double)shares) * ((double)lastKnownPrice);
+			return ( (double)shares ) * ( (double)lastKnownPrice );
 		}
 	}
 
@@ -146,6 +154,14 @@ public class MapPropertyTranslationTest {
 
 		public String toString() {
 			return symbol;
+		}
+
+		public String getSymbol() {
+			return symbol;
+		}
+
+		public String getMarket() {
+			return market;
 		}
 	}
 

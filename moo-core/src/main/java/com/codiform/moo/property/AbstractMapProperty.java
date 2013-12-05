@@ -12,6 +12,7 @@ public abstract class AbstractMapProperty extends AbstractProperty implements Ma
 	private Class<? extends TranslationTargetFactory> factory;
 	private Class<?> keyClass;
 	private Class<?> valueClass;
+	private String keySource;
 
 	public AbstractMapProperty( com.codiform.moo.annotation.MapProperty annotation ) {
 		if ( annotation != null ) {
@@ -21,6 +22,10 @@ public abstract class AbstractMapProperty extends AbstractProperty implements Ma
 			factory = annotation.factory();
 			keyClass = annotation.keyClass() == Object.class ? null : annotation.keyClass();
 			valueClass = annotation.valueClass() == Object.class ? null : annotation.valueClass();
+			
+			keySource = annotation.keySource().trim();
+			if( keySource.isEmpty() )
+				keySource = null;
 		} else {
 			optionality = null;
 			removeOrphans = true;
@@ -28,6 +33,7 @@ public abstract class AbstractMapProperty extends AbstractProperty implements Ma
 			factory = DefaultMapTargetFactory.class;
 			keyClass = null;
 			valueClass = null;
+			keySource = null;
 		}
 	}
 
@@ -62,6 +68,10 @@ public abstract class AbstractMapProperty extends AbstractProperty implements Ma
 
 	public Class<?> getValueClass() {
 		return valueClass;
+	}
+	
+	public String getKeySource() {
+		return keySource;
 	}
 
 }
