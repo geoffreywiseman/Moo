@@ -10,6 +10,7 @@ import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertThat;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -117,9 +118,9 @@ public class MapPropertyTranslationTest {
 	public void testTranslateMapValueWithValueClass() {
 		SecurityPrices prices = Translate.to( SecurityPrices.class ).from( source );
 		assertThat( prices.size(), is( equalTo( 3 ) ) );
-		assertThat( prices.getPrice( securities.get( "AAPL" ) ), hasToString( "$565.0 at Wed Dec 04 19:59:00 EST 2013" ) );
-		assertThat( prices.getPrice( securities.get( "BB" ) ), hasToString( "$38.94 at Wed Dec 04 19:57:00 EST 2013" ) );
-		assertThat( prices.getPrice( securities.get( "ORCL" ) ), hasToString( "$35.07 at Wed Dec 04 16:00:00 EST 2013" ) );
+		assertThat( prices.getPrice( securities.get( "AAPL" ) ), hasToString( "$565.0 at 2013-Dec-04 19:59" ) );
+		assertThat( prices.getPrice( securities.get( "BB" ) ), hasToString( "$38.94 at 2013-Dec-04 19:57" ) );
+		assertThat( prices.getPrice( securities.get( "ORCL" ) ), hasToString( "$35.07 at 2013-Dec-04 16:00" ) );
 	}
 
 	public static class Portfolio {
@@ -315,13 +316,16 @@ public class MapPropertyTranslationTest {
 	}
 	
 	private static class SecurityPrice {
+		private static SimpleDateFormat format = new SimpleDateFormat( "YYYY-MMM-dd HH:mm" );
+		
 		@Property(source="lastKnownPrice")
 		private float price;
+		
 		@Property(source="pricingDate")
 		private Date dateOfPrice;
 		
 		public String toString() {
-			return "$" + price + " at " + dateOfPrice;
+			return "$" + price + " at " + format.format( dateOfPrice );
 		}
 	}
 
