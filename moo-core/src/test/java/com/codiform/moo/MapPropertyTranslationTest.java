@@ -2,6 +2,7 @@ package com.codiform.moo;
 
 import static org.hamcrest.Matchers.closeTo;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasToString;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -18,26 +19,32 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.codiform.moo.annotation.MapProperty;
+import com.codiform.moo.annotation.Property;
 import com.codiform.moo.configuration.Configuration;
 import com.codiform.moo.curry.Translate;
 
 public class MapPropertyTranslationTest {
 
 	private Portfolio source = new Portfolio();
+	private Map<String,Security> securities;
 
 	@Before
 	public void testSetUpStocks() {
+		securities = new HashMap<String,Security>();
+		securities.put( "AAPL", new Security( "AAPL", "NASDAQ" ) );
+		securities.put( "BB", new Security( "BB", "TSE", new Security( "RIMM", "TSE" ) ) );
+		securities.put( "ORCL", new Security( "ORCL", "NYSE" ) );
+		
 		Calendar cal = Calendar.getInstance();
 
 		cal.set( 2013, Calendar.DECEMBER, 4, 19, 59, 00 );
-		source.add( new Security( "AAPL", "NASDAQ" ), new Position( 10000, 565.00f, cal.getTime() ) );
+		source.add( securities.get("AAPL"), new Position( 10000, 565.00f, cal.getTime() ) );
 
 		cal.set( Calendar.MINUTE, 57 );
-		Security security = new Security( "BB", "TSE", new Security( "RIMM", "TSE" ) );
-		source.add( security, new Position( 3000, 38.94f, cal.getTime() ) );
+		source.add( securities.get("BB"), new Position( 3000, 38.94f, cal.getTime() ) );
 
 		cal.set( 2013, Calendar.DECEMBER, 4, 16, 0, 0 );
-		source.add( new Security( "ORCL", "NYSE" ), new Position( 5000, 35.07f, cal.getTime() ) );
+		source.add( securities.get( "ORCL" ), new Position( 5000, 35.07f, cal.getTime() ) );
 	}
 
 	@Test
@@ -84,8 +91,8 @@ public class MapPropertyTranslationTest {
 	@Test
 	public void testTranslateMapKeyWithSourceKeyExpression() {
 		// given
-		Security bb = new Security( "BB", "TSE" );
-		Security rimm = new Security( "RIMM", "TSE" );
+		Security bb = securities.get( "BB" );
+		Security rimm = bb.getPreviousSecurity();
 
 		// when
 		RenamedHoldings rh = Translate.to( RenamedHoldings.class ).from( source );
@@ -98,15 +105,21 @@ public class MapPropertyTranslationTest {
 
 	@Test
 	public void testTranslateMapValueWithSourceValueExpression() {
-		// given
-		Security bb = new Security( "BB", "TSE" );
-
 		// when
 		PortfolioValue pv = Translate.to( PortfolioValue.class ).from( source );
 
 		// then
 		assertThat( pv.size(), is( equalTo( 3 ) ) );
-		assertThat( pv.getValue( bb ), is( closeTo( 116820d, 1d ) ) );
+		assertThat( pv.getValue( securities.get( "BB" ) ), is( closeTo( 116820d, 1d ) ) );
+	}
+	
+	@Test
+	public void testTranslateMapValueWithValueClass() {
+		SecurityPrices prices = Translate.to( SecurityPrices.class ).from( source );
+		assertThat( prices.size(), is( equalTo( 3 ) ) );
+		assertThat( prices.getPrice( securities.get( "AAPL" ) ), hasToString( "$565.0 at Wed Dec 04 19:59:00 EST 2013" ) );
+		assertThat( prices.getPrice( securities.get( "BB" ) ), hasToString( "$38.94 at Wed Dec 04 19:57:00 EST 2013" ) );
+		assertThat( prices.getPrice( securities.get( "ORCL" ) ), hasToString( "$35.07 at Wed Dec 04 16:00:00 EST 2013" ) );
 	}
 
 	public static class Portfolio {
@@ -285,6 +298,30 @@ public class MapPropertyTranslationTest {
 			} else if ( !symbol.equals( other.symbol ) )
 				return false;
 			return true;
+		}
+	}
+	
+	private static class SecurityPrices {
+		@MapProperty(source="positions", valueClass=SecurityPrice.class)
+		private Map<Security,SecurityPrice> prices = new HashMap<Security,SecurityPrice>();
+		
+		public int size() {
+			return prices.size();
+		}
+		
+		public SecurityPrice getPrice( Security security ) {
+			return prices.get( security );
+		}
+	}
+	
+	private static class SecurityPrice {
+		@Property(source="lastKnownPrice")
+		private float price;
+		@Property(source="pricingDate")
+		private Date dateOfPrice;
+		
+		public String toString() {
+			return "$" + price + " at " + dateOfPrice;
 		}
 	}
 
