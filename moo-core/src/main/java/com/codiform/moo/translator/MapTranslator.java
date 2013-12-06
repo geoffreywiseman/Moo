@@ -67,6 +67,7 @@ public class MapTranslator {
 
 	private void translateMap( Map<Object, Object> source, Map<Object, Object> target, MapProperty property, TranslationSource translationSource ) {
 		SourceProperty keySourceProperty = getSourceProperty( property.getKeySource() );
+		SourceProperty valueSourceProperty = getSourceProperty( property.getValueSource() );
 		for( Map.Entry<Object,Object> entry : source.entrySet() ) {
 			Object key, value;
 			
@@ -78,7 +79,8 @@ public class MapTranslator {
 			if( key == null && !property.allowNullKeys() )
 				continue;
 			
-			value = getValueOrTranslation( entry.getValue(), property, translationSource );
+			value = valueSourceProperty.getValue( entry.getValue() );
+			value = getValueOrTranslation( value, property, translationSource );
 			target.put( key, value );
 		}
 	}
@@ -87,7 +89,7 @@ public class MapTranslator {
 		if( property.getValueClass() == null )
 			return value;
 		else
-			throw new UnsupportedTranslationException( "Still working on map value translation (see GitHub Issues #37)" );
+			return translationSource.getTranslation( value, property.getValueClass() );
 	}
 
 	private Object getKeyOrTranslation( Object key, MapProperty property, TranslationSource translationSource ) {
@@ -134,7 +136,7 @@ public class MapTranslator {
 	}
 
 	private boolean shouldTranslate( MapProperty property ) {
-		return property.getKeyClass() != null || property.getValueClass() != null || property.getKeySource() != null;
+		return property.getKeyClass() != null || property.getValueClass() != null || property.getKeySource() != null || property.getValueSource() != null;
 	}
 
 	@SuppressWarnings( "unchecked" )

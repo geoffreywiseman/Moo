@@ -87,4 +87,12 @@ public @interface MapProperty {
 	 * @return true if null keys are allowed, false if they are not
 	 */
 	boolean nullKeys() default true;
+
+	/**
+	 * Source expression for the map value, to help when extracting a sub-value or creating
+	 * a lookup using external variables.
+	 * 
+	 * @return the source expression; defaults to ""
+	 */
+	String valueSource() default "";
 }

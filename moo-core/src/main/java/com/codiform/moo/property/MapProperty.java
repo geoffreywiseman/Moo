@@ -33,6 +33,13 @@ public interface MapProperty extends Property {
 	String getKeySource();
 
 	/**
+	 * Gets the source expression for the map value, if one was specified, null otherwise.
+	 * 
+	 * @return the source expression
+	 */
+	String getValueSource();
+
+	/**
 	 * When copying or translating the map, should null keys be allowed?
 	 * 
 	 * @return true if null keys are allowed, false if they are not

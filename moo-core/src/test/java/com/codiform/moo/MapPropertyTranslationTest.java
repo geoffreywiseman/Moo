@@ -60,7 +60,7 @@ public class MapPropertyTranslationTest {
 	}
 
 	@Test
-	public void testTranslatePortfolioToPositionBySymbolByTranslatingMapKeyToString() {
+	public void testTranslateMapKeyWithSourceClass() {
 		PositionBySymbol pbs = Translate.to( PositionBySymbol.class ).from( source );
 
 		assertThat( pbs.size(), equalTo( 3 ) );
@@ -71,7 +71,7 @@ public class MapPropertyTranslationTest {
 	}
 
 	@Test
-	public void testTranslatePortfolioToMarketHoldingsByTranslatingMapKeyToStringWithMarketKeySource() {
+	public void testTranslateMapKeyWithSourceKeyExpressionAndSourceClass() {
 		MarketHoldings mh = Translate.to( MarketHoldings.class ).from( source );
 
 		assertThat( mh.size(), equalTo( 3 ) );
@@ -80,9 +80,9 @@ public class MapPropertyTranslationTest {
 		assertThat( mh.getPosition( "TSE" ).getLastKnownValue(), is( closeTo( 116820d, 1d ) ) );
 		assertThat( mh.getPosition( "NYSE" ).getLastKnownValue(), is( closeTo( 175350d, 1d ) ) );
 	}
-	
+
 	@Test
-	public void testTranslatePortfolioToRenamedHoldingsByTranslatingMapKeyToPreviousSecurity() {
+	public void testTranslateMapKeyWithSourceKeyExpression() {
 		// given
 		Security bb = new Security( "BB", "TSE" );
 		Security rimm = new Security( "RIMM", "TSE" );
@@ -94,6 +94,19 @@ public class MapPropertyTranslationTest {
 		assertThat( rh.size(), equalTo( 1 ) );
 		assertNotNull( rh.getPosition( rimm ) );
 		assertThat( rh.getPosition( rimm ), is( equalTo( source.getPosition( bb ) ) ) );
+	}
+
+	@Test
+	public void testTranslateMapValueWithSourceValueExpression() {
+		// given
+		Security bb = new Security( "BB", "TSE" );
+
+		// when
+		PortfolioValue pv = Translate.to( PortfolioValue.class ).from( source );
+
+		// then
+		assertThat( pv.size(), is( equalTo( 3 ) ) );
+		assertThat( pv.getValue( bb ), is( closeTo( 116820d, 1d ) ) );
 	}
 
 	public static class Portfolio {
@@ -121,7 +134,7 @@ public class MapPropertyTranslationTest {
 	}
 
 	public static class RenamedHoldings {
-		@MapProperty( keySource = "previousSecurity", nullKeys=false )
+		@MapProperty( keySource = "previousSecurity", nullKeys = false )
 		private Map<Security, Position> positions = new HashMap<Security, Position>();
 
 		public Position getPosition( Security security ) {
@@ -141,7 +154,6 @@ public class MapPropertyTranslationTest {
 			return positions.get( security );
 		}
 	}
-
 
 	public static class MarketHoldings {
 		@MapProperty( keyClass = String.class, keySource = "market" )
@@ -169,11 +181,24 @@ public class MapPropertyTranslationTest {
 		}
 	}
 
+	public static class PortfolioValue {
+		@MapProperty( valueSource="lastKnownValue" )
+		private Map<Security, Double> positions = new HashMap<Security, Double>();
+
+		public Double getValue( Security security ) {
+			return positions.get( security );
+		}
+
+		public int size() {
+			return positions.size();
+		}
+	}
+
 	public static class Position {
 		private int shares;
 		private float lastKnownPrice;
 		private Date pricingDate;
-		
+
 		private Position previousPosition;
 
 		public Position( int shares, float lastKnownPrice, Date pricingDate ) {
@@ -181,7 +206,7 @@ public class MapPropertyTranslationTest {
 			this.lastKnownPrice = lastKnownPrice;
 			this.pricingDate = pricingDate;
 		}
-		
+
 		public Date getPricingDate() {
 			return pricingDate;
 		}
@@ -194,7 +219,7 @@ public class MapPropertyTranslationTest {
 		public double getLastKnownValue() {
 			return ( (double)shares ) * ( (double)lastKnownPrice );
 		}
-		
+
 		public Position getPreviousPosition() {
 			return previousPosition;
 		}
@@ -209,7 +234,7 @@ public class MapPropertyTranslationTest {
 			this.symbol = symbol;
 			this.market = market;
 		}
-		
+
 		public Security( String symbol, String market, Security previous ) {
 			this( symbol, market );
 			this.previousSecurity = previous;
@@ -226,11 +251,11 @@ public class MapPropertyTranslationTest {
 		public String getMarket() {
 			return market;
 		}
-		
+
 		public Security getPreviousSecurity() {
 			return previousSecurity;
 		}
-		
+
 		@Override
 		public int hashCode() {
 			final int prime = 31;

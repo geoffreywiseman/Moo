@@ -13,6 +13,7 @@ public abstract class AbstractMapProperty extends AbstractProperty implements Ma
 	private Class<?> keyClass;
 	private Class<?> valueClass;
 	private String keySource;
+	private String valueSource;
 	private boolean nullKeys;
 
 	public AbstractMapProperty( com.codiform.moo.annotation.MapProperty annotation ) {
@@ -28,6 +29,10 @@ public abstract class AbstractMapProperty extends AbstractProperty implements Ma
 			keySource = annotation.keySource().trim();
 			if( keySource.isEmpty() )
 				keySource = null;
+			
+			valueSource = annotation.valueSource().trim();
+			if( valueSource.isEmpty() )
+				valueSource = null;
 		} else {
 			optionality = null;
 			removeOrphans = true;
@@ -75,6 +80,10 @@ public abstract class AbstractMapProperty extends AbstractProperty implements Ma
 	
 	public String getKeySource() {
 		return keySource;
+	}
+	
+	public String getValueSource() {
+		return valueSource;
 	}
 	
 	public boolean allowNullKeys() {
