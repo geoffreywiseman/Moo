@@ -31,4 +31,11 @@ public interface MapProperty extends Property {
 	 * @return the source expression
 	 */
 	String getKeySource();
+
+	/**
+	 * When copying or translating the map, should null keys be allowed?
+	 * 
+	 * @return true if null keys are allowed, false if they are not
+	 */
+	boolean allowNullKeys();
 }

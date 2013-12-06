@@ -79,4 +79,12 @@ public @interface MapProperty {
 	 * @return the source expression
 	 */
 	String keySource() default "";
+
+	/**
+	 * Indicates if null keys should be allowed when copying or translating the map. Defaults to
+	 * true.
+	 * 
+	 * @return true if null keys are allowed, false if they are not
+	 */
+	boolean nullKeys() default true;
 }

@@ -69,8 +69,15 @@ public class MapTranslator {
 		SourceProperty keySourceProperty = getSourceProperty( property.getKeySource() );
 		for( Map.Entry<Object,Object> entry : source.entrySet() ) {
 			Object key, value;
+			
 			key = keySourceProperty.getValue( entry.getKey() );
+			if( key == null && !property.allowNullKeys() )
+				continue;
+			
 			key = getKeyOrTranslation( key, property, translationSource );
+			if( key == null && !property.allowNullKeys() )
+				continue;
+			
 			value = getValueOrTranslation( entry.getValue(), property, translationSource );
 			target.put( key, value );
 		}
