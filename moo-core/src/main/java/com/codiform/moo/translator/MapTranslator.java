@@ -134,7 +134,7 @@ public class MapTranslator {
 	}
 
 	private boolean shouldTranslate( MapProperty property ) {
-		return property.getKeyClass() != null || property.getValueClass() != null;
+		return property.getKeyClass() != null || property.getValueClass() != null || property.getKeySource() != null;
 	}
 
 	@SuppressWarnings( "unchecked" )
