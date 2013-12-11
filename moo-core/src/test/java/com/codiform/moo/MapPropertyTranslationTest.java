@@ -15,7 +15,10 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -40,6 +43,9 @@ public class MapPropertyTranslationTest {
 
 		Calendar cal = Calendar.getInstance();
 
+		cal.set( 2013, Calendar.DECEMBER, 4, 16, 0, 0 );
+		source.add( securities.get( "ORCL" ), new Position( 5000, 35.07f, cal.getTime() ) );
+
 		cal.set( 2013, Calendar.NOVEMBER, 21, 13, 00, 00 );
 		Position oldPosition = new Position( 8000, 514.86f, cal.getTime() );
 		
@@ -49,8 +55,6 @@ public class MapPropertyTranslationTest {
 		cal.set( Calendar.MINUTE, 57 );
 		source.add( securities.get( "BB" ), new Position( 3000, 38.94f, cal.getTime() ) );
 
-		cal.set( 2013, Calendar.DECEMBER, 4, 16, 0, 0 );
-		source.add( securities.get( "ORCL" ), new Position( 5000, 35.07f, cal.getTime() ) );
 	}
 
 	@Test
@@ -144,6 +148,32 @@ public class MapPropertyTranslationTest {
 		assertThat( prices.getPrice( "NASDAQ" ), hasToString( "$514.86 at 2013-Nov-21 13:00" ) );
 		assertThat( prices.getPrice( "TSE" ), is( nullValue() ) );
 		assertThat( prices.getPrice( "NYSE" ), is( nullValue() ) );
+	}
+	
+	@Test
+	public void testTranslateMapType() {
+		SymbolSortedPortfolio sorted = Translate.to( SymbolSortedPortfolio.class ).from( source );
+		assertThat( sorted.size(), is(  equalTo( 3 ) ));
+		
+		Iterator<Security> iterator = sorted.iterator();
+		
+		Security security = iterator.next();
+		assertThat( security, is( equalTo( securities.get( "AAPL" ) ) ) );
+		
+		Position position = sorted.getPosition( security );
+		assertThat( position.getLastKnownValue(), is( closeTo( 5650000d, 1d ) ) );
+
+		security = iterator.next();
+		assertThat( security, is( equalTo( securities.get( "BB" ) ) ) );
+		
+		position = sorted.getPosition( security );
+		assertThat( position.getLastKnownValue(), is( closeTo( 116820d, 1d ) ) );
+
+		security = iterator.next();
+		assertThat( security, is( equalTo( securities.get( "ORCL" ) ) ) );
+		
+		position = sorted.getPosition( security );
+		assertThat( position.getLastKnownValue(), is( closeTo( 175350d, 1d ) ) );
 	}
 
 
@@ -263,7 +293,7 @@ public class MapPropertyTranslationTest {
 		}
 	}
 
-	public static class Security {
+	public static class Security implements Comparable<Security> {
 		private String symbol;
 		private String market;
 		private Security previousSecurity;
@@ -324,6 +354,11 @@ public class MapPropertyTranslationTest {
 				return false;
 			return true;
 		}
+
+		@Override
+		public int compareTo( Security o ) {
+			return symbol.compareTo( o.getSymbol() );
+		}
 	}
 
 	private static class SecurityPrices {
@@ -376,6 +411,22 @@ public class MapPropertyTranslationTest {
 
 		public SecurityPrice getPrice( String market ) {
 			return prices.get( market );
+		}
+	}
+	
+	public static class SymbolSortedPortfolio {
+		private SortedMap<Security,Position> positions = new TreeMap<Security,Position>();
+		
+		public int size() {
+			return positions.size();
+		}
+		
+		public Iterator<Security> iterator() {
+			return positions.keySet().iterator();
+		}
+		
+		public Position getPosition( Security security ) {
+			return positions.get( security );
 		}
 	}
 }
