@@ -137,6 +137,16 @@ public class MapPropertyTranslationTest {
 		assertThat( prices.getPrice( securities.get( "ORACL" ) ), is( nullValue() ) );
 	}
 
+	@Test
+	public void testTranslateMapKeyAndValueWithSourceAndClass() {
+		PreviousMarketPrices prices = Translate.to( PreviousMarketPrices.class ).from( source );
+		assertThat( prices.size(), is( equalTo( 3 ) ) );
+		assertThat( prices.getPrice( "NASDAQ" ), hasToString( "$514.86 at 2013-Nov-21 13:00" ) );
+		assertThat( prices.getPrice( "TSE" ), is( nullValue() ) );
+		assertThat( prices.getPrice( "NYSE" ), is( nullValue() ) );
+	}
+
+
 	public static class Portfolio {
 		private Map<Security, Position> positions = new HashMap<Security, Position>();
 
@@ -356,4 +366,16 @@ public class MapPropertyTranslationTest {
 		}
 	}
 
+	public static class PreviousMarketPrices {
+		@MapProperty( source="positions", keyClass = String.class, keySource = "market", valueClass=SecurityPrice.class, valueSource="previousPosition" )
+		private Map<String, SecurityPrice> prices = new HashMap<String, SecurityPrice>();
+
+		public int size() {
+			return prices.size();
+		}
+
+		public SecurityPrice getPrice( String market ) {
+			return prices.get( market );
+		}
+	}
 }
