@@ -11,22 +11,25 @@ import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertThat;
 
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.SortedMap;
-import java.util.TreeMap;
 
 import org.junit.Before;
 import org.junit.Test;
 
-import com.codiform.moo.annotation.MapProperty;
-import com.codiform.moo.annotation.Property;
 import com.codiform.moo.configuration.Configuration;
 import com.codiform.moo.curry.Translate;
+import com.codiform.moo.domain.LastSecurityPrices;
+import com.codiform.moo.domain.Portfolio;
+import com.codiform.moo.domain.PortfolioCopy;
+import com.codiform.moo.domain.PortfolioValue;
+import com.codiform.moo.domain.Position;
+import com.codiform.moo.domain.PositionBySymbol;
+import com.codiform.moo.domain.PreviousMarketPrices;
+import com.codiform.moo.domain.Security;
+import com.codiform.moo.domain.SecurityPrices;
 
 public class MapPropertyTranslationTest {
 
@@ -174,259 +177,5 @@ public class MapPropertyTranslationTest {
 		
 		position = sorted.getPosition( security );
 		assertThat( position.getLastKnownValue(), is( closeTo( 175350d, 1d ) ) );
-	}
-
-
-	public static class Portfolio {
-		private Map<Security, Position> positions = new HashMap<Security, Position>();
-
-		public void add( Security symbol, Position position ) {
-			positions.put( symbol, position );
-		}
-
-		public Position getPosition( Security security ) {
-			return positions.get( security );
-		}
-
-		public Map<Security, Position> getPositions() {
-			return positions;
-		}
-	}
-
-	public static class PortfolioCopy {
-		private Map<Security, Position> positions = new HashMap<Security, Position>();
-
-		public Map<Security, Position> getPositions() {
-			return positions;
-		}
-	}
-
-	public static class RenamedHoldings {
-		@MapProperty( keySource = "previousSecurity", nullKeys = false )
-		private Map<Security, Position> positions = new HashMap<Security, Position>();
-
-		public Position getPosition( Security security ) {
-			return positions.get( security );
-		}
-
-		public int size() {
-			return positions.size();
-		}
-	}
-
-	public static class PreviousPortfolio {
-		@MapProperty
-		private Map<Security, Position> positions = new HashMap<Security, Position>();
-
-		public Position getPosition( Security security ) {
-			return positions.get( security );
-		}
-	}
-
-	public static class MarketHoldings {
-		@MapProperty( keyClass = String.class, keySource = "market" )
-		private Map<String, Position> positions = new HashMap<String, Position>();
-
-		public Position getPosition( String market ) {
-			return positions.get( market );
-		}
-
-		public int size() {
-			return positions.size();
-		}
-	}
-
-	public static class PositionBySymbol {
-		@MapProperty( keyClass = String.class )
-		private Map<String, Position> positions = new HashMap<String, Position>();
-
-		public Position getPosition( String symbol ) {
-			return positions.get( symbol );
-		}
-
-		public int size() {
-			return positions.size();
-		}
-	}
-
-	public static class PortfolioValue {
-		@MapProperty( valueSource = "lastKnownValue" )
-		private Map<Security, Double> positions = new HashMap<Security, Double>();
-
-		public Double getValue( Security security ) {
-			return positions.get( security );
-		}
-
-		public int size() {
-			return positions.size();
-		}
-	}
-
-	public static class Position {
-		private int shares;
-		private float lastKnownPrice;
-		private Date pricingDate;
-
-		private Position previousPosition;
-
-		public Position( int shares, float lastKnownPrice, Date pricingDate ) {
-			this.shares = shares;
-			this.lastKnownPrice = lastKnownPrice;
-			this.pricingDate = pricingDate;
-		}
-
-		public Date getPricingDate() {
-			return pricingDate;
-		}
-
-		public Position( int shares, float lastKnownPrice, Date pricingDate, Position previous ) {
-			this( shares, lastKnownPrice, pricingDate );
-			this.previousPosition = previous;
-		}
-
-		public double getLastKnownValue() {
-			return ( (double)shares ) * ( (double)lastKnownPrice );
-		}
-
-		public Position getPreviousPosition() {
-			return previousPosition;
-		}
-	}
-
-	public static class Security implements Comparable<Security> {
-		private String symbol;
-		private String market;
-		private Security previousSecurity;
-
-		public Security( String symbol, String market ) {
-			this.symbol = symbol;
-			this.market = market;
-		}
-
-		public Security( String symbol, String market, Security previous ) {
-			this( symbol, market );
-			this.previousSecurity = previous;
-		}
-
-		public String toString() {
-			return symbol;
-		}
-
-		public String getSymbol() {
-			return symbol;
-		}
-
-		public String getMarket() {
-			return market;
-		}
-
-		public Security getPreviousSecurity() {
-			return previousSecurity;
-		}
-
-		@Override
-		public int hashCode() {
-			final int prime = 31;
-			int result = 1;
-			result = prime * result + ( ( market == null ) ? 0 : market.hashCode() );
-			result = prime * result + ( ( symbol == null ) ? 0 : symbol.hashCode() );
-			return result;
-		}
-
-		@Override
-		public boolean equals( Object obj ) {
-			if ( this == obj )
-				return true;
-			if ( obj == null )
-				return false;
-			if ( getClass() != obj.getClass() )
-				return false;
-			Security other = (Security)obj;
-			if ( market == null ) {
-				if ( other.market != null )
-					return false;
-			} else if ( !market.equals( other.market ) )
-				return false;
-			if ( symbol == null ) {
-				if ( other.symbol != null )
-					return false;
-			} else if ( !symbol.equals( other.symbol ) )
-				return false;
-			return true;
-		}
-
-		@Override
-		public int compareTo( Security o ) {
-			return symbol.compareTo( o.getSymbol() );
-		}
-	}
-
-	private static class SecurityPrices {
-		@MapProperty( source = "positions", valueClass = SecurityPrice.class )
-		private Map<Security, SecurityPrice> prices = new HashMap<Security, SecurityPrice>();
-
-		public int size() {
-			return prices.size();
-		}
-
-		public SecurityPrice getPrice( Security security ) {
-			return prices.get( security );
-		}
-	}
-
-	private static class LastSecurityPrices {
-		@MapProperty( source = "positions", valueSource = "previousPosition", valueClass = SecurityPrice.class )
-		private Map<Security, SecurityPrice> prices = new HashMap<Security, SecurityPrice>();
-
-		public int size() {
-			return prices.size();
-		}
-
-		public SecurityPrice getPrice( Security security ) {
-			return prices.get( security );
-		}
-	}
-
-	private static class SecurityPrice {
-		private static SimpleDateFormat format = new SimpleDateFormat( "YYYY-MMM-dd HH:mm" );
-
-		@Property( source = "lastKnownPrice" )
-		private float price;
-
-		@Property( source = "pricingDate" )
-		private Date dateOfPrice;
-
-		public String toString() {
-			return "$" + price + " at " + format.format( dateOfPrice );
-		}
-	}
-
-	public static class PreviousMarketPrices {
-		@MapProperty( source="positions", keyClass = String.class, keySource = "market", valueClass=SecurityPrice.class, valueSource="previousPosition" )
-		private Map<String, SecurityPrice> prices = new HashMap<String, SecurityPrice>();
-
-		public int size() {
-			return prices.size();
-		}
-
-		public SecurityPrice getPrice( String market ) {
-			return prices.get( market );
-		}
-	}
-	
-	public static class SymbolSortedPortfolio {
-		private SortedMap<Security,Position> positions = new TreeMap<Security,Position>();
-		
-		public int size() {
-			return positions.size();
-		}
-		
-		public Iterator<Security> iterator() {
-			return positions.keySet().iterator();
-		}
-		
-		public Position getPosition( Security security ) {
-			return positions.get( security );
-		}
 	}
 }

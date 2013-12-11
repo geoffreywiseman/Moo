@@ -14,7 +14,7 @@ import org.junit.Test;
 import com.codiform.moo.annotation.MapProperty;
 import com.codiform.moo.curry.Update;
 
-public class MapUpdateTest {
+public class MapPropertyUpdateTest {
 
 	public static class Value {
 		private Integer id;
