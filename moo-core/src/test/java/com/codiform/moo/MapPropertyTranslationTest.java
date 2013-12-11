@@ -4,6 +4,7 @@ import static org.hamcrest.Matchers.closeTo;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasToString;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
@@ -27,22 +28,26 @@ import com.codiform.moo.curry.Translate;
 public class MapPropertyTranslationTest {
 
 	private Portfolio source = new Portfolio();
-	private Map<String,Security> securities;
+	private Map<String, Security> securities;
 
 	@Before
 	public void testSetUpStocks() {
-		securities = new HashMap<String,Security>();
+		securities = new HashMap<String, Security>();
 		securities.put( "AAPL", new Security( "AAPL", "NASDAQ" ) );
-		securities.put( "BB", new Security( "BB", "TSE", new Security( "RIMM", "TSE" ) ) );
+		securities.put( "RIMM", new Security( "RIMM", "TSE" ) );
+		securities.put( "BB", new Security( "BB", "TSE", securities.get( "RIMM" ) ) );
 		securities.put( "ORCL", new Security( "ORCL", "NYSE" ) );
-		
+
 		Calendar cal = Calendar.getInstance();
 
+		cal.set( 2013, Calendar.NOVEMBER, 21, 13, 00, 00 );
+		Position oldPosition = new Position( 8000, 514.86f, cal.getTime() );
+		
 		cal.set( 2013, Calendar.DECEMBER, 4, 19, 59, 00 );
-		source.add( securities.get("AAPL"), new Position( 10000, 565.00f, cal.getTime() ) );
+		source.add( securities.get( "AAPL" ), new Position( 10000, 565.00f, cal.getTime(), oldPosition ) );
 
 		cal.set( Calendar.MINUTE, 57 );
-		source.add( securities.get("BB"), new Position( 3000, 38.94f, cal.getTime() ) );
+		source.add( securities.get( "BB" ), new Position( 3000, 38.94f, cal.getTime() ) );
 
 		cal.set( 2013, Calendar.DECEMBER, 4, 16, 0, 0 );
 		source.add( securities.get( "ORCL" ), new Position( 5000, 35.07f, cal.getTime() ) );
@@ -113,7 +118,7 @@ public class MapPropertyTranslationTest {
 		assertThat( pv.size(), is( equalTo( 3 ) ) );
 		assertThat( pv.getValue( securities.get( "BB" ) ), is( closeTo( 116820d, 1d ) ) );
 	}
-	
+
 	@Test
 	public void testTranslateMapValueWithValueClass() {
 		SecurityPrices prices = Translate.to( SecurityPrices.class ).from( source );
@@ -121,6 +126,15 @@ public class MapPropertyTranslationTest {
 		assertThat( prices.getPrice( securities.get( "AAPL" ) ), hasToString( "$565.0 at 2013-Dec-04 19:59" ) );
 		assertThat( prices.getPrice( securities.get( "BB" ) ), hasToString( "$38.94 at 2013-Dec-04 19:57" ) );
 		assertThat( prices.getPrice( securities.get( "ORCL" ) ), hasToString( "$35.07 at 2013-Dec-04 16:00" ) );
+	}
+
+	@Test
+	public void testTranslateMapValueWithValueSourceAndValueClass() {
+		LastSecurityPrices prices = Translate.to( LastSecurityPrices.class ).from( source );
+		assertThat( prices.size(), is( equalTo( 3 ) ) );
+		assertThat( prices.getPrice( securities.get( "AAPL" ) ), hasToString( "$514.86 at 2013-Nov-21 13:00" ) );
+		assertThat( prices.getPrice( securities.get( "BB" ) ), is( nullValue() ) );
+		assertThat( prices.getPrice( securities.get( "ORACL" ) ), is( nullValue() ) );
 	}
 
 	public static class Portfolio {
@@ -196,7 +210,7 @@ public class MapPropertyTranslationTest {
 	}
 
 	public static class PortfolioValue {
-		@MapProperty( valueSource="lastKnownValue" )
+		@MapProperty( valueSource = "lastKnownValue" )
 		private Map<Security, Double> positions = new HashMap<Security, Double>();
 
 		public Double getValue( Security security ) {
@@ -301,29 +315,42 @@ public class MapPropertyTranslationTest {
 			return true;
 		}
 	}
-	
+
 	private static class SecurityPrices {
-		@MapProperty(source="positions", valueClass=SecurityPrice.class)
-		private Map<Security,SecurityPrice> prices = new HashMap<Security,SecurityPrice>();
-		
+		@MapProperty( source = "positions", valueClass = SecurityPrice.class )
+		private Map<Security, SecurityPrice> prices = new HashMap<Security, SecurityPrice>();
+
 		public int size() {
 			return prices.size();
 		}
-		
+
 		public SecurityPrice getPrice( Security security ) {
 			return prices.get( security );
 		}
 	}
-	
+
+	private static class LastSecurityPrices {
+		@MapProperty( source = "positions", valueSource = "previousPosition", valueClass = SecurityPrice.class )
+		private Map<Security, SecurityPrice> prices = new HashMap<Security, SecurityPrice>();
+
+		public int size() {
+			return prices.size();
+		}
+
+		public SecurityPrice getPrice( Security security ) {
+			return prices.get( security );
+		}
+	}
+
 	private static class SecurityPrice {
 		private static SimpleDateFormat format = new SimpleDateFormat( "YYYY-MMM-dd HH:mm" );
-		
-		@Property(source="lastKnownPrice")
+
+		@Property( source = "lastKnownPrice" )
 		private float price;
-		
-		@Property(source="pricingDate")
+
+		@Property( source = "pricingDate" )
 		private Date dateOfPrice;
-		
+
 		public String toString() {
 			return "$" + price + " at " + format.format( dateOfPrice );
 		}
