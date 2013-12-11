@@ -18,4 +18,8 @@ public class PortfolioValue {
 		return positions.size();
 	}
 	
+	public void putValue( Security security, double value ) {
+		positions.put( security, value );
+	}
+	
 }

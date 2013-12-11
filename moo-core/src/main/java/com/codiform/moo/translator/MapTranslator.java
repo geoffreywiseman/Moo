@@ -151,15 +151,28 @@ public class MapTranslator {
 
 	private void updateMapByKey( Map<Object, Object> sourceMap, Map<Object, Object> destinationMap, TranslationSource translationSource,
 			MapProperty property ) {
-		for ( Map.Entry<Object, Object> item : sourceMap.entrySet() ) {
-			Object destinationValue = destinationMap.get( item.getKey() );
-			Object sourceValue = item.getValue();
+		SourceProperty keySourceProperty = getSourceProperty( property.getKeySource() );
+		SourceProperty valueSourceProperty = getSourceProperty( property.getValueSource() );
+		
+		for ( Map.Entry<Object, Object> entry : sourceMap.entrySet() ) {
+			Object key = entry.getKey();
+			key = keySourceProperty.getValue( key );
+			if( key == null && !property.allowNullKeys() )
+				continue;
+			
+			key = getKeyOrTranslation( key, property, translationSource );
+			if( key == null && !property.allowNullKeys() )
+				continue;
+
+			Object sourceValue = entry.getValue();
+			sourceValue = valueSourceProperty.getValue( sourceValue );
+			sourceValue = getValueOrTranslation( sourceValue, property, translationSource );
+			
+			Object destinationValue = destinationMap.get( key );
 			if ( destinationValue != null && sourceValue != null ) {
 				translationSource.update( sourceValue, destinationValue );
-			} else if ( property.getValueClass() != null && sourceValue != null ) {
-				destinationMap.put( item.getKey(), translationSource.getTranslation( sourceValue, property.getValueClass() ) );
 			} else {
-				destinationMap.put( item.getKey(), sourceValue );
+				destinationMap.put( key, sourceValue );
 			}
 		}
 
