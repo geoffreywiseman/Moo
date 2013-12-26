@@ -96,4 +96,9 @@ public class ReflectionSourceProperty implements SourceProperty {
 		return propertyName;
 	}
 
+	@Override
+	public String toString() {
+		return "ReflectionSourceProperty [propertyName=" + propertyName + "]";
+	}
+
 }
