@@ -29,7 +29,7 @@ public class TranslatorTest {
 	private TranslatorFactory tf;
 
 	@Mock
-	private SourceProperty origin;
+	private SourceProperty sourceProperty;
 	
 	@Mock
 	private TranslationSource translationSource;
@@ -39,8 +39,8 @@ public class TranslatorTest {
 	@Before
 	public void setUp() {
 		when( configuration.getDefaultAccessMode() ).thenReturn( AccessMode.FIELD );
-		when( spf.getSourceProperty( Mockito.any( String.class ) ) ).thenReturn( origin );
-		when( origin.getValue( Mockito.any(Source.class) ) ).thenReturn( "TranslatorTest" );
+		when( spf.getSourceProperty( Mockito.any( String.class ) ) ).thenReturn( sourceProperty );
+		when( sourceProperty.getValue( Mockito.any(Source.class) ) ).thenReturn( "TranslatorTest" );
 		translator = new ObjectTranslator<Destination>( Destination.class, configuration, tf, spf );
 	}
 

@@ -10,7 +10,7 @@ import com.codiform.moo.MissingSourcePropertyValueException;
 import com.codiform.moo.property.source.SourceProperty;
 
 /**
- * An origin that uses MVEL to find the origin value.
+ * A source property that uses the MVEL expression language to retrieve the value.
  */
 public class MvelSourceProperty implements SourceProperty {
 

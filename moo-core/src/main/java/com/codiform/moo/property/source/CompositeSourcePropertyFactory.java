@@ -28,8 +28,8 @@ public class CompositeSourcePropertyFactory implements SourcePropertyFactory {
 	 */
 	private void initializeExtensions() {
 		try {
-			Class<?> originClass = Class.forName( "com.codiform.moo.property.source.MvelSourcePropertyFactory" );
-			sourcePropertyFactories.add( (SourcePropertyFactory)originClass.newInstance() );
+			Class<?> factory = Class.forName( "com.codiform.moo.property.source.MvelSourcePropertyFactory" );
+			sourcePropertyFactories.add( (SourcePropertyFactory)factory.newInstance() );
 		} catch ( ClassNotFoundException e ) {
 			// No MVEL Extension. That's ok. In fact, to be expected.
 		} catch ( InstantiationException exception ) {
