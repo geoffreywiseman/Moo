@@ -1,14 +1,15 @@
 package com.codiform.moo;
 
 /**
- * Used when Moo has a source property, a means of accessing a value, but can't find a value
- * to go with it.
+ * Used when Moo has a source property (a means of accessing a value), but can't find a value
+ * to go with it (for instance, if there's no matching field or method; or the matching field/method
+ * is not accessible, or so forth.
  */
 public class MissingSourcePropertyValueException extends TranslationException {
 
 	private static final long serialVersionUID = -7805671888971187925L;
 
-	private static final String MESSAGE = "Could not find required source property value for expression '%s' (source: %s)";
+	private static final String MESSAGE = "Could not retrieve a value for source property expression '%s' (from source: %s)";
 
 	private String propertyExpression;
 
