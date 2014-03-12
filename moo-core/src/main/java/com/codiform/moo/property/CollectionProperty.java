@@ -49,6 +49,6 @@ public interface CollectionProperty extends Property {
 	 * when you want to extract some sub-element or transform the item entirely using something
 	 * like a static method.
 	 */
-	String getItemExpression();
+	String getItemSource();
 	
 }

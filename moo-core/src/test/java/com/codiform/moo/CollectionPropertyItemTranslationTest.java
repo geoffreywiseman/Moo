@@ -64,7 +64,7 @@ public class CollectionPropertyItemTranslationTest {
 		@Property
 		private String description;
 		
-		@CollectionProperty( source="includedTypes", itemClass = String.class, itemExpression="description" )
+		@CollectionProperty( source="includedTypes", itemClass = String.class, itemSource="description" )
 		Set<String> includedDescriptions;
 		
 		public String getDescription() {
@@ -108,7 +108,7 @@ public class CollectionPropertyItemTranslationTest {
 	private static class ClassFathers { 
 		private String className;
 		
-		@CollectionProperty( source="students", itemExpression="father" )
+		@CollectionProperty( source="students", itemSource="father" )
 		private Set<Person> fathers;
 		
 		@SuppressWarnings( "unused" )

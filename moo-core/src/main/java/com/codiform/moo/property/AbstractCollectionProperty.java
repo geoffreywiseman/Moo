@@ -15,7 +15,7 @@ public abstract class AbstractCollectionProperty extends AbstractProperty
 	private final Optionality optionality;
 	private final boolean removeOrphans;
 	private final boolean update;
-	private String itemExpression;
+	private String itemSource;
 	private Class<? extends TranslationTargetFactory> factory;
 
 	@SuppressWarnings("unchecked")
@@ -29,17 +29,17 @@ public abstract class AbstractCollectionProperty extends AbstractProperty
 			optionality = annotation.optionality();
 			removeOrphans = annotation.removeOrphans();
 			update = annotation.update();
-			itemExpression = annotation.itemExpression().trim();
+			itemSource = annotation.itemSource().trim();
 			factory = annotation.factory();
-			if( itemExpression.length() == 0 )
-				itemExpression = null;
+			if( itemSource.length() == 0 )
+				itemSource = null;
 		} else {
 			itemClass = null;
 			matcher = null;
 			optionality = null;
 			removeOrphans = true;
 			update = false;
-			itemExpression = null;
+			itemSource = null;
 			factory = DefaultCollectionTargetFactory.class;
 		}
 	}
@@ -84,8 +84,8 @@ public abstract class AbstractCollectionProperty extends AbstractProperty
 		return false;
 	}
 	
-	public String getItemExpression() {
-		return itemExpression;
+	public String getItemSource() {
+		return itemSource;
 	}
 
 	@Override

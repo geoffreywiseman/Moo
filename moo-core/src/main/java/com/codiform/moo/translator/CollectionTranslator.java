@@ -81,7 +81,7 @@ public class CollectionTranslator {
 		if( configuration.isPerformingDefensiveCopies() ) {
 			return true;
 		}
-		if( property.getItemExpression() != null ) {
+		if( property.getItemSource() != null ) {
 			return true;
 		}
 		Class<?> targetClass = property.getType();
@@ -97,7 +97,7 @@ public class CollectionTranslator {
 			if ( target instanceof Collection ) {
 				Collection<Object> targetCollection = (Collection<Object>)target;
 				Iterator<?> sourceItems = ( (Collection<?>)value ).iterator();
-				SourceProperty itemSource = getItemSource( property.getItemExpression() );
+				SourceProperty itemSource = getItemSource( property.getItemSource() );
 				while ( sourceItems.hasNext() ) {
 					Object item = itemSource.getValue( sourceItems.next() );
 					targetCollection.add( item );
@@ -120,7 +120,7 @@ public class CollectionTranslator {
 			if ( target instanceof Collection ) {
 				Collection<Object> targetCollection = (Collection<Object>)target;
 				Iterator<?> sourceItems = ( (Collection<?>)value ).iterator();
-				SourceProperty itemSource = getItemSource( property.getItemExpression() );
+				SourceProperty itemSource = getItemSource( property.getItemSource() );
 				while ( sourceItems.hasNext() ) {
 					Object item = itemSource.getValue( sourceItems.next() );
 					Object translated = cache.getTranslation( item, property.getItemClass() );
