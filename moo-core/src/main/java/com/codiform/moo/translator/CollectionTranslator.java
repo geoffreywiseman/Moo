@@ -65,27 +65,43 @@ public class CollectionTranslator {
 			Object target = createTargetCollection( value, property, cache );
 			translateToTargetCollection( value, target, property, cache );
 			return target;
-		} else if ( !hasDefaultFactory( property ) || configuration.isPerformingDefensiveCopies() ) {
+		} else if ( shouldCopy( value, property ) ) {
 			Object target = createTargetCollection( value, property, cache );
 			copyToTargetCollection( value, target, property );
 			return target;
 		} else {
-			Class<?> targetClass = property.getType();
-			if ( targetClass.isInstance( value ) ) {
-				return value;
-			} else {
-				Object target = createTargetCollection( value, property, cache );
-				copyToTargetCollection( value, target, property );
-				return target;
-			}
+			return value;
 		}
+	}
+
+	private boolean shouldCopy( Object value, CollectionProperty property ) {
+		if( !hasDefaultFactory( property ) ) {
+			return true;
+		}
+		if( configuration.isPerformingDefensiveCopies() ) {
+			return true;
+		}
+		if( property.getItemExpression() != null ) {
+			return true;
+		}
+		Class<?> targetClass = property.getType();
+		if ( !targetClass.isInstance( value ) ) {
+			return true;
+		}
+		return false;
 	}
 
 	@SuppressWarnings( "unchecked" )
 	private void copyToTargetCollection( Object value, Object target, CollectionProperty property ) {
 		if ( value instanceof Collection ) {
 			if ( target instanceof Collection ) {
-				( (Collection<Object>)target ).addAll( (Collection<Object>)value );
+				Collection<Object> targetCollection = (Collection<Object>)target;
+				Iterator<?> sourceItems = ( (Collection<?>)value ).iterator();
+				SourceProperty itemSource = getItemSource( property.getItemExpression() );
+				while ( sourceItems.hasNext() ) {
+					Object item = itemSource.getValue( sourceItems.next() );
+					targetCollection.add( item );
+				}
 			} else {
 				throw new TranslationException( "Cannot translate collection to target of type: " + target.getClass().getName() );
 			}
