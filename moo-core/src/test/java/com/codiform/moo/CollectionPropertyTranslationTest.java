@@ -26,11 +26,27 @@ public class CollectionPropertyTranslationTest {
 	@Test
 	public void testTranslateCopiesCollections() {
 		List<String> before = Arrays.asList( "a", "b", "c" );
-		TestDto dto = new Moo().translate( new StringsDomain(
-				before ), TestDto.class );
+		TestDto dto = new Moo().translate( new StringsDomain( before ), TestDto.class );
 		Assert.assertEquals( before, dto.getStrings() );
 		assertNotSame( before, dto.getStrings() );
 		assertEquals( before, dto.getStrings() );
+	}
+
+	/**
+	 * Use the collection's source when translating collection properties.
+	 */
+	@Test
+	public void testUseCollectionSourceWhenTranslatingCollection() {
+		OrdinalList ordinals = new OrdinalList( new Ordinal( 1, "first" ), new Ordinal( 2, "second" ), new Ordinal( 3, "third" ) );
+		NumberedListDto ordinalsDto = new Moo().translate( ordinals, NumberedListDto.class );
+		Assert.assertNotNull( ordinalsDto.getNumbers() );
+		Assert.assertEquals( ordinals.getOrdinals().size(), ordinalsDto.getNumbers().size() );
+		for ( int index = 0; index < ordinals.getOrdinals().size(); index++ ) {
+			Ordinal ordinal = ordinals.getOrdinals().get( index );
+			OrdinalDto ordinalDto = ordinalsDto.getNumbers().get( index );
+			Assert.assertEquals( ordinal.getRank(), ordinalDto.getRank() );
+			Assert.assertEquals( ordinal.getName(), ordinalDto.getName() );
+		}
 	}
 
 	/**
@@ -39,22 +55,17 @@ public class CollectionPropertyTranslationTest {
 	@Test
 	public void testCopiesNullsInsideCollections() {
 		List<String> before = Arrays.asList( "a", "b", null, "c" );
-		TestDto dto = new Moo().translate( new StringsDomain(
-				before ), TestDto.class );
+		TestDto dto = new Moo().translate( new StringsDomain( before ), TestDto.class );
 		Assert.assertEquals( before, dto.getStrings() );
 	}
 
 	@Test
 	public void testTranslatesCollectionsOfTranslations() {
-		OrdinalList ordinals = new OrdinalList( new Ordinal( 1, "first" ),
-				new Ordinal(
-						2, "second" ), new Ordinal( 3, "third" ) );
-		OrdinalListDto ordinalsDto = new Moo().translate( ordinals,
-				OrdinalListDto.class );
+		OrdinalList ordinals = new OrdinalList( new Ordinal( 1, "first" ), new Ordinal( 2, "second" ), new Ordinal( 3, "third" ) );
+		OrdinalListDto ordinalsDto = new Moo().translate( ordinals, OrdinalListDto.class );
 		Assert.assertNotNull( ordinalsDto.getOrdinals() );
-		Assert.assertEquals( ordinals.getOrdinals().size(), ordinalsDto
-				.getOrdinals().size() );
-		for( int index = 0; index < ordinals.getOrdinals().size(); index++ ) {
+		Assert.assertEquals( ordinals.getOrdinals().size(), ordinalsDto.getOrdinals().size() );
+		for ( int index = 0; index < ordinals.getOrdinals().size(); index++ ) {
 			Ordinal ordinal = ordinals.getOrdinals().get( index );
 			OrdinalDto ordinalDto = ordinalsDto.getOrdinals().get( index );
 			Assert.assertEquals( ordinal.getRank(), ordinalDto.getRank() );
@@ -65,7 +76,7 @@ public class CollectionPropertyTranslationTest {
 	public static class OrdinalList {
 		private List<Ordinal> ordinals;
 
-		public OrdinalList(Ordinal... ordinals) {
+		public OrdinalList( Ordinal... ordinals ) {
 			this.ordinals = Arrays.asList( ordinals );
 		}
 
@@ -77,9 +88,9 @@ public class CollectionPropertyTranslationTest {
 	public static class OrdinalSortedSet {
 		private SortedSet<Ordinal> ordinals;
 
-		public OrdinalSortedSet(Ordinal... ordinals) {
+		public OrdinalSortedSet( Ordinal... ordinals ) {
 			this.ordinals = new TreeSet<Ordinal>();
-			for( Ordinal item : ordinals )
+			for ( Ordinal item : ordinals )
 				this.ordinals.add( item );
 		}
 
@@ -91,9 +102,9 @@ public class CollectionPropertyTranslationTest {
 	public static class OrdinalSet {
 		private Set<Ordinal> ordinals;
 
-		public OrdinalSet(Ordinal... ordinals) {
+		public OrdinalSet( Ordinal... ordinals ) {
 			this.ordinals = new LinkedHashSet<Ordinal>();
-			for( Ordinal item : ordinals )
+			for ( Ordinal item : ordinals )
 				this.ordinals.add( item );
 		}
 
@@ -106,7 +117,7 @@ public class CollectionPropertyTranslationTest {
 		private int rank;
 		private String name;
 
-		public Ordinal(int rank, String name) {
+		public Ordinal( int rank, String name ) {
 			this.rank = rank;
 			this.name = name;
 		}
@@ -119,13 +130,13 @@ public class CollectionPropertyTranslationTest {
 			return name;
 		}
 
-		public int compareTo(Ordinal o) {
+		public int compareTo( Ordinal o ) {
 			return rank - o.rank;
 		}
 	}
 
 	public static class OrdinalListDto {
-		@CollectionProperty(itemClass = OrdinalDto.class)
+		@CollectionProperty( itemClass = OrdinalDto.class )
 		private List<OrdinalDto> ordinals;
 
 		public List<OrdinalDto> getOrdinals() {
@@ -133,8 +144,17 @@ public class CollectionPropertyTranslationTest {
 		}
 	}
 
+	public static class NumberedListDto {
+		@CollectionProperty( source = "ordinals", itemClass = OrdinalDto.class )
+		private List<OrdinalDto> numbers;
+
+		public List<OrdinalDto> getNumbers() {
+			return numbers;
+		}
+	}
+
 	public static class OrdinalSetDto {
-		@CollectionProperty(itemClass = OrdinalDto.class)
+		@CollectionProperty( itemClass = OrdinalDto.class )
 		private SortedSet<OrdinalDto> ordinals;
 
 		public SortedSet<OrdinalDto> getOrdinals() {
@@ -154,7 +174,7 @@ public class CollectionPropertyTranslationTest {
 			return name;
 		}
 
-		public int compareTo(OrdinalDto other) {
+		public int compareTo( OrdinalDto other ) {
 			return rank - other.rank;
 		}
 	}
@@ -162,7 +182,7 @@ public class CollectionPropertyTranslationTest {
 	public static class StringsDomain {
 		private List<String> strings;
 
-		public StringsDomain(List<String> strings) {
+		public StringsDomain( List<String> strings ) {
 			this.strings = strings;
 		}
 
