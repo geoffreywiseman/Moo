@@ -15,7 +15,7 @@ import com.codiform.moo.curry.Translate;
 public class EnumCollectionPropertyTranslationTest {
 
 	@Test
-	public void testTranslateContainerWithCustomTranslationForContents() {
+	public void testTranslateContainerWithStaticCustomTranslationForContents() {
 		NatoLetterContainer source = new NatoLetterContainer( NatoLetter.JULIA,
 				NatoLetter.SIERRA );
 		ShallowCopyDto dest = Translate.to( ShallowCopyDto.class ).from(
@@ -27,11 +27,11 @@ public class EnumCollectionPropertyTranslationTest {
 	}
 
 	@Test
-	public void testTranslateContainerToStringContainer() {
+	public void testTranslateContainerToStringContainerUsingVariable() {
 		NatoLetterContainer source = new NatoLetterContainer(
 				NatoLetter.NOVEMBER,
 				NatoLetter.ALFA, NatoLetter.TANGO, NatoLetter.OSCAR );
-		StringTranslationDto dest = Translate.to( StringTranslationDto.class ).from(
+		StringTranslationDto dest = Translate.to( StringTranslationDto.class ).withVariable( "enumUtil", new EnumUtil() ).from(
 				source );
 
 		assertEquals( 4, dest.getLetters().size() );
@@ -91,7 +91,7 @@ public class EnumCollectionPropertyTranslationTest {
 	@SuppressWarnings("unused")
 	private static class StringTranslationDto {
 
-		@CollectionProperty(source = "com.codiform.moo.EnumCollectionPropertyTranslationTest$EnumUtil.toString(this.letters)")
+		@CollectionProperty(source = "enumUtil.toString(this.letters)")
 		private Set<String> letters;
 
 		public StringTranslationDto() {
@@ -108,7 +108,7 @@ public class EnumCollectionPropertyTranslationTest {
 	}
 
 	public static class EnumUtil {
-		public static <E extends Enum<E>> Set<String> toString(Set<E> input) {
+		public <E extends Enum<E>> Set<String> toString(Set<E> input) {
 			HashSet<String> output = new HashSet<String>();
 			for( E item : input ) {
 				output.add( item.name() );
