@@ -90,7 +90,7 @@ public class SimpleUpdateTest {
 		}
 
 		public Ordinal() {
-			// TODO Auto-generated constructor stub
+			// no-arg constructor for translation
 		}
 
 		public int getRank() {
