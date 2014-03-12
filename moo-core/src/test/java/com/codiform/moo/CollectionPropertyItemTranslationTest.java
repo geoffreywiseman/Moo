@@ -129,6 +129,7 @@ public class CollectionPropertyItemTranslationTest {
 		}
 	}
 	
+	@SuppressWarnings( "unused" )
 	private static class Person {
 		@Override
 		public int hashCode() {
