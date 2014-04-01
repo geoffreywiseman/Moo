@@ -10,21 +10,13 @@ public class MethodProperty extends AbstractObjectProperty {
 
 	private Method getter, setter;
 	private Class<?> type;
-	private String name;
-	private String expression;
 	private String getterFailure;
-	private boolean explicit;
-	private boolean ignore;
 
 	public MethodProperty(Method setter,
 			com.codiform.moo.annotation.Property annotation, String name,
 			String expression, boolean explicit, boolean ignore) {
-		super( annotation );
+		super( name, annotation, expression, explicit, ignore );
 		this.setter = setter;
-		this.name = name;
-		this.expression = expression;
-		this.ignore = ignore;
-		this.explicit = explicit;
 
 		type = setter.getParameterTypes()[0];
 
@@ -40,12 +32,12 @@ public class MethodProperty extends AbstractObjectProperty {
 			if( getter == null )
 				getter = findGetter( searchClass, "get" );
 			if( getter == null )
-				getterFailure = "No get/is + " + name + " getter.";
+				getterFailure = "No get/is + " + getName() + " getter.";
 		}
 		else if( getter == null ) {
 			getter = findGetter( searchClass, "get" );
 			if( getter == null )
-				getterFailure = "No get " + name + " getter.";
+				getterFailure = "No get " + getName() + " getter.";
 		}
 		if( getter != null && !getter.getReturnType().isAssignableFrom( type ) ) {
 			getter = null;
@@ -58,6 +50,7 @@ public class MethodProperty extends AbstractObjectProperty {
 
 	private Method findGetter(Class<?> startClass, String prefix) {
 		StringBuilder getterBuilder = new StringBuilder( prefix );
+		String name = getName();
 		getterBuilder.append( Character.toUpperCase( name.charAt( 0 ) ) );
 		if( name.length() > 1 )
 			getterBuilder.append( name.substring( 1 ) );
@@ -75,14 +68,6 @@ public class MethodProperty extends AbstractObjectProperty {
 			currentClass = currentClass.getSuperclass();
 		}
 		return getter;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public String getSourcePropertyExpression() {
-		return expression;
 	}
 
 	public Class<?> getType() {
@@ -107,15 +92,6 @@ public class MethodProperty extends AbstractObjectProperty {
 
 	public Class<?> getDeclaringClass() {
 		return setter.getDeclaringClass();
-	}
-
-	public boolean isExplicit() {
-		return explicit;
-	}
-
-	@Override
-	public boolean isIgnored() {
-		return ignore;
 	}
 
 	@Override
@@ -144,7 +120,7 @@ public class MethodProperty extends AbstractObjectProperty {
 	
 	@Override
 	public String toString() {
-		return "MethodProperty<" + name + ">";
+		return "MethodProperty<" + getName() + ">";
 	}
 
 }

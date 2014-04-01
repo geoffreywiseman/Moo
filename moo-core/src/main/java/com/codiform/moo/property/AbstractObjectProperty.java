@@ -10,9 +10,17 @@ public abstract class AbstractObjectProperty extends AbstractProperty {
 	private final boolean translate;
 	private final boolean update;
 	private final Class<? extends TranslationTargetFactory> factory;
+	private String name;
+	private String sourcePropertyExpression;
+	private boolean explicit;
+	private boolean ignore;
 	
-	public AbstractObjectProperty( com.codiform.moo.annotation.Property annotation ) {
+	public AbstractObjectProperty( String name, com.codiform.moo.annotation.Property annotation, String sourcePropertyExpression, boolean explicit, boolean ignore ) {
 		super();
+		this.name = name;
+		this.sourcePropertyExpression = sourcePropertyExpression;
+		this.explicit = explicit;
+		this.ignore = ignore;
 		if( annotation == null ) {
 			optionality = null;
 			translate = false;
@@ -43,4 +51,21 @@ public abstract class AbstractObjectProperty extends AbstractProperty {
 		return factory;
 	}
 	
+	public String getName() {
+		return name;
+	}
+
+	public String getSourcePropertyExpression() {
+		return sourcePropertyExpression;
+	}
+
+	public boolean isExplicit() {
+		return explicit;
+	}
+
+	@Override
+	public boolean isIgnored() {
+		return ignore;
+	}
+
 }

@@ -8,36 +8,17 @@ import com.codiform.moo.SetPropertyException;
 public class FieldProperty extends AbstractObjectProperty {
 
 	private Field field;
-	private String name;
-	private String expression;
-	private boolean explicit;
-	private boolean ignore;
-	private boolean supportsNull;
 
 	public FieldProperty(Field field,
 			com.codiform.moo.annotation.Property annotation, String name,
 			String expression,
 			boolean explicit,
 			boolean ignore) {
-		super( annotation );
+		super( name, annotation, expression, explicit, ignore );
 		this.field = field;
-		this.name = name;
-		this.expression = expression;
-		this.explicit = explicit;
-		this.ignore = ignore;
 
 		if( !field.isAccessible() )
 			field.setAccessible( true );
-
-		supportsNull = !getType().isPrimitive();
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public String getSourcePropertyExpression() {
-		return expression;
 	}
 
 	public Class<?> getType() {
@@ -59,21 +40,8 @@ public class FieldProperty extends AbstractObjectProperty {
 		}
 	}
 
-	public boolean canSupportNull() {
-		return supportsNull;
-	}
-
 	public Class<?> getDeclaringClass() {
 		return field.getDeclaringClass();
-	}
-
-	public boolean isExplicit() {
-		return explicit;
-	}
-
-	@Override
-	public boolean isIgnored() {
-		return ignore;
 	}
 
 	@Override
@@ -94,7 +62,7 @@ public class FieldProperty extends AbstractObjectProperty {
 	
 	@Override
 	public String toString() {
-		return "FieldProperty<" + name + ">";
+		return "FieldProperty<" + getName() + ">";
 	}
 
 }
