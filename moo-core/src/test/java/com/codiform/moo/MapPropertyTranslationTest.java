@@ -69,6 +69,21 @@ public class MapPropertyTranslationTest {
 	}
 
 	@Test
+	public void testTranslateWithoutAnnotationsCopiesMapWithNullKey() {
+		Position nullPosition = new Position( 0, 0.0f, null );
+		source.add( null, nullPosition );
+
+		PortfolioCopy copy = Translate.to( PortfolioCopy.class ).from( source );
+
+		assertNotSame( source.getPositions(), copy.getPositions() );
+		assertEquals( source.getPositions(), copy.getPositions() );
+		
+		Position nullCopy = copy.getPositions().get( null );
+		assertNotNull( nullCopy );
+		assertEquals( nullPosition, nullCopy );
+	}
+
+	@Test
 	public void testTranslateWithoutDefensiveCopyUsesSameMap() {
 		Configuration configuration = new Configuration();
 		configuration.setPerformingDefensiveCopies( false );
