@@ -8,8 +8,8 @@ public interface CollectionProperty extends Property {
 	 * Gets the type to which items in this collection should be translated. Without this,
 	 * items in the collection will simply be copied into the destination, not translated.
 	 * 
-	 * @returns a class if the items should be translated indicating what they should be translated to; null if no translation required
-	 * @see #shouldTranslateItems()
+	 * @return a class if the items should be translated indicating what they should be translated to; null if no translation required
+	 * @see #shouldItemsBeTranslated()
 	 */
 	Class<?> getItemClass();
 	

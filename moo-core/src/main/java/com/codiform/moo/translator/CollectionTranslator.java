@@ -54,7 +54,7 @@ public class CollectionTranslator {
 	 * 
 	 * @param value
 	 *            the source collection
-	 * @param annotation
+	 * @param property
 	 *            the {@link CollectionProperty} annotation, if present
 	 * @param cache
 	 *            the translation cache of previously-translated elements

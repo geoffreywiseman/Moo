@@ -97,7 +97,7 @@ public interface TranslationSource {
 	 * source to act as a cache for these factory classes.
 	 * 
 	 * @param factoryType
-	 * @return
+	 * @return the {@link TranslationTargetFactory} for the factory type
 	 */
 	public TranslationTargetFactory getTranslationTargetFactory( Class<? extends TranslationTargetFactory> factoryType );
 	

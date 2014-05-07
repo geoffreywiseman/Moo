@@ -27,8 +27,8 @@ public class MapTranslator {
 	 * 
 	 * @param configuration
 	 *            configuration that may be relevant to the map translator
-	 * @param the
-	 *            source property factory used to retrieve source properties
+	 * @param sourcePropertyFactory
+	 *            the source property factory used to retrieve source properties
 	 */
 	public MapTranslator( Configuration configuration, SourcePropertyFactory sourcePropertyFactory ) {
 		this.configuration = configuration;
@@ -55,7 +55,7 @@ public class MapTranslator {
 		if ( value instanceof Map ) {
 			Object target = createTargetMap( value, property, translationSource );
 			if ( target instanceof Map ) {
-				translateMap( (Map<Object,Object>) value, (Map<Object,Object>) target, property, translationSource );
+				translateMap( (Map<Object, Object>)value, (Map<Object, Object>)target, property, translationSource );
 				return target;
 			} else {
 				throw new TranslationException( "Cannot translate map to target of type: " + target.getClass().getName() );
@@ -68,17 +68,17 @@ public class MapTranslator {
 	private void translateMap( Map<Object, Object> source, Map<Object, Object> target, MapProperty property, TranslationSource translationSource ) {
 		SourceProperty keySourceProperty = getSourceProperty( property.getKeySource() );
 		SourceProperty valueSourceProperty = getSourceProperty( property.getValueSource() );
-		for( Map.Entry<Object,Object> entry : source.entrySet() ) {
+		for ( Map.Entry<Object, Object> entry : source.entrySet() ) {
 			Object key, value;
-			
+
 			key = keySourceProperty.getValue( entry.getKey() );
-			if( key == null && !property.allowNullKeys() )
+			if ( key == null && !property.allowNullKeys() )
 				continue;
-			
+
 			key = getKeyOrTranslation( key, property, translationSource );
-			if( key == null && !property.allowNullKeys() )
+			if ( key == null && !property.allowNullKeys() )
 				continue;
-			
+
 			value = valueSourceProperty.getValue( entry.getValue() );
 			value = getValueOrTranslation( value, property, translationSource );
 			target.put( key, value );
@@ -86,14 +86,14 @@ public class MapTranslator {
 	}
 
 	private Object getValueOrTranslation( Object value, MapProperty property, TranslationSource translationSource ) {
-		if( property.getValueClass() == null )
+		if ( property.getValueClass() == null )
 			return value;
 		else
 			return translationSource.getTranslation( value, property.getValueClass() );
 	}
 
 	private Object getKeyOrTranslation( Object key, MapProperty property, TranslationSource translationSource ) {
-		if( property.getKeyClass() == null )
+		if ( property.getKeyClass() == null )
 			return key;
 		else
 			return translationSource.getTranslation( key, property.getKeyClass() );
@@ -136,7 +136,8 @@ public class MapTranslator {
 	}
 
 	private boolean shouldTranslate( MapProperty property ) {
-		return property.getKeyClass() != null || property.getValueClass() != null || property.getKeySource() != null || property.getValueSource() != null;
+		return property.getKeyClass() != null || property.getValueClass() != null || property.getKeySource() != null
+				|| property.getValueSource() != null;
 	}
 
 	@SuppressWarnings( "unchecked" )
@@ -153,21 +154,21 @@ public class MapTranslator {
 			MapProperty property ) {
 		SourceProperty keySourceProperty = getSourceProperty( property.getKeySource() );
 		SourceProperty valueSourceProperty = getSourceProperty( property.getValueSource() );
-		
+
 		for ( Map.Entry<Object, Object> entry : sourceMap.entrySet() ) {
 			Object key = entry.getKey();
 			key = keySourceProperty.getValue( key );
-			if( key == null && !property.allowNullKeys() )
+			if ( key == null && !property.allowNullKeys() )
 				continue;
-			
+
 			key = getKeyOrTranslation( key, property, translationSource );
-			if( key == null && !property.allowNullKeys() )
+			if ( key == null && !property.allowNullKeys() )
 				continue;
 
 			Object sourceValue = entry.getValue();
 			sourceValue = valueSourceProperty.getValue( sourceValue );
 			sourceValue = getValueOrTranslation( sourceValue, property, translationSource );
-			
+
 			Object destinationValue = destinationMap.get( key );
 			if ( destinationValue != null && sourceValue != null ) {
 				translationSource.update( sourceValue, destinationValue );
@@ -188,13 +189,12 @@ public class MapTranslator {
 			destinationMap.remove( key );
 		}
 	}
-	
+
 	private SourceProperty getSourceProperty( String sourceExpression ) {
-		if( sourceExpression == null )
+		if ( sourceExpression == null )
 			return new NoOpSourceProperty();
 		else
-			return sourcePropertyFactory.getSourceProperty( sourceExpression ); 
+			return sourcePropertyFactory.getSourceProperty( sourceExpression );
 	}
-	
 
 }

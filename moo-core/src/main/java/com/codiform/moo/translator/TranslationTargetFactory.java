@@ -13,7 +13,7 @@ public interface TranslationTargetFactory {
 	 * 
 	 * @param source the source object from which translation will be performed
 	 * @param targetType the destination type to which the translation target must conform
-	 * @return
+	 * @return the target instance for the translation, an instance of the specified type or one of its subclasses
 	 */
 	<T> T getTranslationTargetInstance( Object source, Class<T> targetType );
 	

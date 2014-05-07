@@ -40,8 +40,8 @@ import com.codiform.moo.translator.CachingTranslatorFactory;
  * 
  * <p>
  * Moo supports a limited amount of configuration through annotations, in particular
- * {@link com.codiform.moo.annotation.Translation}, {@link com.codiform.moo.curry.Translate} and
- * {@link com.codiform.moo.annotation.CollectionProperty}.
+ * {@link com.codiform.moo.annotation.Property}, {@link com.codiform.moo.annotation.MapProperty},
+ * {@link com.codiform.moo.annotation.CollectionProperty} and {@link com.codiform.moo.annotation.Ignore}
  * </p>
  * 
  * <p>

@@ -11,8 +11,8 @@ import com.codiform.moo.translator.DefaultMapTargetFactory;
 import com.codiform.moo.translator.TranslationTargetFactory;
 
 /**
- * Configuration annotation to tell Moo that the values within the collection should be translated
- * to a the class specified in {@link #itemClass()}.
+ * Configuration for a Property that is a Map, allowing configuration elements that help
+ * determine how the map, the keys and the values contained therein will be translated.
  */
 @Documented
 @Retention( RetentionPolicy.RUNTIME )
