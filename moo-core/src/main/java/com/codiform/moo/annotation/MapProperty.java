@@ -68,7 +68,7 @@ public @interface MapProperty {
 
 	/**
 	 * Specifies the factory class that should be used to create the target Map instance for this
-	 * property. By default, this is the DefaultCollectionTargetFactory.
+	 * property. By default, this is the DefaultMapTargetFactory.
 	 */
 	Class<? extends TranslationTargetFactory> factory() default DefaultMapTargetFactory.class;
 
