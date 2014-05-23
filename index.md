@@ -6,7 +6,7 @@ title: Mapping Objects to Objects
 Moo maps an object or graph of objects to another object or set of objects while trying to stay as unintrusive as possible and easy-to-use.  Moo makes it possible to create quick copies and data transfer objects.
 </div>
 
-There are a lot of ways you could use Moo -- to create data transfer objects, to work as an anti-corruption layer, to help summarize an object graph before serializing to XML or JSON. Examples of Moo at work can be found in the [automated tests](http://github.com/geoffreywiseman/Moo/tree/master/src/test/java/com/codiform/moo/).
+There are a lot of ways you could use Moo -- to create data transfer objects, to work as an anti-corruption layer, to help summarize an object graph before serializing to XML or JSON. Examples of Moo at work can be found in the automated tests (for [moo-core][tests-core], [moo-mvel][tests-mvel]).
 
 The simplest examples of using Moo might look something like these:
 
@@ -24,3 +24,6 @@ Update.from( userDto ).to( currentUser );
 	<a class="button" href="/Moo/news.html">News</a>
 	<a class="button" href="https://github.com/geoffreywiseman/Moo/">Code</a>
 </div>
+
+[tests-core]: https://github.com/geoffreywiseman/Moo/tree/master/moo-core/src/test/java/com/codiform/moo/
+[tests-mvel]: https://github.com/geoffreywiseman/Moo/tree/master/moo-mvel/src/test/java/com/codiform/moo/
