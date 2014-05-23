@@ -1,5 +1,3 @@
-auto: true
-server: true
-pygments: true
+highlighter: rouge
 markdown: redcarpet
 baseurl: /Moo
