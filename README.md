@@ -1,4 +1,4 @@
-https://groups.google.com/forum/#!forum/moo-user# Moo: Mapping Objects to Objects
+# Moo: Mapping Objects to Objects
 
 It's not uncommon to need to do some mapping from one object model to another, whether that's
 _data transfer objects_, an _anti-corruption layer_, or something else.  Two projects I've been on
