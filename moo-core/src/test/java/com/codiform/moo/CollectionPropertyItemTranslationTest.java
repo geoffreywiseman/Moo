@@ -1,6 +1,7 @@
 package com.codiform.moo;
 
 import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
@@ -53,7 +54,7 @@ public class CollectionPropertyItemTranslationTest {
 		LicenseDescriptionDto dto = Translate.to( LicenseDescriptionDto.class ).from( LicenseType.E );
 		assertEquals( "Class E", dto.getDescription() );
 		assertEquals( 2, dto.getIncludedDescriptions().size() );
-		assertThat( dto.getIncludedDescriptions(), contains( "Class F", "Class G" ) );
+		assertThat( dto.getIncludedDescriptions(), containsInAnyOrder( "Class F", "Class G" ) );
 	}
 
 	/**
