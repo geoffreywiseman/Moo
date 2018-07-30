@@ -124,6 +124,7 @@ public class CollectionTranslatorTest {
 		when( property.shouldItemsBeTranslated() ).thenReturn( true );
 		// Mockito doesn't love Class<?> return types.
 		doReturn( Bar.class ).when( property ).getItemClass();
+		doReturn( DefaultObjectTargetFactory.class ).when( property ).getItemFactory();
 		Mockito.doReturn( Collection.class ).when( property ).getType();
 
 		Collection<Bar> translated = (Collection<Bar>)translator.translate( rhyme, property, session );

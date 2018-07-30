@@ -12,7 +12,7 @@ public interface SourceProperty {
 	 * Gets the value from the source object.
 	 * 
 	 * @param source the object from which the value should be retrieved
-	 * @throws MissingSourcePropertyValueException if the source property can't retrieve a value from the source object
+	 * @throws com.codiform.moo.MissingSourcePropertyValueException if the source property can't retrieve a value from the source object
 	 * @return the value retrieved from the source
 	 */
 	Object getValue( Object source );

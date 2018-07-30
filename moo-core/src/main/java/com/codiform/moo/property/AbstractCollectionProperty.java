@@ -1,10 +1,7 @@
 package com.codiform.moo.property;
 
 import com.codiform.moo.annotation.Optionality;
-import com.codiform.moo.translator.CollectionMatcher;
-import com.codiform.moo.translator.DefaultCollectionTargetFactory;
-import com.codiform.moo.translator.IndexMatcher;
-import com.codiform.moo.translator.TranslationTargetFactory;
+import com.codiform.moo.translator.*;
 
 public abstract class AbstractCollectionProperty extends AbstractProperty
 		implements
@@ -17,6 +14,7 @@ public abstract class AbstractCollectionProperty extends AbstractProperty
 	private final boolean update;
 	private String itemSource;
 	private Class<? extends TranslationTargetFactory> factory;
+	private Class<? extends TranslationTargetFactory> itemFactory;
 
 	@SuppressWarnings("unchecked")
 	public AbstractCollectionProperty(
@@ -31,6 +29,7 @@ public abstract class AbstractCollectionProperty extends AbstractProperty
 			update = annotation.update();
 			itemSource = annotation.itemSource().trim();
 			factory = annotation.factory();
+			itemFactory = annotation.itemFactory();
 			if( itemSource.length() == 0 )
 				itemSource = null;
 		} else {
@@ -41,6 +40,7 @@ public abstract class AbstractCollectionProperty extends AbstractProperty
 			update = false;
 			itemSource = null;
 			factory = DefaultCollectionTargetFactory.class;
+			itemFactory = DefaultObjectTargetFactory.class;
 		}
 	}
 
@@ -56,7 +56,7 @@ public abstract class AbstractCollectionProperty extends AbstractProperty
 
 	@Override
 	public boolean shouldItemsBeTranslated() {
-		return itemClass != null;
+		return itemClass != null || getItemFactory() != DefaultObjectTargetFactory.class;
 	}
 
 	@Override
@@ -92,5 +92,8 @@ public abstract class AbstractCollectionProperty extends AbstractProperty
 	public Class<? extends TranslationTargetFactory> getFactory() {
 		return factory;
 	}
+
+	@Override
+	public Class<? extends TranslationTargetFactory> getItemFactory() { return itemFactory; }
 
 }

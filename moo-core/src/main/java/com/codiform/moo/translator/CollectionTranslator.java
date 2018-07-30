@@ -123,7 +123,7 @@ public class CollectionTranslator {
 				SourceProperty itemSource = getItemSource( property.getItemSource() );
 				while ( sourceItems.hasNext() ) {
 					Object item = itemSource.getValue( sourceItems.next() );
-					Object translated = cache.getTranslation( item, property.getItemClass() );
+					Object translated = cache.getTranslation( item, property.getItemFactory(), property.getItemClass() );
 					targetCollection.add( translated );
 				}
 			} else {

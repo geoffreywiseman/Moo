@@ -113,15 +113,21 @@ public class TranslationSession implements TranslationSource {
 		}
 	}
 
-	private <T> T getObjectTranslation( Object source, Class<? extends TranslationTargetFactory> factoryType, Class<T> destinationClass ) {
-		ObjectTranslator<T> translator = getTranslator( destinationClass );
+	private <T, S extends T> T getObjectTranslation( Object source, Class<? extends TranslationTargetFactory> factoryType, Class<T> destinationClass ) {
 		TranslationTargetFactory factory = getTranslationTargetFactory( factoryType );
-		T translated = factory.getTranslationTargetInstance( source, destinationClass );
-		if ( translated == null )
+		T target = factory.getTranslationTargetInstance( source, destinationClass );
+		if ( target == null )
 			throw new TranslationException( "Translation target factory (" + factory + ") returned null instance; cannot translate." );
-		translationCache.putTranslation( source, translated );
-		translator.update( source, translated, this, variables );
-		return translated;
+
+		translationCache.putTranslation( source, target );
+
+		@SuppressWarnings( "unchecked" )
+		Class<S> targetClass = (Class<S>) target.getClass();
+
+		ObjectTranslator<S> translator = getTranslator( targetClass );
+		translator.update( source, (S)target, this, variables );
+
+		return target;
 	}
 
 	public TranslationTargetFactory getTranslationTargetFactory( Class<? extends TranslationTargetFactory> factoryType ) {
