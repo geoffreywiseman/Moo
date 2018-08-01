@@ -26,7 +26,7 @@ public @interface CollectionProperty {
 	 * The type that will be used to instantiate item classes, or {@link DefaultObjectTargetFactory} if the
 	 * default item factory will be used.
 	 *
-	 * @return a class implementing {@link ItemFactory}
+	 * @return a class implementing {@link TranslationTargetFactory}
 	 */
 	Class<? extends TranslationTargetFactory> itemFactory() default DefaultObjectTargetFactory.class;
 
