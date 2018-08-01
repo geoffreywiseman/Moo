@@ -24,7 +24,7 @@ import com.codiform.moo.curry.Update;
  * 
  * There are tests in here to deal with source field required/optional in Moo
  * configuration, but the impact of the {@link Ignore} annotation can be seen in
- * {@link IgnoreAnnotationTest}
+ * IgnoreAnnotationTest.
  */
 public class MissingSourcePropertyTest {
 

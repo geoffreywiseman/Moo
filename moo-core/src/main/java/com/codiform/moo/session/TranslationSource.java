@@ -96,7 +96,7 @@ public interface TranslationSource {
 	 * Gets the translation target factory for a the specified factory type. This allows the translation
 	 * source to act as a cache for these factory classes.
 	 * 
-	 * @param factoryType
+	 * @param factoryType the type that implements TranslationTargetFactory to be used
 	 * @return the {@link TranslationTargetFactory} for the factory type
 	 */
 	TranslationTargetFactory getTranslationTargetFactory( Class<? extends TranslationTargetFactory> factoryType );

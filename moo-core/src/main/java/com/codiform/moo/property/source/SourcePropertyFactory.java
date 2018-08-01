@@ -18,7 +18,7 @@ public interface SourcePropertyFactory {
 
 	/**
 	 * Gets the source property corresponding to a prefixed expression, along the lines of
-	 * "<prefix>:<expression>"
+	 * "&lt;prefix&gt;:&lt;expression&gt;"
 	 * 
 	 * @param expressionPrefix
 	 *            the prefix of the expression
