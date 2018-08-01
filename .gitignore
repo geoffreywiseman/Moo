@@ -1,7 +1,11 @@
-# Target directory is derived
+# Maven
 target/
+
+# Eclipse
 .settings/
 .classpath
 .project
+
+# IntelliJ IDEA
 /.idea
 *.iml
