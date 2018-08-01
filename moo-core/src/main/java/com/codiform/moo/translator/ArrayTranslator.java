@@ -81,9 +81,7 @@ public class ArrayTranslator {
 	}
 
 	private void copy(Object[] sourceArray, Object[] destinationArray) {
-		for (int index = 0; index < sourceArray.length; index++) {
-			destinationArray[index] = sourceArray[index];
-		}
+		System.arraycopy( sourceArray, 0, destinationArray, 0, sourceArray.length );
 	}
 
 	@SuppressWarnings("unchecked")

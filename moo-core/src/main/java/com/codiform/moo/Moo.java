@@ -52,7 +52,6 @@ import com.codiform.moo.translator.CachingTranslatorFactory;
 public class Moo {
 
 	private CachingTranslatorFactory translatorFactory;
-	private CompositeSourcePropertyFactory sourcePropertyFactory;
 
 	/**
 	 * Creates a new instance of Moo with a default {@link Configuration}.
@@ -68,7 +67,7 @@ public class Moo {
 	 *            the configuration for this instance of Moo
 	 */
 	public Moo( Configuration configuration ) {
-		this.sourcePropertyFactory = new CompositeSourcePropertyFactory();
+		CompositeSourcePropertyFactory sourcePropertyFactory = new CompositeSourcePropertyFactory();
 		this.translatorFactory = new CachingTranslatorFactory( configuration, sourcePropertyFactory );
 	}
 

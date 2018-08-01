@@ -24,7 +24,7 @@ public interface TranslationSource {
 	 * @param <T>
 	 *            the type that binds the return value to the destination class
 	 */
-	public <T> T getTranslation( Object source, Class<T> destinationClass );
+	<T> T getTranslation( Object source, Class<T> destinationClass );
 
 	/**
 	 * Gets a translation to a specified class from the translation session. Attempts to load from
@@ -39,7 +39,7 @@ public interface TranslationSource {
 	 * @param <T>
 	 *            the type that binds the return value to the destination class
 	 */
-	public <T> T getTranslation( Object source, Class<? extends TranslationTargetFactory> factory, Class<T> destinationClass );
+	<T> T getTranslation( Object source, Class<? extends TranslationTargetFactory> factory, Class<T> destinationClass );
 
 	/**
 	 * Creates a list of translations from a list of source objects, first checking the cache and
@@ -52,7 +52,7 @@ public interface TranslationSource {
 	 * @param <T>
 	 *            the type that binds the return values to the destination class
 	 */
-	public <T> List<T> getEachTranslation( List<?> sources, Class<T> destinationClass );
+	<T> List<T> getEachTranslation( List<?> sources, Class<T> destinationClass );
 
 	/**
 	 * Creates a set of translations from a set of source objects, first checking the cache and
@@ -65,7 +65,7 @@ public interface TranslationSource {
 	 * @param <T>
 	 *            the type that binds the return values to the destination class
 	 */
-	public <T> Set<T> getEachTranslation( Set<?> sources, Class<T> destinationClass );
+	<T> Set<T> getEachTranslation( Set<?> sources, Class<T> destinationClass );
 
 	/**
 	 * Creates a collection of translations from a collection of source objects, first checking the
@@ -78,7 +78,7 @@ public interface TranslationSource {
 	 * @param <T>
 	 *            the type that binds the return values to the destination class
 	 */
-	public <T> Collection<T> getEachTranslation( Collection<?> sources, Class<T> destinationClass );
+	<T> Collection<T> getEachTranslation( Collection<?> sources, Class<T> destinationClass );
 
 	/**
 	 * Performs an update using a translator acquired by the translation source from the source
@@ -90,7 +90,7 @@ public interface TranslationSource {
 	 *            the destination object where the values are to be applied after being
 	 *            copied/translated
 	 */
-	public abstract void update( Object source, Object destination );
+	void update( Object source, Object destination );
 
 	/**
 	 * Gets the translation target factory for a the specified factory type. This allows the translation
@@ -99,6 +99,6 @@ public interface TranslationSource {
 	 * @param factoryType
 	 * @return the {@link TranslationTargetFactory} for the factory type
 	 */
-	public TranslationTargetFactory getTranslationTargetFactory( Class<? extends TranslationTargetFactory> factoryType );
+	TranslationTargetFactory getTranslationTargetFactory( Class<? extends TranslationTargetFactory> factoryType );
 	
 }

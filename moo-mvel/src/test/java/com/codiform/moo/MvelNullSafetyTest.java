@@ -27,7 +27,7 @@ public class MvelNullSafetyTest {
 	@Test
 	public void testMvelNullSafeSubExpressionWithNull() {
 		Person person = new Person( "Moonunit", "Zappa", new Person( "Frank", "Zappa", null ) );
-		Assert.assertEquals( null, MVEL.eval( "parent.?parent.firstName", person ) );
+		Assert.assertNull( MVEL.eval( "parent.?parent.firstName", person ) );
 	}
 
 	@Test
@@ -39,13 +39,13 @@ public class MvelNullSafetyTest {
 	@Test
 	public void testMvelNullSafeSubExpressionAndMethodWithNull() {
 		Person person = new Person( "Moonunit", "Zappa", new Person( "Frank", null, null ) );
-		Assert.assertEquals( null, MVEL.eval( "parent.?lastName.length()", person ) );
+		Assert.assertNull( MVEL.eval( "parent.?lastName.length()", person ) );
 	}
 
 	@Test
 	public void testMvelNullSafeSubExpressionAndMethodWithNull2() {
 		Person person = new Person( "Moonunit", "Zappa", null );
-		Assert.assertEquals( null, MVEL.eval( "?parent.?lastName.length()", person ) );
+		Assert.assertNull( MVEL.eval( "?parent.?lastName.length()", person ) );
 	}
 
 	@Test

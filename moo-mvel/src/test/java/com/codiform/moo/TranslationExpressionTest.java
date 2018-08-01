@@ -28,8 +28,8 @@ public class TranslationExpressionTest {
 		Assert.assertEquals(Integer.valueOf(3), new Moo().translate(
 				new Task(new User("Jane", "Doe")), OwnerLastNameLength.class)
 				.size());
-		Assert.assertEquals(null, new Moo().translate(
-				new Task(new User("John",null)), OwnerLastNameLength.class).size());
+		Assert.assertNull( new Moo().translate(
+				new Task( new User( "John", null ) ), OwnerLastNameLength.class ).size() );
 		Assert.assertEquals(Integer.valueOf(3), new Moo().translate(
 				new Task(new User("Jane", "Doe")), OwnerLastNameLength.class)
 				.size());

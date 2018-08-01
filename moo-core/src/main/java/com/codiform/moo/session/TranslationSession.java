@@ -113,6 +113,7 @@ public class TranslationSession implements TranslationSource {
 		}
 	}
 
+	@SuppressWarnings( "unchecked" )
 	private <T, S extends T> T getObjectTranslation( Object source, Class<? extends TranslationTargetFactory> factoryType, Class<T> destinationClass ) {
 		TranslationTargetFactory factory = getTranslationTargetFactory( factoryType );
 		T target = factory.getTranslationTargetInstance( source, destinationClass );
@@ -121,7 +122,6 @@ public class TranslationSession implements TranslationSource {
 
 		translationCache.putTranslation( source, target );
 
-		@SuppressWarnings( "unchecked" )
 		Class<S> targetClass = (Class<S>) target.getClass();
 
 		ObjectTranslator<S> translator = getTranslator( targetClass );

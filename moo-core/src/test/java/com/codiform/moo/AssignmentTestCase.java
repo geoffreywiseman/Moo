@@ -48,7 +48,7 @@ public class AssignmentTestCase {
 
 	private void assertCanAssign(Method setter, Object result) {
 		Class<?> parameterClass = setter.getParameterTypes()[0];
-		Class<? extends Object> resultClass = result.getClass();
+		Class<?> resultClass = result.getClass();
 
 		System.out.println("Setter Parameter: " + parameterClass.getName());
 		System.out.println("Result: " + result + " (" + resultClass.getName()

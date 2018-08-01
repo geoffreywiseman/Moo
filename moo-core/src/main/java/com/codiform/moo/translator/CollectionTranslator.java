@@ -39,7 +39,7 @@ public class CollectionTranslator {
 	/**
 	 * Create a collection translator with a known configuration.
 	 * 
-	 * @param configuration
+	 * @param configuration the known configuration
 	 */
 	public CollectionTranslator( Configuration configuration, SourcePropertyFactory sourcePropertyFactory ) {
 		this.configuration = configuration;

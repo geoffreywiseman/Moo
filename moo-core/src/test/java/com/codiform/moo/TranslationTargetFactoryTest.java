@@ -1,11 +1,9 @@
 package com.codiform.moo;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
-
+import com.codiform.moo.annotation.Property;
+import com.codiform.moo.domain.TestFactory;
+import com.codiform.moo.session.TestableTranslationSession;
+import com.codiform.moo.session.TranslationSession;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -13,11 +11,9 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import com.codiform.moo.annotation.Property;
-import com.codiform.moo.configuration.Configuration;
-import com.codiform.moo.domain.TestFactory;
-import com.codiform.moo.session.TestableTranslationSession;
-import com.codiform.moo.session.TranslationSession;
+import static org.junit.Assert.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
 
 /**
  * This isn't a test of the TranslationTargetFactory, which is an interface, but rather of the
@@ -35,7 +31,7 @@ public class TranslationTargetFactoryTest {
 
 	@Before
 	public void setUp() {
-		TestableTranslationSession testSession = new TestableTranslationSession( );
+		TestableTranslationSession testSession = new TestableTranslationSession();
 		testSession.cacheTranslationTargetFactory( TestFactory.class, factory );
 		session = testSession;
 	}
@@ -65,13 +61,13 @@ public class TranslationTargetFactoryTest {
 		assertEquals( CatDto.class, dto.getPet().getClass() );
 		assertEquals( "Chester Cheetah", dto.getPet().getName() );
 	}
-	
+
 	@Test
 	public void testFactorySetButTranslateIsFalse() {
 		PetOwner source = new PetOwner( new Animal( "Echo echo" ) );
-		
+
 		PetOwnerCopy destination = session.getTranslation( source, PetOwnerCopy.class );
-		
+
 		assertNotNull( destination );
 		assertNotNull( destination.getPet() );
 		assertEquals( source.getPet(), destination.getPet() );
@@ -107,7 +103,6 @@ public class TranslationTargetFactoryTest {
 			return pet;
 		}
 	}
-
 
 	private static class Animal {
 		private String name;

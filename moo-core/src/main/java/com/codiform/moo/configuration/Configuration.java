@@ -34,7 +34,7 @@ public class Configuration {
 	 * performance overhead which you can remove by disabling.
 	 * </p>
 	 * 
-	 * @param performingDefensiveCopies
+	 * @param performingDefensiveCopies true if arrays and collections should be copied defensively
 	 * @see #isPerformingDefensiveCopies()
 	 */
 	public void setPerformingDefensiveCopies( boolean performingDefensiveCopies ) {

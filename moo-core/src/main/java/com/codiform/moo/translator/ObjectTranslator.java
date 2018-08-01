@@ -89,7 +89,7 @@ public class ObjectTranslator<T> {
 				}
 			}
 		}
-		if ( updated == false ) {
+		if ( !updated ) {
 			throw new NothingToTranslateException( source.getClass(), destination.getClass() );
 		}
 	}

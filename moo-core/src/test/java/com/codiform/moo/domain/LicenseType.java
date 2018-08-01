@@ -16,7 +16,7 @@ public enum LicenseType {
 	private String description;
 	private Set<LicenseType> includedTypes;
 
-	private LicenseType( String description, LicenseType... includedTypes ) {
+	LicenseType( String description, LicenseType... includedTypes ) {
 		this.description = description;
 		this.includedTypes = new HashSet<LicenseType>();
 		for ( LicenseType item : includedTypes ) {
