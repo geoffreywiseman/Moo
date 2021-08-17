@@ -9,3 +9,6 @@ target/
 # IntelliJ IDEA
 /.idea
 *.iml
+
+# JEnv
+/.java-version

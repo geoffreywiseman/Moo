@@ -1,25 +1,27 @@
 package com.codiform.moo.domain;
 
+import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.Date;
 
 public class Position {
 	private int shares;
 	private float lastKnownPrice;
-	private Date pricingDate;
+	private ZonedDateTime pricingDate;
 
 	private Position previousPosition;
 
-	public Position( int shares, float lastKnownPrice, Date pricingDate ) {
+	public Position( int shares, float lastKnownPrice, ZonedDateTime pricingDate ) {
 		this.shares = shares;
 		this.lastKnownPrice = lastKnownPrice;
 		this.pricingDate = pricingDate;
 	}
 
-	public Date getPricingDate() {
+	public ZonedDateTime getPricingDate() {
 		return pricingDate;
 	}
 
-	public Position( int shares, float lastKnownPrice, Date pricingDate, Position previous ) {
+	public Position( int shares, float lastKnownPrice, ZonedDateTime pricingDate, Position previous ) {
 		this( shares, lastKnownPrice, pricingDate );
 		this.previousPosition = previous;
 	}

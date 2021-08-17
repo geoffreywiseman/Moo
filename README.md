@@ -21,7 +21,7 @@ it's BSD licensed and Copyright (C) 2009, Geoffrey Wiseman.
 
 ## Continuous Integration
 
-Moo is built by [Travis CI][travis].
+Moo is built using GitHub Actions (previously [Travis CI][travis]).
 
 [core-tests]: https://github.com/geoffreywiseman/Moo/tree/master/moo-core/src/test/java/com/codiform/moo/ "Tests for Moo Core (github.com)"
 [mvel-tests]: https://github.com/geoffreywiseman/Moo/tree/master/moo-mvel/src/test/java/com/codiform/moo/ "Tests for Moo MVEL (github.com)"
