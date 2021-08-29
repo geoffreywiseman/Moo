@@ -12,7 +12,7 @@ You can find more information by reading one of the following:
 * the [user guide][moo-guide] for Moo  
 * the [website][moo-site] for Moo   
 * the automated tests for Moo [Core][core-tests] and [MVEL][mvel-tests]
-* the [user group][moo-group] for Moo
+* the [GitHub Discussions][moo-discuss] for Moo (was a [Google group][moo-group])
 
 ## License and Copyright
 
@@ -21,7 +21,7 @@ it's BSD licensed and Copyright (C) 2009, Geoffrey Wiseman.
 
 ## Continuous Integration
 
-Moo is built using GitHub Actions (previously [Travis CI][travis]).
+Moo is built using GitHub Actions (was [Travis CI][travis]).
 
 [core-tests]: https://github.com/geoffreywiseman/Moo/tree/master/moo-core/src/test/java/com/codiform/moo/ "Tests for Moo Core (github.com)"
 [mvel-tests]: https://github.com/geoffreywiseman/Moo/tree/master/moo-mvel/src/test/java/com/codiform/moo/ "Tests for Moo MVEL (github.com)"
@@ -29,3 +29,4 @@ Moo is built using GitHub Actions (previously [Travis CI][travis]).
 [moo-guide]: http://wiki.github.com/geoffreywiseman/Moo/user-guide "Moo's User Guide (github.com)"
 [moo-site]: http://geoffreywiseman.github.io/Moo "Moo's Website (github.io)"
 [moo-group]: https://groups.google.com/forum/#!forum/moo-user "Moo's User Group (groups.google.com)"
+[moo-discuss]: https://github.com/geoffreywiseman/Moo/discussions "Moo's GitHub Discussions"
