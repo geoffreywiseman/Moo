@@ -8,5 +8,4 @@ on:
 
 jobs:
   ci:
-    uses: geoffreywiseman/workflows/.github/workflows/matrix-maven.yml
-     
+    uses: geoffreywiseman/workflows/.github/workflows/matrix-maven.yml@main
