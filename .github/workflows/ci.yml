@@ -1,0 +1,12 @@
+name: Java CI with Maven
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  ci:
+    uses: geoffreywiseman/workflows/.github/workflows/matrix-maven.yml
+     
