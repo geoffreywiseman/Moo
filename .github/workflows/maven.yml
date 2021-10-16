@@ -16,21 +16,15 @@ jobs:
     strategy:
       matrix:
         java-version: [ 8, 11 ]
+        distro: [ 'zulu', 'temurin' ]
 
     steps:
     - uses: actions/checkout@v2
-    - name: Set up JDK ${{ matrix.java-version }}
+    - name: Set up JDK ${{ matrix.java-version }} ${{ matrix.distro }}
       uses: actions/setup-java@v2
       with:
         java-version: ${{ matrix.java-version }}
-        distribution: 'adopt'
-    - name: Cache Maven Repo Artifacts
-      uses: actions/cache@v2
-      with:
-        path: ~/.m2/repository
-        key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-        restore-keys: |
-          ${{ runner.os }}-maven-
+        distribution: ${{ matrix.distro }}
+        cache: 'maven'
     - name: Build with Maven
       run: mvn -B package --file pom.xml
-
