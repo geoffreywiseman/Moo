@@ -1,9 +1,8 @@
 package com.codiform.moo;
 
+import com.codiform.moo.curry.Translate;
 import org.junit.Assert;
 import org.junit.Test;
-
-import com.codiform.moo.curry.Translate;
 
 public class PropertyExclusionTest {
 

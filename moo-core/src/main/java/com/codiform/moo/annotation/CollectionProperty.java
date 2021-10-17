@@ -36,7 +36,6 @@ public @interface CollectionProperty {
 	 *
 	 * @return IndexMatcher.class if they should be matched in order
 	 */
-	@SuppressWarnings( "rawtypes" )
 	Class<? extends CollectionMatcher> matcher() default IndexMatcher.class;
 
 	/**

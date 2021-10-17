@@ -1,8 +1,6 @@
 package com.codiform.moo.domain;
 
-import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
-import java.util.Date;
 
 public class Position {
 	private int shares;

@@ -3,10 +3,9 @@ package com.codiform.moo.property.source;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.codiform.moo.MissingSourcePropertyException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.codiform.moo.MissingSourcePropertyException;
 
 public class CompositeSourcePropertyFactory implements SourcePropertyFactory {
 

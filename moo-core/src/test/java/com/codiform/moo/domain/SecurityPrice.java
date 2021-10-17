@@ -1,10 +1,7 @@
 package com.codiform.moo.domain;
 
-import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
 
 import com.codiform.moo.annotation.Property;
 

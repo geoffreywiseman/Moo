@@ -1,14 +1,13 @@
 package com.codiform.moo.translator;
 
-import static org.junit.Assert.assertEquals;
-
 import java.util.List;
-
-import org.junit.Test;
 
 import com.codiform.moo.annotation.Access;
 import com.codiform.moo.annotation.AccessMode;
 import com.codiform.moo.property.Property;
+import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * Make sure the properties are ordered from superclass to subclass.

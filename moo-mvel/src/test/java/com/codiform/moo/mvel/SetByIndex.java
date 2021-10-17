@@ -1,7 +1,5 @@
 package com.codiform.moo.mvel;
 
-import static org.junit.Assert.assertEquals;
-
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
@@ -9,6 +7,8 @@ import java.util.Set;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.mvel2.MVEL;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * Test for accessing Set elements by index using MVEL.

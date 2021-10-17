@@ -3,11 +3,9 @@ package com.codiform.moo.property.source;
 import java.io.Serializable;
 import java.util.Map;
 
+import com.codiform.moo.MissingSourcePropertyValueException;
 import org.mvel2.MVEL;
 import org.mvel2.PropertyAccessException;
-
-import com.codiform.moo.MissingSourcePropertyValueException;
-import com.codiform.moo.property.source.SourceProperty;
 
 /**
  * A source property that uses the MVEL expression language to retrieve the value.

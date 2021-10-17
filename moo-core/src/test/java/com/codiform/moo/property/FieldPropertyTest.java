@@ -1,14 +1,11 @@
 package com.codiform.moo.property;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertFalse;
-
 import java.lang.reflect.Field;
 
+import com.codiform.moo.annotation.AccessMode;
 import org.junit.Test;
 
-import com.codiform.moo.annotation.AccessMode;
+import static org.junit.Assert.*;
 
 public class FieldPropertyTest {
 

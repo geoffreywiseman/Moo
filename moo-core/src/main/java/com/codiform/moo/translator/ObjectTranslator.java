@@ -2,21 +2,9 @@ package com.codiform.moo.translator;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
-import com.codiform.moo.InvalidPropertyException;
-import com.codiform.moo.MissingSourcePropertyException;
-import com.codiform.moo.MissingSourcePropertyValueException;
-import com.codiform.moo.NoSourceException;
-import com.codiform.moo.NothingToTranslateException;
-import com.codiform.moo.UnsupportedTranslationException;
+import com.codiform.moo.*;
 import com.codiform.moo.annotation.Access;
 import com.codiform.moo.annotation.AccessMode;
 import com.codiform.moo.configuration.Configuration;

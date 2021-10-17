@@ -1,16 +1,15 @@
 package com.codiform.moo;
 
-import static org.junit.Assert.assertEquals;
-
 import java.util.HashMap;
 import java.util.Map;
-
-import org.junit.Before;
-import org.junit.Test;
 
 import com.codiform.moo.annotation.Property;
 import com.codiform.moo.curry.Translate;
 import com.codiform.moo.curry.Update;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * A test showing how a translation/update might invoke a lookup based on information provided in

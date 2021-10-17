@@ -4,9 +4,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.codiform.moo.MatcherInitializationException;
 import com.codiform.moo.TranslationException;
 import com.codiform.moo.UnsupportedTranslationException;
@@ -16,6 +13,8 @@ import com.codiform.moo.property.source.NoOpSourceProperty;
 import com.codiform.moo.property.source.SourceProperty;
 import com.codiform.moo.property.source.SourcePropertyFactory;
 import com.codiform.moo.session.TranslationSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A translator for handling issues specific to collections. In particular, this handles defensive

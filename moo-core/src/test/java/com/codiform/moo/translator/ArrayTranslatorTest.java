@@ -2,16 +2,14 @@ package com.codiform.moo.translator;
 
 import java.util.Arrays;
 
+import com.codiform.moo.configuration.Configuration;
+import com.codiform.moo.session.TranslationSource;
 import org.junit.Assert;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
-
-import com.codiform.moo.configuration.Configuration;
-import com.codiform.moo.session.TranslationSource;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ArrayTranslatorTest {

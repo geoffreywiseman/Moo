@@ -1,17 +1,12 @@
 package com.codiform.moo.translator;
 
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.when;
+import java.util.*;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
-
+import com.codiform.moo.configuration.Configuration;
+import com.codiform.moo.property.CollectionProperty;
+import com.codiform.moo.property.source.SourcePropertyFactory;
+import com.codiform.moo.session.TranslationSession;
+import com.codiform.moo.session.TranslationSource;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -20,11 +15,8 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import com.codiform.moo.configuration.Configuration;
-import com.codiform.moo.property.CollectionProperty;
-import com.codiform.moo.property.source.SourcePropertyFactory;
-import com.codiform.moo.session.TranslationSession;
-import com.codiform.moo.session.TranslationSource;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.when;
 
 @RunWith( MockitoJUnitRunner.class )
 public class CollectionTranslatorTest {

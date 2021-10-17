@@ -1,9 +1,8 @@
 package com.codiform.moo.configuration;
 
+import com.codiform.moo.annotation.AccessMode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.codiform.moo.annotation.AccessMode;
 
 /**
  * Represents a configuration of Moo; this can contain no information, at which point Moo work from

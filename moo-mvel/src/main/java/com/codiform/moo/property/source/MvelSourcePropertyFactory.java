@@ -2,14 +2,11 @@ package com.codiform.moo.property.source;
 
 import java.io.Serializable;
 
+import com.codiform.moo.MissingSourcePropertyException;
 import org.mvel2.CompileException;
 import org.mvel2.MVEL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.codiform.moo.MissingSourcePropertyException;
-import com.codiform.moo.property.source.SourceProperty;
-import com.codiform.moo.property.source.SourcePropertyFactory;
 
 public class MvelSourcePropertyFactory implements SourcePropertyFactory {
 

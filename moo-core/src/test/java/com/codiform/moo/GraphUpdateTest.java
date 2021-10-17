@@ -1,10 +1,8 @@
 package com.codiform.moo;
 
-import org.junit.Assert;
-
-import org.junit.Test;
-
 import com.codiform.moo.curry.Update;
+import org.junit.Assert;
+import org.junit.Test;
 
 /**
  * A test for the simple cases of update.

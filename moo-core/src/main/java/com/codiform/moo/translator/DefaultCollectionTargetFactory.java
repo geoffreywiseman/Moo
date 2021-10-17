@@ -2,13 +2,7 @@ package com.codiform.moo.translator;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
+import java.util.*;
 
 import com.codiform.moo.TranslationException;
 import com.codiform.moo.TranslationInitializationException;

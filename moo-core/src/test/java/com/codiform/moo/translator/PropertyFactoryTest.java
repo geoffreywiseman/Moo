@@ -1,14 +1,5 @@
 package com.codiform.moo.translator;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
@@ -17,8 +8,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
-import org.junit.Test;
-
 import com.codiform.moo.InvalidPropertyException;
 import com.codiform.moo.annotation.Access;
 import com.codiform.moo.annotation.AccessMode;
@@ -26,6 +15,10 @@ import com.codiform.moo.annotation.InvalidAnnotationException;
 import com.codiform.moo.property.CollectionProperty;
 import com.codiform.moo.property.Property;
 import com.codiform.moo.property.PropertyFactory;
+import org.junit.Test;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.*;
 
 public class PropertyFactoryTest {
 

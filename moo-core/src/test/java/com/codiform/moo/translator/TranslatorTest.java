@@ -1,7 +1,10 @@
 package com.codiform.moo.translator;
 
-import static org.mockito.Mockito.when;
-
+import com.codiform.moo.annotation.AccessMode;
+import com.codiform.moo.configuration.Configuration;
+import com.codiform.moo.property.source.SourceProperty;
+import com.codiform.moo.property.source.SourcePropertyFactory;
+import com.codiform.moo.session.TranslationSource;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -10,11 +13,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import com.codiform.moo.annotation.AccessMode;
-import com.codiform.moo.configuration.Configuration;
-import com.codiform.moo.property.source.SourceProperty;
-import com.codiform.moo.property.source.SourcePropertyFactory;
-import com.codiform.moo.session.TranslationSource;
+import static org.mockito.Mockito.when;
 
 @RunWith( MockitoJUnitRunner.class )
 public class TranslatorTest {

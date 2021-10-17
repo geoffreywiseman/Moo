@@ -1,22 +1,16 @@
 package com.codiform.moo;
 
-import static org.junit.Assert.fail;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.junit.Test;
-
-import com.codiform.moo.annotation.Access;
-import com.codiform.moo.annotation.AccessMode;
-import com.codiform.moo.annotation.CollectionProperty;
-import com.codiform.moo.annotation.Ignore;
-import com.codiform.moo.annotation.Optionality;
-import com.codiform.moo.annotation.Property;
+import com.codiform.moo.annotation.*;
 import com.codiform.moo.configuration.Configuration;
 import com.codiform.moo.curry.Translate;
 import com.codiform.moo.curry.Update;
+import org.junit.Test;
+
+import static org.junit.Assert.fail;
 
 /**
  * Tests surrounding what happens when a property in a destination class cannot

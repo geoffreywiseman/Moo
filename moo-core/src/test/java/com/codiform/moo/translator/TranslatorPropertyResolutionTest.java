@@ -1,24 +1,23 @@
 package com.codiform.moo.translator;
 
-import static org.hamcrest.CoreMatchers.allOf;
-import static org.hamcrest.CoreMatchers.isA;
-import static org.hamcrest.Matchers.hasItem;
-import static org.junit.Assert.assertThat;
-
 import java.util.HashSet;
 import java.util.List;
-
-import org.hamcrest.Description;
-import org.hamcrest.Matcher;
-import org.hamcrest.Matchers;
-import org.hamcrest.TypeSafeMatcher;
-import org.junit.Test;
 
 import com.codiform.moo.annotation.Access;
 import com.codiform.moo.annotation.AccessMode;
 import com.codiform.moo.property.FieldProperty;
 import com.codiform.moo.property.MethodProperty;
 import com.codiform.moo.property.Property;
+import org.hamcrest.Description;
+import org.hamcrest.Matcher;
+import org.hamcrest.Matchers;
+import org.hamcrest.TypeSafeMatcher;
+import org.junit.Test;
+
+import static org.hamcrest.CoreMatchers.allOf;
+import static org.hamcrest.CoreMatchers.isA;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasItem;
 
 public class TranslatorPropertyResolutionTest extends TestWithTranslatorFactory {
 

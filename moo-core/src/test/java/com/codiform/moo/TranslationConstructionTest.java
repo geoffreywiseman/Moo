@@ -1,10 +1,9 @@
 package com.codiform.moo;
 
-import static org.junit.Assert.*;
-
+import com.codiform.moo.curry.Translate;
 import org.junit.Test;
 
-import com.codiform.moo.curry.Translate;
+import static org.junit.Assert.assertEquals;
 
 public class TranslationConstructionTest {
 

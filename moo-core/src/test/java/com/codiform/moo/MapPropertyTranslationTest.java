@@ -9,11 +9,12 @@ import java.util.Map;
 import com.codiform.moo.configuration.Configuration;
 import com.codiform.moo.curry.Translate;
 import com.codiform.moo.domain.*;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
 
 public class MapPropertyTranslationTest {
 
@@ -48,8 +49,8 @@ public class MapPropertyTranslationTest {
 	public void testTranslateWithoutAnnotationsCopiesMap() {
 		PortfolioCopy copy = Translate.to( PortfolioCopy.class ).from( source );
 
-		assertNotSame( source.getPositions(), copy.getPositions() );
-		assertEquals( source.getPositions(), copy.getPositions() );
+		Assert.assertNotSame( source.getPositions(), copy.getPositions() );
+		Assert.assertEquals( source.getPositions(), copy.getPositions() );
 	}
 
 	@Test
@@ -59,12 +60,12 @@ public class MapPropertyTranslationTest {
 
 		PortfolioCopy copy = Translate.to( PortfolioCopy.class ).from( source );
 
-		assertNotSame( source.getPositions(), copy.getPositions() );
-		assertEquals( source.getPositions(), copy.getPositions() );
+		Assert.assertNotSame( source.getPositions(), copy.getPositions() );
+		Assert.assertEquals( source.getPositions(), copy.getPositions() );
 
 		Position nullCopy = copy.getPositions().get( null );
-		assertNotNull( nullCopy );
-		assertEquals( nullPosition, nullCopy );
+		Assert.assertNotNull( nullCopy );
+		Assert.assertEquals( nullPosition, nullCopy );
 	}
 
 	@Test
@@ -74,8 +75,8 @@ public class MapPropertyTranslationTest {
 
 		PortfolioCopy copy = new Moo( configuration ).translate( source, PortfolioCopy.class );
 
-		assertEquals( source.getPositions(), copy.getPositions() );
-		assertSame( source.getPositions(), copy.getPositions() );
+		Assert.assertEquals( source.getPositions(), copy.getPositions() );
+		Assert.assertSame( source.getPositions(), copy.getPositions() );
 	}
 
 	@Test
@@ -83,7 +84,7 @@ public class MapPropertyTranslationTest {
 		PositionBySymbol pbs = Translate.to( PositionBySymbol.class ).from( source );
 
 		assertThat( pbs.size(), equalTo( 3 ) );
-		assertNotNull( pbs.getPosition( "AAPL" ) );
+		Assert.assertNotNull( pbs.getPosition( "AAPL" ) );
 		assertThat( pbs.getPosition( "AAPL" ).getLastKnownValue(), is( closeTo( 5650000d, 1d ) ) );
 		assertThat( pbs.getPosition( "BB" ).getLastKnownValue(), is( closeTo( 116820d, 1d ) ) );
 		assertThat( pbs.getPosition( "ORCL" ).getLastKnownValue(), is( closeTo( 175350d, 1d ) ) );
@@ -94,7 +95,7 @@ public class MapPropertyTranslationTest {
 		MarketHoldings mh = Translate.to( MarketHoldings.class ).from( source );
 
 		assertThat( mh.size(), equalTo( 3 ) );
-		assertNotNull( mh.getPosition( "NASDAQ" ) );
+		Assert.assertNotNull( mh.getPosition( "NASDAQ" ) );
 		assertThat( mh.getPosition( "NASDAQ" ).getLastKnownValue(), is( closeTo( 5650000d, 1d ) ) );
 		assertThat( mh.getPosition( "TSE" ).getLastKnownValue(), is( closeTo( 116820d, 1d ) ) );
 		assertThat( mh.getPosition( "NYSE" ).getLastKnownValue(), is( closeTo( 175350d, 1d ) ) );
@@ -111,7 +112,7 @@ public class MapPropertyTranslationTest {
 
 		// then
 		assertThat( rh.size(), equalTo( 1 ) );
-		assertNotNull( rh.getPosition( rimm ) );
+		Assert.assertNotNull( rh.getPosition( rimm ) );
 		assertThat( rh.getPosition( rimm ), is( equalTo( source.getPosition( bb ) ) ) );
 	}
 

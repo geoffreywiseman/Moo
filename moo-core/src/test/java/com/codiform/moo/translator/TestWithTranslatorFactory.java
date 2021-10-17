@@ -1,11 +1,10 @@
 package com.codiform.moo.translator;
 
-import org.junit.BeforeClass;
-
 import com.codiform.moo.configuration.Configuration;
 import com.codiform.moo.property.source.CompositeSourcePropertyFactory;
 import com.codiform.moo.property.source.SourceProperty;
 import com.codiform.moo.property.source.SourcePropertyFactory;
+import org.junit.BeforeClass;
 
 public class TestWithTranslatorFactory {
 

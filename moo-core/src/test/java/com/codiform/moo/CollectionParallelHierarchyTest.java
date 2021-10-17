@@ -13,9 +13,9 @@ import com.codiform.moo.translator.TranslationTargetFactory;
 import org.hamcrest.Matchers;
 import org.junit.Test;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.instanceOf;
-import static org.junit.Assert.assertThat;
 
 public class CollectionParallelHierarchyTest {
 

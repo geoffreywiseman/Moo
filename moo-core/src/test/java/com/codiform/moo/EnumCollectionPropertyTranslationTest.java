@@ -1,15 +1,14 @@
 package com.codiform.moo;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.codiform.moo.curry.Translate;
 import org.junit.Test;
 
-import com.codiform.moo.curry.Translate;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class EnumCollectionPropertyTranslationTest {
 

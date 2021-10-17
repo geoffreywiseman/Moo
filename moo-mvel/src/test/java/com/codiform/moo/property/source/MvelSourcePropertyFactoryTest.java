@@ -1,10 +1,9 @@
 package com.codiform.moo.property.source;
 
-import static org.junit.Assert.assertNull;
-
+import com.codiform.moo.MissingSourcePropertyException;
 import org.junit.Test;
 
-import com.codiform.moo.MissingSourcePropertyException;
+import static org.junit.Assert.assertNull;
 
 public class MvelSourcePropertyFactoryTest {
 

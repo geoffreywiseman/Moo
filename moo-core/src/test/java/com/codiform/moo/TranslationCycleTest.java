@@ -1,9 +1,8 @@
 package com.codiform.moo;
 
+import com.codiform.moo.annotation.Property;
 import org.junit.Assert;
 import org.junit.Test;
-
-import com.codiform.moo.annotation.Property;
 
 public class TranslationCycleTest {
 

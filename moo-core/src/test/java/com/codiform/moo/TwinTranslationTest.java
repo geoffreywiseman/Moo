@@ -1,9 +1,8 @@
 package com.codiform.moo;
 
+import com.codiform.moo.annotation.Property;
 import org.junit.Assert;
 import org.junit.Test;
-
-import com.codiform.moo.annotation.Property;
 
 /**
  * Make sure that translating the same domain object to two different client-side representations

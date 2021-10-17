@@ -4,9 +4,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.codiform.moo.TranslationException;
 import com.codiform.moo.UnsupportedTranslationException;
 import com.codiform.moo.configuration.Configuration;
@@ -15,6 +12,8 @@ import com.codiform.moo.property.source.NoOpSourceProperty;
 import com.codiform.moo.property.source.SourceProperty;
 import com.codiform.moo.property.source.SourcePropertyFactory;
 import com.codiform.moo.session.TranslationSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class MapTranslator {
 

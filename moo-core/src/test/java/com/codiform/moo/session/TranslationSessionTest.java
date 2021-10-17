@@ -1,8 +1,9 @@
 package com.codiform.moo.session;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-
+import com.codiform.moo.domain.OrdinalDto;
+import com.codiform.moo.domain.TestFactory;
+import com.codiform.moo.translator.ObjectTranslator;
+import com.codiform.moo.translator.TranslatorFactory;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -11,10 +12,8 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import com.codiform.moo.domain.OrdinalDto;
-import com.codiform.moo.domain.TestFactory;
-import com.codiform.moo.translator.ObjectTranslator;
-import com.codiform.moo.translator.TranslatorFactory;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 
 @RunWith( MockitoJUnitRunner.class )
 public class TranslationSessionTest {

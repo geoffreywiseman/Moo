@@ -1,10 +1,6 @@
 package com.codiform.moo.curry;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import com.codiform.moo.session.TranslationSession;
 import com.codiform.moo.translator.CachingTranslatorFactory;

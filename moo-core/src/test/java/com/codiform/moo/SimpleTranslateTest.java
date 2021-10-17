@@ -3,11 +3,9 @@ package com.codiform.moo;
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.Assert;
-
-import org.junit.Test;
-
 import com.codiform.moo.curry.Translate;
+import org.junit.Assert;
+import org.junit.Test;
 
 public class SimpleTranslateTest {
 

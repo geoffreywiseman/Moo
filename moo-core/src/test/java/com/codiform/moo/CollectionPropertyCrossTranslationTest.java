@@ -1,19 +1,13 @@
 package com.codiform.moo;
 
-import static org.junit.Assert.assertEquals;
-
-import java.util.HashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.SortedSet;
-
-import org.junit.Ignore;
-import org.junit.Test;
+import java.util.*;
 
 import com.codiform.moo.annotation.CollectionProperty;
 import com.codiform.moo.curry.Translate;
+import org.junit.Ignore;
+import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * Testing how properties that contain collection classes are translated.

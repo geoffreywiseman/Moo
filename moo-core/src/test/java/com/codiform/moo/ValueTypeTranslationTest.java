@@ -1,11 +1,10 @@
 package com.codiform.moo;
 
-import static org.junit.Assert.assertEquals;
-
-import org.junit.Test;
-
 import com.codiform.moo.annotation.Property;
 import com.codiform.moo.curry.Translate;
+import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
 
 public class ValueTypeTranslationTest {
 

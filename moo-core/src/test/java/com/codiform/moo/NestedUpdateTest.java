@@ -1,13 +1,10 @@
 package com.codiform.moo;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertSame;
-
-import org.junit.Test;
-
 import com.codiform.moo.annotation.Property;
 import com.codiform.moo.curry.Update;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 public class NestedUpdateTest {
 

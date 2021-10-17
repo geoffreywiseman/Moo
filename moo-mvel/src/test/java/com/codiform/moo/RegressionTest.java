@@ -1,10 +1,9 @@
 package com.codiform.moo;
 
-import static org.junit.Assert.assertEquals;
-
+import com.codiform.moo.curry.Translate;
 import org.junit.Test;
 
-import com.codiform.moo.curry.Translate;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Check that the presence of moo-mvel doesn't cause regressions for Moo core.

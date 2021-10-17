@@ -1,10 +1,9 @@
 package com.codiform.moo;
 
-import static org.junit.Assert.assertTrue;
-
+import com.codiform.moo.annotation.Property;
 import org.junit.Test;
 
-import com.codiform.moo.annotation.Property;
+import static org.junit.Assert.assertTrue;
 
 public class InvalidPropertyTest {
 

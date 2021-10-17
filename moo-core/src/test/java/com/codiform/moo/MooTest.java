@@ -1,21 +1,16 @@
 package com.codiform.moo;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
+import com.codiform.moo.configuration.Configuration;
+import com.codiform.moo.session.TranslationSession;
+import com.codiform.moo.session.TranslationSource;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
-
-import com.codiform.moo.configuration.Configuration;
-import com.codiform.moo.session.TranslationSession;
-import com.codiform.moo.session.TranslationSource;
 
 @RunWith(MockitoJUnitRunner.class)
 public class MooTest {

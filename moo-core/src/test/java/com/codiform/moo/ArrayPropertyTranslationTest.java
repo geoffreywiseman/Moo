@@ -1,13 +1,12 @@
 package com.codiform.moo;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertNotSame;
-
+import com.codiform.moo.domain.Ordinal;
+import com.codiform.moo.domain.OrdinalDto;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.codiform.moo.domain.Ordinal;
-import com.codiform.moo.domain.OrdinalDto;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertNotSame;
 
 /**
  * Testing how properties that contain collection classes are translated.

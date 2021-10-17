@@ -1,10 +1,9 @@
 package com.codiform.moo.property.source;
 
-import static org.junit.Assert.*;
-
+import com.codiform.moo.MissingSourcePropertyValueException;
 import org.junit.Test;
 
-import com.codiform.moo.MissingSourcePropertyValueException;
+import static org.junit.Assert.assertEquals;
 
 public class ReflectionSourcePropertyTest {
 

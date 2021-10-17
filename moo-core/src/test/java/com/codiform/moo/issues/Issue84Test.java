@@ -2,12 +2,11 @@ package com.codiform.moo.issues;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.junit.Assert;
-import org.junit.Test;
-
 import com.codiform.moo.annotation.Access;
 import com.codiform.moo.annotation.AccessMode;
 import com.codiform.moo.curry.Translate;
+import org.junit.Assert;
+import org.junit.Test;
 
 @SuppressWarnings("unused")
 public class Issue84Test {

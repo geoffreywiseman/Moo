@@ -1,21 +1,10 @@
 package com.codiform.moo.session;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import com.codiform.moo.NoDestinationException;
 import com.codiform.moo.TranslationException;
-import com.codiform.moo.translator.CachingTranslatorFactory;
-import com.codiform.moo.translator.DefaultObjectTargetFactory;
-import com.codiform.moo.translator.ObjectTranslator;
-import com.codiform.moo.translator.TranslationTargetFactory;
-import com.codiform.moo.translator.TranslatorFactory;
-import com.codiform.moo.translator.ValueTypeTranslator;
+import com.codiform.moo.translator.*;
 
 /**
  * A translation session contains information relevant to a particular translation pass. This

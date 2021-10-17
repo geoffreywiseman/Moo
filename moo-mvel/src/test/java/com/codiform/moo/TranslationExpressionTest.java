@@ -1,15 +1,10 @@
 package com.codiform.moo;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.junit.Assert;
-import org.junit.Test;
+import java.util.*;
 
 import com.codiform.moo.annotation.Property;
+import org.junit.Assert;
+import org.junit.Test;
 
 public class TranslationExpressionTest {
 
@@ -136,7 +131,7 @@ public class TranslationExpressionTest {
 	public static class User {
 		private String firstName;
 		private String lastName;
-		private String roles[];
+		private String[] roles;
 
 		public User(String firstName, String lastName, String... roles) {
 			this.firstName = firstName;

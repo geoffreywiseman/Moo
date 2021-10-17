@@ -1,13 +1,7 @@
 package com.codiform.moo;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-
 import java.util.Calendar;
 import java.util.Date;
-
-import org.junit.Test;
 
 import com.codiform.moo.annotation.Access;
 import com.codiform.moo.annotation.AccessMode;
@@ -15,6 +9,9 @@ import com.codiform.moo.annotation.Ignore;
 import com.codiform.moo.annotation.Property;
 import com.codiform.moo.curry.Translate;
 import com.codiform.moo.curry.Update;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 public class IgnoreAnnotationTest {
 

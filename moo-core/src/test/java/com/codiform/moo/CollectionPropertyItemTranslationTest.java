@@ -1,20 +1,19 @@
 package com.codiform.moo;
 
-import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-
 import java.util.HashSet;
 import java.util.Set;
-
-import org.junit.Test;
 
 import com.codiform.moo.annotation.CollectionProperty;
 import com.codiform.moo.annotation.Property;
 import com.codiform.moo.curry.Translate;
 import com.codiform.moo.domain.LicenseType;
+import org.junit.Test;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Testing how properties that contain collection classes are translated.
