@@ -2,6 +2,7 @@ package com.codiform.moo;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import com.codiform.moo.annotation.Access;
@@ -23,7 +24,7 @@ public class CollectionParallelHierarchyTest {
 	public void testTranslatesEmployee() {
 		// Using: http://monanews.info/wp-content/uploads/2017/12/creative-organization-chart-creative-organization-chart-ideas-for-presentations-free.jpg
 		Employee vpSales = new Employee( 3, "VP, Sales", 200000 );
-		Employee coo = new Manager( 2, "COO", 250000, Arrays.asList( vpSales ) );
+		Employee coo = new Manager( 2, "COO", 250000, Collections.singletonList( vpSales ) );
 		Employee svpCounsel = new Employee( 4, "SVP, General Counsel", 225000 );
 		Employee ceo = new Manager( 1, "CEO", 300000, Arrays.asList( coo, svpCounsel ) );
 		EmployeeDto dto = Translate.to( ManagerDto.class ).from( ceo );

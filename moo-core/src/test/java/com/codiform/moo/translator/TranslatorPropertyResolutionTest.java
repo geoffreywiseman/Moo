@@ -99,6 +99,7 @@ public class TranslatorPropertyResolutionTest extends TestWithTranslatorFactory 
 				return expectedDeclaringClass.equals( property.getDeclaringClass() );
 			}
 
+			@Override
 			public void describeTo( Description description ) {
 				description.appendText( "Property declared in " + expectedDeclaringClass.getSimpleName() );
 			}

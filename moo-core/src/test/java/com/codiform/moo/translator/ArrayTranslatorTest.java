@@ -1,7 +1,5 @@
 package com.codiform.moo.translator;
 
-import java.util.Arrays;
-
 import com.codiform.moo.configuration.Configuration;
 import com.codiform.moo.session.TranslationSource;
 import org.junit.Assert;

@@ -84,10 +84,7 @@ public class CollectionTranslator {
 			return true;
 		}
 		Class<?> targetClass = property.getType();
-		if ( !targetClass.isInstance( value ) ) {
-			return true;
-		}
-		return false;
+		return !targetClass.isInstance( value );
 	}
 
 	@SuppressWarnings( "unchecked" )
