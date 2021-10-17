@@ -8,7 +8,7 @@ import com.codiform.moo.annotation.MapProperty;
 public class PortfolioValue {
 	
 	@MapProperty( valueSource = "lastKnownValue" )
-	private Map<Security, Double> positions = new HashMap<Security, Double>();
+	private Map<Security, Double> positions = new HashMap<>();
 
 	public Double getValue( Security security ) {
 		return positions.get( security );

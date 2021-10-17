@@ -55,7 +55,7 @@ public @interface MapProperty {
 	Optionality optionality() default Optionality.DEFAULT;
 
 	/**
-	 * Whether or not Orphans (keys in the destination that have no match in the source) should be
+	 * Whether Orphans (keys in the destination that have no match in the source) should be
 	 * removed during a map update.
 	 * 
 	 * @return true if they should be removed, false otherwise

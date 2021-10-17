@@ -16,7 +16,7 @@ public class TranslationCacheTest {
 	public void testCacheRetrievesStoredTranslations() {
 		TranslationCache cache = new TranslationCache();
 		String source = "One";
-		cache.putTranslation(source, Integer.valueOf(1));
+		cache.putTranslation(source, 1 );
 		Assert.assertEquals( Integer.valueOf(1), cache.getTranslation(source, Integer.class) );
 	}
 }

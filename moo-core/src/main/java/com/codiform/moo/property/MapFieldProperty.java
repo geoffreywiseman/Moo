@@ -44,10 +44,7 @@ public class MapFieldProperty extends AbstractMapProperty {
 		checkValue( value );
 		try {
 			field.set( instance, value );
-		} catch( IllegalArgumentException exception ) {
-			throw new SetPropertyException( getName(), getType(), value,
-					exception );
-		} catch( IllegalAccessException exception ) {
+		} catch( IllegalArgumentException | IllegalAccessException exception ) {
 			throw new SetPropertyException( getName(), getType(), value,
 					exception );
 		}
@@ -79,9 +76,7 @@ public class MapFieldProperty extends AbstractMapProperty {
 	public Object getValue(Object instance) {
 		try {
 			return field.get( instance );
-		} catch( IllegalArgumentException exception ) {
-			throw new GetPropertyException( getName(), getType(), exception );
-		} catch( IllegalAccessException exception ) {
+		} catch( IllegalArgumentException | IllegalAccessException exception ) {
 			throw new GetPropertyException( getName(), getType(), exception );
 		}
 	}

@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<artifactId>moo-core</artifactId>
 	<packaging>jar</packaging>
 	<name>Moo Core</name>
 	<description>Mapping Objects to Objects</description>
-	<url>http://geoffreywiseman.github.com/Moo</url>
+	<url>https://geoffreywiseman.github.com/Moo</url>
 	<inceptionYear>2009</inceptionYear>
 
 	<dependencies>
@@ -161,7 +161,7 @@
 			<name>Geoffrey Wiseman</name>
 			<email>geoffrey.wiseman@gmail.com</email>
 			<organization>codiform</organization>
-			<url>http://www.geoffreywiseman.ca</url>
+			<url>https://www.geoffreywiseman.ca</url>
 			<roles>
 				<role>founder</role>
 				<role>author</role>
@@ -171,11 +171,11 @@
 
 	<issueManagement>
 		<system>GitHub</system>
-		<url>http://github.com/geoffreywiseman/Moo/issues</url>
+		<url>https://github.com/geoffreywiseman/Moo/issues</url>
 	</issueManagement>
 
 	<scm>
-		<url>http://github.com/geoffreywiseman/Moo</url>
+		<url>https://github.com/geoffreywiseman/Moo</url>
 		<connection>scm:git:git@github.com:geoffreywiseman/Moo.git</connection>
 		<developerConnection>scm:git:git@github.com:geoffreywiseman/Moo.git</developerConnection>
 	  <tag>v2.1</tag>
@@ -184,7 +184,7 @@
 	<licenses>
 		<license>
 			<name>BSD</name>
-			<url>http://www.opensource.org/licenses/bsd-license.php</url>
+			<url>https://www.opensource.org/licenses/bsd-license.php</url>
 			<distribution>repo</distribution>
 			<comments>
 				Simple, permissive, not too much legalese.  Basically, use it how you like, we provide no warranty,

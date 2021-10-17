@@ -7,7 +7,7 @@ import com.codiform.moo.annotation.MapProperty;
 
 public class PositionBySymbol {
 	@MapProperty( keyClass = String.class )
-	private Map<String, Position> positions = new HashMap<String, Position>();
+	private Map<String, Position> positions = new HashMap<>();
 
 	public Position getPosition( String symbol ) {
 		return positions.get( symbol );

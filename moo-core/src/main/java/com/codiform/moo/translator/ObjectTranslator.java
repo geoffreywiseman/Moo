@@ -150,7 +150,7 @@ public class ObjectTranslator<T> {
 	}
 
 	/* package */List<Property> getProperties( Class<T> destinationClass ) {
-		Map<String, Property> properties = new LinkedHashMap<String, Property>();
+		Map<String, Property> properties = new LinkedHashMap<>();
 		Class<?> current = destinationClass;
 		while ( current != null ) {
 			if ( !shouldIgnoreClass( current ) ) {
@@ -171,7 +171,7 @@ public class ObjectTranslator<T> {
 	 * @return a list of properties in reversed order
 	 */
 	private List<Property> getOrderedProperties( Map<String, Property> properties ) {
-		List<Property> ordered = new ArrayList<Property>( properties.size() );
+		List<Property> ordered = new ArrayList<>( properties.size() );
 		for ( Map.Entry<String, Property> entry : properties.entrySet() ) {
 			ordered.add( 0, entry.getValue() );
 		}
@@ -199,7 +199,7 @@ public class ObjectTranslator<T> {
 	}
 
 	private Set<Property> getPropertiesForClass( Class<?> clazz ) {
-		Map<String, Property> properties = new HashMap<String, Property>();
+		Map<String, Property> properties = new HashMap<>();
 		Access access = clazz.getAnnotation( Access.class );
 		AccessMode mode = access == null ? configuration.getDefaultAccessMode() : access.value();
 		for ( Field item : clazz.getDeclaredFields() ) {
@@ -226,7 +226,7 @@ public class ObjectTranslator<T> {
 				}
 			}
 		}
-		return new HashSet<Property>( properties.values() );
+		return new HashSet<>( properties.values() );
 	}
 
 	private <V> boolean updateProperty( Object source, T destination, TranslationSource translationSource, Property property,
@@ -235,12 +235,7 @@ public class ObjectTranslator<T> {
 			Object sourceValue = getValue( source, property, variables );
 			updateOrReplaceProperty( destination, sourceValue, property, translationSource );
 			return true;
-		} catch ( MissingSourcePropertyValueException exception ) {
-			if ( property.isSourceRequired( configuration.isSourcePropertyRequired() ) ) {
-				throw exception;
-			}
-			return false;
-		} catch ( MissingSourcePropertyException exception ) {
+		} catch ( MissingSourcePropertyValueException | MissingSourcePropertyException exception ) {
 			if ( property.isSourceRequired( configuration.isSourcePropertyRequired() ) ) {
 				throw exception;
 			}

@@ -9,11 +9,11 @@ import org.slf4j.LoggerFactory;
 
 public class CompositeSourcePropertyFactory implements SourcePropertyFactory {
 
-	private List<SourcePropertyFactory> sourcePropertyFactories = new ArrayList<SourcePropertyFactory>();
+	private List<SourcePropertyFactory> sourcePropertyFactories;
 	private Logger log = LoggerFactory.getLogger( getClass() );
 	
 	public CompositeSourcePropertyFactory() {
-		sourcePropertyFactories = new ArrayList<SourcePropertyFactory>();
+		sourcePropertyFactories = new ArrayList<>();
 		initializeDefaults();
 		initializeExtensions();
 	}
@@ -31,9 +31,7 @@ public class CompositeSourcePropertyFactory implements SourcePropertyFactory {
 			sourcePropertyFactories.add( (SourcePropertyFactory)factory.newInstance() );
 		} catch ( ClassNotFoundException e ) {
 			// No MVEL Extension. That's ok. In fact, to be expected.
-		} catch ( InstantiationException exception ) {
-			log.warn( "Instantiation exception while configuring extensions.", exception );
-		} catch ( IllegalAccessException exception ) {
+		} catch ( InstantiationException | IllegalAccessException exception ) {
 			log.warn( "Instantiation exception while configuring extensions.", exception );
 		}
 	}

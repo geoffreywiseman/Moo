@@ -76,7 +76,7 @@ public class EnumCollectionPropertyTranslationTest {
 
 	public static class EnumUtil {
 		public static <E extends Enum<E>> Set<String> toString(Set<E> input) {
-			HashSet<String> output = new HashSet<String>();
+			HashSet<String> output = new HashSet<>();
 			for( E item : input ) {
 				output.add( item.name() );
 			}

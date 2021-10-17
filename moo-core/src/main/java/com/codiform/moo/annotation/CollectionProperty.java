@@ -7,7 +7,7 @@ import com.codiform.moo.translator.*;
 
 /**
  * Configuration annotation to tell Moo that the values within the collection should be translated
- * to a the class specified in {@link #itemClass()}.
+ * to the class specified in {@link #itemClass()}.
  */
 @Documented
 @Retention( RetentionPolicy.RUNTIME )
@@ -62,7 +62,7 @@ public @interface CollectionProperty {
 	Optionality optionality() default Optionality.DEFAULT;
 
 	/**
-	 * Whether or not Orphans (items in the destination that have no match in the source) should be
+	 * Whether Orphans (items in the destination that have no match in the source) should be
 	 * removed during a collection update.
 	 *
 	 * @return true if they should be removed, false otherwise

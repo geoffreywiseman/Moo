@@ -23,7 +23,7 @@ public class MooTest {
 
 	private Moo moo = new TestMoo(configuration);
 
-	private Integer source = new Integer(24);
+	private Integer source = 24;
 
 	@Test
 	public void testMooTranslateCanCreateCurriedTranslate() {
@@ -46,7 +46,7 @@ public class MooTest {
 
 	@Test
 	public void testMooTranslateEachSetTranslatesEachInNewSession() {
-		Set<Integer> sources = new HashSet<Integer>( Arrays.asList(1, 2, 3) );
+		Set<Integer> sources = new HashSet<>( Arrays.asList( 1, 2, 3 ) );
 		moo.translateEach(sources, String.class);
 
 		Mockito.verify(session).getEachTranslation(sources, String.class);
@@ -54,7 +54,7 @@ public class MooTest {
 
 	@Test
 	public void testMooTranslateEachCollectionTranslatesEachInNewSession() {
-		Collection<Integer> sources = new HashSet<Integer>( Arrays.asList(1, 2, 3) );
+		Collection<Integer> sources = new HashSet<>( Arrays.asList( 1, 2, 3 ) );
 		moo.translateEach(sources, String.class);
 
 		Mockito.verify(session).getEachTranslation(sources, String.class);

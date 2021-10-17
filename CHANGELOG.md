@@ -25,7 +25,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 For more details, see the [Wiki entry](https://github.com/geoffreywiseman/Moo/wiki/Release-2.0).
 
 ### Added
-- *Item Source Expressions*: This allows the the mapping of an item in a collection 
+- *Item Source Expressions*: This allows the mapping of an item in a collection 
 to a property of that source item in the destination.
 - *Map Translation*: Support for the translation of maps.
 - Translating objects to strings.

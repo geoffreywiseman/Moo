@@ -66,7 +66,7 @@ public class MapPropertyUpdateTest {
 		private Map<String, ValueDto> values;
 
 		public ValueDtoMap() {
-			values = new HashMap<String, ValueDto>();
+			values = new HashMap<>();
 		}
 
 		public ValueDto get( String index ) {
@@ -87,7 +87,7 @@ public class MapPropertyUpdateTest {
 		private Map<String, Value> values;
 
 		public ValueMap() {
-			values = new HashMap<String, Value>();
+			values = new HashMap<>();
 		}
 
 		public boolean containsKey( String key ) {
@@ -112,7 +112,7 @@ public class MapPropertyUpdateTest {
 		private Map<String, Value> values;
 
 		public RetainValueMap() {
-			values = new HashMap<String, Value>();
+			values = new HashMap<>();
 		}
 
 		public boolean containsKey( String key ) {

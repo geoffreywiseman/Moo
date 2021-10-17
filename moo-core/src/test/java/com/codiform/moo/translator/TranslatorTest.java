@@ -40,7 +40,7 @@ public class TranslatorTest {
 		when( configuration.getDefaultAccessMode() ).thenReturn( AccessMode.FIELD );
 		when( spf.getSourceProperty( Mockito.any( String.class ) ) ).thenReturn( sourceProperty );
 		when( sourceProperty.getValue( Mockito.any(Source.class) ) ).thenReturn( "TranslatorTest" );
-		translator = new ObjectTranslator<Destination>( Destination.class, configuration, tf, spf );
+		translator = new ObjectTranslator<>( Destination.class, configuration, tf, spf );
 	}
 
 	@Test

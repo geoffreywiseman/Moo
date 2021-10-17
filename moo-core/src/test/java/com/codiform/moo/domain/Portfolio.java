@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Portfolio {
-	private Map<Security, Position> positions = new HashMap<Security, Position>();
+	private Map<Security, Position> positions = new HashMap<>();
 
 	public void add( Security symbol, Position position ) {
 		positions.put( symbol, position );

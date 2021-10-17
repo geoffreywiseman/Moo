@@ -82,7 +82,7 @@ public class Moo {
 	 * @return a class representing the 'curried' {@link Translate}
 	 */
 	public <T> Translate<T> translate( Class<T> destinationClass ) {
-		return new Translate<T>( translatorFactory, destinationClass );
+		return new Translate<>( translatorFactory, destinationClass );
 	}
 
 	/**

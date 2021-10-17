@@ -167,7 +167,7 @@ public class CollectionTranslator {
 			TranslationSource translationSource, CollectionProperty property ) {
 		Class<CollectionMatcher<Object, Object>> matcherClass = property.getMatcherType();
 		try {
-			Collection<Object> unmatched = new ArrayList<Object>( destinationCollection );
+			Collection<Object> unmatched = new ArrayList<>( destinationCollection );
 			CollectionMatcher<Object, Object> matcher = matcherClass.newInstance();
 			matcher.setTargets( destinationCollection );
 			for ( Object source : sourceCollection ) {
@@ -188,9 +188,7 @@ public class CollectionTranslator {
 					destinationCollection.remove( item );
 				}
 			}
-		} catch ( InstantiationException exception ) {
-			throw new MatcherInitializationException( matcherClass, exception );
-		} catch ( IllegalAccessException exception ) {
+		} catch ( InstantiationException | IllegalAccessException exception ) {
 			throw new MatcherInitializationException( matcherClass, exception );
 		}
 	}

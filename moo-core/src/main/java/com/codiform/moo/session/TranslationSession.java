@@ -39,7 +39,7 @@ public class TranslationSession implements TranslationSource {
 	public TranslationSession( TranslatorFactory translatorFactory ) {
 		translationCache = new TranslationCache();
 		this.translatorFactory = translatorFactory;
-		translationTargetFactoryCache = new HashMap<Class<? extends TranslationTargetFactory>, TranslationTargetFactory>();
+		translationTargetFactoryCache = new HashMap<>();
 	}
 
 	/**
@@ -127,9 +127,7 @@ public class TranslationSession implements TranslationSource {
 				TranslationTargetFactory instance = factoryType.newInstance();
 				translationTargetFactoryCache.put( factoryType, instance );
 				return instance;
-			} catch ( InstantiationException cause ) {
-				throw new TranslationException( "Could not create translation target factory: " + factoryType, cause );
-			} catch ( IllegalAccessException cause ) {
+			} catch ( InstantiationException | IllegalAccessException cause ) {
 				throw new TranslationException( "Could not create translation target factory: " + factoryType, cause );
 			}
 		}
@@ -141,7 +139,7 @@ public class TranslationSession implements TranslationSource {
 
 	@Override
 	public <T> List<T> getEachTranslation( List<?> sources, Class<T> destinationClass ) {
-		List<T> results = new ArrayList<T>();
+		List<T> results = new ArrayList<>();
 		for ( Object source : sources ) {
 			results.add( getTranslation( source, destinationClass ) );
 		}
@@ -150,7 +148,7 @@ public class TranslationSession implements TranslationSource {
 
 	@Override
 	public <T> Set<T> getEachTranslation( Set<?> sources, Class<T> destinationClass ) {
-		Set<T> results = new HashSet<T>();
+		Set<T> results = new HashSet<>();
 		for ( Object source : sources ) {
 			results.add( getTranslation( source, destinationClass ) );
 		}
@@ -159,7 +157,7 @@ public class TranslationSession implements TranslationSource {
 
 	@Override
 	public <T> Collection<T> getEachTranslation( Collection<?> sources, Class<T> destinationClass ) {
-		List<T> results = new ArrayList<T>();
+		List<T> results = new ArrayList<>();
 		for ( Object source : sources ) {
 			results.add( getTranslation( source, destinationClass ) );
 		}

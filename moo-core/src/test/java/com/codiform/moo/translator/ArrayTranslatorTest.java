@@ -23,7 +23,7 @@ public class ArrayTranslatorTest {
 		String[] destination = new ArrayTranslator(new Configuration()).defensiveCopy(source);
 		Assert.assertNotNull(destination);
 		Assert.assertNotSame(source, destination);
-		Assert.assertTrue(Arrays.equals(source, destination));
+		Assert.assertArrayEquals( source, destination );
 	}
 
 	@Test
@@ -43,7 +43,7 @@ public class ArrayTranslatorTest {
 				CharSequence.class);
 		Assert.assertNotNull(destination);
 		Assert.assertNotSame(source, destination);
-		Assert.assertTrue(Arrays.equals(source, destination));
+		Assert.assertArrayEquals( source, destination );
 		Assert.assertEquals(CharSequence.class, destination.getClass()
 				.getComponentType());
 	}

@@ -124,7 +124,7 @@ public class CollectionParallelHierarchyTest {
 	public static class ManagerDto extends EmployeeDto {
 
 		@CollectionProperty( itemClass = EmployeeDto.class, itemFactory = EmployeeFactory.class )
-		private List<EmployeeDto> directReports = new ArrayList<EmployeeDto>();
+		private List<EmployeeDto> directReports = new ArrayList<>();
 
 		List<EmployeeDto> getDirectReports() {
 			return directReports;

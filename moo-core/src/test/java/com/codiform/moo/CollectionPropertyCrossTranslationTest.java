@@ -28,7 +28,7 @@ public class CollectionPropertyCrossTranslationTest {
 		private Set<Ordinal> ordinals;
 
 		public OrdinalSet(Ordinal... ordinals) {
-			this.ordinals = new LinkedHashSet<Ordinal>();
+			this.ordinals = new LinkedHashSet<>();
 			for( Ordinal item : ordinals )
 				this.ordinals.add( item );
 		}
@@ -116,7 +116,7 @@ public class CollectionPropertyCrossTranslationTest {
 	}
 
 	public static class StockPrices {
-		private Map<String, Double> prices = new HashMap<String, Double>();
+		private Map<String, Double> prices = new HashMap<>();
 
 		public void setPrice(String symbol, double price) {
 			prices.put( symbol, price );
@@ -129,7 +129,7 @@ public class CollectionPropertyCrossTranslationTest {
 	}
 
 	public static class StockPricesDto {
-		private Map<String, Double> prices = new HashMap<String, Double>();
+		private Map<String, Double> prices = new HashMap<>();
 
 		public Map<String, Double> getPrices() {
 			return prices;

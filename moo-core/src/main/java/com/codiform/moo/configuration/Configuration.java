@@ -24,7 +24,7 @@ public class Configuration {
 	}
 
 	/**
-	 * Used to control whether or not arrays and collections should be copied as a defensive
+	 * Used to control whether arrays and collections should be copied as a defensive
 	 * measure.
 	 * 
 	 * <p>
@@ -67,7 +67,7 @@ public class Configuration {
 	/**
 	 * Indicates if source properties are required for translation to succeed. The default value,
 	 * false, allows the translation to continue even if source properties can't be found to match
-	 * all of the destination fields.
+	 * all the destination fields.
 	 * 
 	 * @return true if source properties are required, false otherwise
 	 */

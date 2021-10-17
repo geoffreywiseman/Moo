@@ -31,9 +31,9 @@ public class CachingTranslatorFactory implements TranslatorFactory {
 		collectionTranslator = new CollectionTranslator( configuration, sourcePropertyFactory );
 		mapTranslator = new MapTranslator( configuration, sourcePropertyFactory );
 		arrayTranslator = new ArrayTranslator( configuration );
-		valueTypeTranslators = new HashMap<Class<?>, ValueTypeTranslator<?>>();
+		valueTypeTranslators = new HashMap<>();
 		this.sourcePropertyFactory = sourcePropertyFactory;
-		this.translators = new HashMap<Class<?>, ObjectTranslator<?>>();
+		this.translators = new HashMap<>();
 		initializeValueTypeTranslators();
 	}
 
@@ -47,7 +47,7 @@ public class CachingTranslatorFactory implements TranslatorFactory {
 		if( translators.containsKey( destinationClass ) ) {
 			return (ObjectTranslator<T>)translators.get( destinationClass );
 		} else {
-			ObjectTranslator<T> objectTranslator = new ObjectTranslator<T>( destinationClass, configuration, this, sourcePropertyFactory );
+			ObjectTranslator<T> objectTranslator = new ObjectTranslator<>( destinationClass, configuration, this, sourcePropertyFactory );
 			translators.put( destinationClass, objectTranslator );
 			return objectTranslator;
 		}

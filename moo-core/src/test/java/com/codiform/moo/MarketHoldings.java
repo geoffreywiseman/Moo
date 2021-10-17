@@ -8,7 +8,7 @@ import com.codiform.moo.domain.Position;
 
 public class MarketHoldings {
 	@MapProperty( keyClass = String.class, keySource = "market" )
-	private Map<String, Position> positions = new HashMap<String, Position>();
+	private Map<String, Position> positions = new HashMap<>();
 
 	public Position getPosition( String market ) {
 		return positions.get( market );

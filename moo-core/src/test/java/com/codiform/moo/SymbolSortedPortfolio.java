@@ -8,7 +8,7 @@ import com.codiform.moo.domain.Position;
 import com.codiform.moo.domain.Security;
 
 public class SymbolSortedPortfolio {
-	private SortedMap<Security,Position> positions = new TreeMap<Security,Position>();
+	private SortedMap<Security,Position> positions = new TreeMap<>();
 	
 	public int size() {
 		return positions.size();

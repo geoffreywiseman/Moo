@@ -7,7 +7,7 @@ import com.codiform.moo.annotation.MapProperty;
 
 public class LastSecurityPrices {
 	@MapProperty( source = "positions", valueSource = "previousPosition", valueClass = SecurityPrice.class )
-	private Map<Security, SecurityPrice> prices = new HashMap<Security, SecurityPrice>();
+	private Map<Security, SecurityPrice> prices = new HashMap<>();
 
 	public int size() {
 		return prices.size();

@@ -30,7 +30,7 @@ public class Update {
 	public Update(TranslatorFactory factory, Object source) {
 		this.translatorFactory = factory;
 		this.source = source;
-		this.variables = new HashMap<String, Object>();
+		this.variables = new HashMap<>();
 	}
 
 	/**

@@ -19,11 +19,11 @@ public class MvelSourcePropertyFactory implements SourcePropertyFactory {
 			return compileAndReturnProperty( expression );
 		} catch( ArrayIndexOutOfBoundsException exception ) {
 			// Unprefixed expression, just log and continue by returning null.
-			log.warn( "Error while compiling expression {}", exception );
+			log.warn( "Error while compiling expression {}", expression, exception );
 			return null;
 		} catch( CompileException exception ) {
 			// Unprefixed expression, just log and continue by returning null.
-			log.warn( "Error while compiling expression {}", exception );
+			log.warn( "Error while compiling expression {}", expression, exception );
 			return null;
 		}
 	}

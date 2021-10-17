@@ -9,7 +9,7 @@ import com.codiform.moo.domain.Security;
 
 public class RenamedHoldings {
 	@MapProperty( keySource = "previousSecurity", nullKeys = false )
-	private Map<Security, Position> positions = new HashMap<Security, Position>();
+	private Map<Security, Position> positions = new HashMap<>();
 
 	public Position getPosition( Security security ) {
 		return positions.get( security );

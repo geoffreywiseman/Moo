@@ -48,9 +48,7 @@ public class ReflectionSourceProperty implements SourceProperty {
 		field.setAccessible( true );
 		try {
 			return field.get( source );
-		} catch ( IllegalArgumentException cause ) {
-			throw new MissingSourcePropertyValueException( propertyName, source.getClass(), cause );
-		} catch ( IllegalAccessException cause ) {
+		} catch ( IllegalArgumentException | IllegalAccessException cause ) {
 			throw new MissingSourcePropertyValueException( propertyName, source.getClass(), cause );
 		}
 	}
@@ -67,11 +65,7 @@ public class ReflectionSourceProperty implements SourceProperty {
 		getter.setAccessible( true );
 		try {
 			return getter.invoke( source );
-		} catch ( IllegalArgumentException cause ) {
-			throw new MissingSourcePropertyValueException( propertyName, source.getClass(), cause );
-		} catch ( IllegalAccessException cause ) {
-			throw new MissingSourcePropertyValueException( propertyName, source.getClass(), cause );
-		} catch ( InvocationTargetException cause ) {
+		} catch ( IllegalArgumentException | InvocationTargetException | IllegalAccessException cause ) {
 			throw new MissingSourcePropertyValueException( propertyName, source.getClass(), cause );
 		}
 	}

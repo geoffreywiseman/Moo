@@ -41,7 +41,7 @@ public class CollectionTranslatorTest {
 	@SuppressWarnings( "unchecked" )
 	@Test
 	public void testCollectionTranslatorPerformsDefensiveCopyByDefault() {
-		Set<String> rhyme = new HashSet<String>();
+		Set<String> rhyme = new HashSet<>();
 		rhyme.add( "one" );
 		rhyme.add( "two" );
 		rhyme.add( "buckle my shoe" );
@@ -58,7 +58,7 @@ public class CollectionTranslatorTest {
 	@SuppressWarnings( "unchecked" )
 	@Test
 	public void testCollectionTranslatorRetainsSortWhenTranslating() {
-		SortedSet<String> rhyme = new TreeSet<String>();
+		SortedSet<String> rhyme = new TreeSet<>();
 		rhyme.add( "Zed" );
 		rhyme.add( "Ay" );
 		rhyme.add( "Pee" );
@@ -90,7 +90,7 @@ public class CollectionTranslatorTest {
 	@SuppressWarnings( "unchecked" )
 	@Test
 	public void testCollectionTranslatorCanBeConfiguredToNotPerformDefensiveCopy() {
-		List<String> rhyme = new ArrayList<String>();
+		List<String> rhyme = new ArrayList<>();
 		rhyme.add( "one" );
 		rhyme.add( "two" );
 		rhyme.add( "buckle my shoe" );
@@ -109,7 +109,7 @@ public class CollectionTranslatorTest {
 	@SuppressWarnings( "unchecked" )
 	@Test
 	public void testCollectionTranslatorTranslatesContentsOfCollection() {
-		Collection<Foo> rhyme = new ArrayList<Foo>();
+		Collection<Foo> rhyme = new ArrayList<>();
 		rhyme.add( new Foo( "this" ) );
 		rhyme.add( new Foo( "that" ) );
 

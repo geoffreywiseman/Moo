@@ -182,7 +182,7 @@ public class MapTranslator {
 	}
 
 	private void removeOrphans( Map<Object, Object> sourceMap, Map<Object, Object> destinationMap ) {
-		Set<Object> toRemove = new HashSet<Object>( destinationMap.keySet() );
+		Set<Object> toRemove = new HashSet<>( destinationMap.keySet() );
 		toRemove.removeAll( sourceMap.keySet() );
 		for ( Object key : toRemove ) {
 			destinationMap.remove( key );

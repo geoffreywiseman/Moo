@@ -49,12 +49,10 @@ public class DefaultMapTargetFactory implements TranslationTargetFactory {
 			return constructor.newInstance();
 		} catch ( NoSuchMethodException exception ) {
 			throw new TranslationInitializationException( "No no-argument constructor in class " + type.getName(), exception );
-		} catch ( InstantiationException exception ) {
+		} catch ( InstantiationException | IllegalArgumentException exception ) {
 			throw new TranslationInitializationException( String.format( "Error while instantiating %s", type ), exception );
 		} catch ( IllegalAccessException exception ) {
 			throw new TranslationInitializationException( String.format( "Not allowed to instantiate %s", type ), exception );
-		} catch ( IllegalArgumentException exception ) {
-			throw new TranslationInitializationException( String.format( "Error while instantiating %s", type ), exception );
 		} catch ( InvocationTargetException exception ) {
 			throw new TranslationInitializationException( String.format( "Error thrown by constructor of %s", type ), exception );
 		}

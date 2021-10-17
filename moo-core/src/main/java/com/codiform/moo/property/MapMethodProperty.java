@@ -82,13 +82,7 @@ public class MapMethodProperty extends AbstractMapProperty {
 		checkValue( value );
 		try {
 			setter.invoke( instance, value );
-		} catch( IllegalArgumentException exception ) {
-			throw new SetPropertyException( getName(), getType(), value,
-					exception );
-		} catch( IllegalAccessException exception ) {
-			throw new SetPropertyException( getName(), getType(), value,
-					exception );
-		} catch( InvocationTargetException exception ) {
+		} catch( IllegalArgumentException | InvocationTargetException | IllegalAccessException exception ) {
 			throw new SetPropertyException( getName(), getType(), value,
 					exception );
 		}
@@ -121,11 +115,7 @@ public class MapMethodProperty extends AbstractMapProperty {
 			try {
 				getter.setAccessible( true );
 				return getter.invoke( instance );
-			} catch( IllegalArgumentException exception ) {
-				throw new GetPropertyException( getName(), getType(), exception );
-			} catch( IllegalAccessException exception ) {
-				throw new GetPropertyException( getName(), getType(), exception );
-			} catch( InvocationTargetException exception ) {
+			} catch( IllegalArgumentException | InvocationTargetException | IllegalAccessException exception ) {
 				throw new GetPropertyException( getName(), getType(), exception );
 			}
 		}

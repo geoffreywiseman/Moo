@@ -240,7 +240,7 @@ public class MissingSourcePropertyTest {
 
 		public OptionalMethodDestination() {
 			// no-arg constructor for moo
-			this.accessDates = new ArrayList<Date>();
+			this.accessDates = new ArrayList<>();
 		}
 
 		public OptionalMethodDestination(int id, String name,

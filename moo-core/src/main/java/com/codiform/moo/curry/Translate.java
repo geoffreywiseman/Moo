@@ -42,7 +42,7 @@ public class Translate<T> {
 	public Translate( TranslatorFactory translatorFactory, Class<T> destinationClass ) {
 		this.translatorFactory = translatorFactory;
 		this.destinationClass = destinationClass;
-		this.variables = new HashMap<String, Object>();
+		this.variables = new HashMap<>();
 	}
 
 	/**
@@ -116,7 +116,7 @@ public class Translate<T> {
 	 * @return a 'curried' translate instance
 	 */
 	public static <T> Translate<T> to( Class<T> destinationClass ) {
-		return new Translate<T>( new CachingTranslatorFactory(), destinationClass );
+		return new Translate<>( new CachingTranslatorFactory(), destinationClass );
 	}
 
 }

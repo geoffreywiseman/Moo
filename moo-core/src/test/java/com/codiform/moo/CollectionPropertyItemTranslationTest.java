@@ -94,7 +94,7 @@ public class CollectionPropertyItemTranslationTest {
 		
 		public Classroom( String className, Person... students ) {
 			this.className = className;
-			this.students = new HashSet<Person>();
+			this.students = new HashSet<>();
 			for( Person student : students ) {
 				this.students.add( student );
 			}
@@ -113,7 +113,7 @@ public class CollectionPropertyItemTranslationTest {
 		
 		@SuppressWarnings( "unused" )
 		public ClassFathers() {
-			fathers = new HashSet<Person>();
+			fathers = new HashSet<>();
 		}
 		
 		public String getClassName() {

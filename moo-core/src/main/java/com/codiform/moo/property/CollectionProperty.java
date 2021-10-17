@@ -49,7 +49,7 @@ public interface CollectionProperty extends Property {
 	Class<CollectionMatcher<Object, Object>> getMatcherType();
 
 	/**
-	 * Whether or not orphans (items found in the destination with no match in the source) should be removed.
+	 * Whether orphans (items found in the destination with no match in the source) should be removed.
 	 *
 	 * @return true if orphans should be removed (default); false otherwise
 	 */

@@ -62,7 +62,7 @@ public class TranslationSessionTest {
 
 	@Test
 	public void testGetTranslationReturnsTranslatedValue() {
-		Integer translation = Integer.valueOf( 1 );
+		Integer translation = 1;
 		ObjectTranslator<Integer> translator = mockTranslator( Integer.class );
 		Mockito.when( translatorFactory.getTranslator( Integer.class ) ).thenReturn( translator );
 		Mockito.when( factory.getTranslationTargetInstance( "One", Integer.class ) ).thenReturn(translation);
@@ -78,7 +78,7 @@ public class TranslationSessionTest {
 
 	@Test
 	public void testGetTranslationDoesntTranslateIfFoundInCache() {
-		Mockito.when( cache.getTranslation( "One", Integer.class ) ).thenReturn( Integer.valueOf( 1 ) );
+		Mockito.when( cache.getTranslation( "One", Integer.class ) ).thenReturn( 1 );
 
 		session.getTranslation( "One", Integer.class );
 		Mockito.verify( cache ).getTranslation( "One", Integer.class );
@@ -87,7 +87,7 @@ public class TranslationSessionTest {
 
 	@Test
 	public void testGetTranslationReturnsCachedValue() {
-		Integer translation = Integer.valueOf( 1 );
+		Integer translation = 1;
 		Mockito.when( cache.getTranslation( "One", Integer.class ) ).thenReturn( translation );
 
 		Integer result = session.getTranslation( "One", Integer.class );

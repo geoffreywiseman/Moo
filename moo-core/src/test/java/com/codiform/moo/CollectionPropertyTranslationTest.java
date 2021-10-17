@@ -83,7 +83,7 @@ public class CollectionPropertyTranslationTest {
 		private SortedSet<Ordinal> ordinals;
 
 		public OrdinalSortedSet( Ordinal... ordinals ) {
-			this.ordinals = new TreeSet<Ordinal>();
+			this.ordinals = new TreeSet<>();
 			for ( Ordinal item : ordinals )
 				this.ordinals.add( item );
 		}
@@ -97,7 +97,7 @@ public class CollectionPropertyTranslationTest {
 		private Set<Ordinal> ordinals;
 
 		public OrdinalSet( Ordinal... ordinals ) {
-			this.ordinals = new LinkedHashSet<Ordinal>();
+			this.ordinals = new LinkedHashSet<>();
 			for ( Ordinal item : ordinals )
 				this.ordinals.add( item );
 		}

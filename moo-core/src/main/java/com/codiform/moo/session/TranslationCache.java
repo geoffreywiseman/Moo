@@ -21,7 +21,7 @@ public class TranslationCache {
 	 * Creates a new translation cache empty of translations.
 	 */
 	public TranslationCache() {
-		cache = new IdentityHashMap<Object, Map<Class<?>, Object>>();
+		cache = new IdentityHashMap<>();
 	}
 
 	/**
@@ -49,12 +49,7 @@ public class TranslationCache {
 	 * @param translation the resulting translation
 	 */
 	public void putTranslation(Object source, Object translation) {
-		Map<Class<?>, Object> translations = cache.get(source);
-		if (translations == null) {
-			translations = new HashMap<Class<?>, Object>();
-			cache.put(source, translations);
-		}
+		Map<Class<?>, Object> translations = cache.computeIfAbsent( source, k -> new HashMap<>() );
 		translations.put(translation.getClass(), translation);
 	}
 }
- 

@@ -6,7 +6,7 @@ import java.time.format.DateTimeFormatter;
 import com.codiform.moo.annotation.Property;
 
 class SecurityPrice {
-	private static DateTimeFormatter format = DateTimeFormatter.ofPattern("YYYY-MM-dd HH:mm");
+	private static DateTimeFormatter format = DateTimeFormatter.ofPattern( "yyyy-MM-dd HH:mm" );
 
 	@Property( source = "lastKnownPrice" )
 	private float price;

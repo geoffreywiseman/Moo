@@ -11,7 +11,7 @@ import java.util.Map;
  */
 public class PrimitiveAssignment {
 
-	private static final Map<Class<?>, List<Class<?>>> compatibilityMatrix = new HashMap<Class<?>, List<Class<?>>>();
+	private static final Map<Class<?>, List<Class<?>>> compatibilityMatrix = new HashMap<>();
 
 	static {
 		primitive(byte.class, canAssign(byte.class, Byte.class));
@@ -49,7 +49,7 @@ public class PrimitiveAssignment {
 	}
 
 	private static List<Class<?>> canAssign(Class<?>... items) {
-		List<Class<?>> classes = new ArrayList<Class<?>>();
+		List<Class<?>> classes = new ArrayList<>();
 		for (Class<?> item : items) {
 			classes.add(item);
 		}

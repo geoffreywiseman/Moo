@@ -17,7 +17,7 @@ public class CollectionUpdateTest {
 		private Set<Value> values;
 
 		public FieldValueSet() {
-			values = new HashSet<Value>();
+			values = new HashSet<>();
 		}
 
 		public FieldValueSet(Value... values) {
@@ -45,7 +45,7 @@ public class CollectionUpdateTest {
 		private Set<Value> values;
 
 		public MethodValueSet() {
-			values = new HashSet<Value>();
+			values = new HashSet<>();
 		}
 
 		public MethodValueSet(Value... values) {
@@ -144,7 +144,7 @@ public class CollectionUpdateTest {
 		private List<ValueDto> values;
 
 		public ValueDtoList(ValueDto... dtos) {
-			values = new ArrayList<ValueDto>();
+			values = new ArrayList<>();
 			for( ValueDto item : dtos ) {
 				values.add( item );
 			}
@@ -165,7 +165,7 @@ public class CollectionUpdateTest {
 		private Map<Integer, Value> valueById;
 
 		public ValueIdMatcher() {
-			valueById = new HashMap<Integer, Value>();
+			valueById = new HashMap<>();
 		}
 
 		@Override
@@ -188,7 +188,7 @@ public class CollectionUpdateTest {
 		private List<Value> values;
 
 		public ValueList(Value... items) {
-			values = new ArrayList<Value>();
+			values = new ArrayList<>();
 			for( Value item : items ) {
 				values.add( item );
 			}
@@ -209,7 +209,7 @@ public class CollectionUpdateTest {
 		private List<Value> values;
 
 		public RetainValueList(Value... items) {
-			values = new ArrayList<Value>();
+			values = new ArrayList<>();
 			for( Value item : items ) {
 				values.add( item );
 			}
