@@ -55,11 +55,9 @@ public class Security implements Comparable<Security> {
 		} else if ( !market.equals( other.market ) )
 			return false;
 		if ( symbol == null ) {
-			if ( other.symbol != null )
-				return false;
-		} else if ( !symbol.equals( other.symbol ) )
-			return false;
-		return true;
+			return other.symbol == null;
+		} else
+			return symbol.equals( other.symbol );
 	}
 
 	@Override

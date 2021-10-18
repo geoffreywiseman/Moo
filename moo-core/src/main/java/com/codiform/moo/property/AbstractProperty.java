@@ -7,6 +7,7 @@ import com.codiform.moo.translator.PrimitiveAssignment;
 
 public abstract class AbstractProperty implements Property {
 
+	@Override
 	public boolean canSupportNull() {
 		return !getType().isPrimitive();
 	}

@@ -56,6 +56,7 @@ public class TranslatorPropertyResolutionTest extends TestWithTranslatorFactory 
 		assertThat( new HashSet<Object>( properties ), hasItem( allOf( isA( FieldProperty.class ), propertyWithName( "foxtrot" ) ) ) );
 	}
 
+	@Test
 	public void resolvesFieldAndMethodPropertyByExplicitAnnotationOverAccessMode() {
 		List<Property> properties = getProperties( Golf.class );
 		assertThat( new HashSet<Object>( properties ), hasItem( allOf( isA( FieldProperty.class ), propertyWithName( "golf" ) ) ) );
@@ -92,7 +93,7 @@ public class TranslatorPropertyResolutionTest extends TestWithTranslatorFactory 
 
 	private Matcher<Property> propertyFromClass( final Class<?> fromClass ) {
 		return new TypeSafeMatcher<Property>() {
-			Class<?> expectedDeclaringClass = fromClass;
+			final Class<?> expectedDeclaringClass = fromClass;
 
 			@Override
 			public boolean matchesSafely( Property property ) {
@@ -112,13 +113,14 @@ public class TranslatorPropertyResolutionTest extends TestWithTranslatorFactory 
 
 	private Matcher<Property> propertyWithName( final String propertyName ) {
 		return new TypeSafeMatcher<Property>() {
-			String name = propertyName;
+			final String name = propertyName;
 
 			@Override
 			public boolean matchesSafely( Property property ) {
 				return name.equals( property.getName() );
 			}
 
+			@Override
 			public void describeTo( Description description ) {
 				description.appendText( "Property named " + name );
 			}
@@ -206,6 +208,7 @@ public class TranslatorPropertyResolutionTest extends TestWithTranslatorFactory 
 
 	@Access( AccessMode.METHOD )
 	public static class Lima extends Beta {
+		@Override
 		public void setBeta( String beta ) {
 			super.setBeta( beta );
 		}
@@ -213,6 +216,7 @@ public class TranslatorPropertyResolutionTest extends TestWithTranslatorFactory 
 
 	@Access( AccessMode.METHOD )
 	public static class Mike extends Golf {
+		@Override
 		public void setGolf( String golf ) {
 			super.setGolf( golf );
 		}

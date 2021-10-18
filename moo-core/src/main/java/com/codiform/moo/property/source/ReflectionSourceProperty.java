@@ -86,6 +86,7 @@ public class ReflectionSourceProperty implements SourceProperty {
 		return getValue( source );
 	}
 	
+	@Override
 	public String getExpression() {
 		return propertyName;
 	}

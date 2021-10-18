@@ -66,18 +66,22 @@ public class CollectionMethodProperty extends AbstractCollectionProperty {
 		return getter;
 	}
 
+	@Override
 	public String getName() {
 		return name;
 	}
 
+	@Override
 	public String getSourcePropertyExpression() {
 		return expression;
 	}
 
+	@Override
 	public Class<?> getType() {
 		return type;
 	}
 
+	@Override
 	public void setValue(Object instance, Object value) {
 		checkValue( value );
 		try {
@@ -88,10 +92,12 @@ public class CollectionMethodProperty extends AbstractCollectionProperty {
 		}
 	}
 
+	@Override
 	public Class<?> getDeclaringClass() {
 		return setter.getDeclaringClass();
 	}
 
+	@Override
 	public boolean isExplicit() {
 		return explicit;
 	}

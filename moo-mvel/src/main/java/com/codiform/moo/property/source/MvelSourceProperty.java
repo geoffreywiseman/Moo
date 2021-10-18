@@ -38,6 +38,7 @@ public class MvelSourceProperty implements SourceProperty {
 		}
 	}
 	
+	@Override
 	public String getExpression() {
 		return expression;
 	}

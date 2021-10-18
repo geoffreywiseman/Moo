@@ -124,8 +124,24 @@ public class CollectionPropertyTranslationTest {
 			return name;
 		}
 
+		@Override
 		public int compareTo( Ordinal o ) {
 			return rank - o.rank;
+		}
+
+		@Override
+		public boolean equals( Object o ) {
+			if ( this == o )
+				return true;
+			if ( o == null || getClass() != o.getClass() )
+				return false;
+			Ordinal ordinal = (Ordinal)o;
+			return rank == ordinal.rank;
+		}
+
+		@Override
+		public int hashCode() {
+			return Objects.hash( rank );
 		}
 	}
 
@@ -168,6 +184,7 @@ public class CollectionPropertyTranslationTest {
 			return name;
 		}
 
+		@Override
 		public int compareTo( OrdinalDto other ) {
 			return rank - other.rank;
 		}

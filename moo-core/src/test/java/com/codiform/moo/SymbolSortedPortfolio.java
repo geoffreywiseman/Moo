@@ -21,4 +21,12 @@ public class SymbolSortedPortfolio {
 	public Position getPosition( Security security ) {
 		return positions.get( security );
 	}
+
+	public void setPosition( Security security, Position position ) {
+		this.positions.put( security, position );
+	}
+
+	public void removePosition( Security security ) {
+		this.positions.remove( security );
+	}
 }

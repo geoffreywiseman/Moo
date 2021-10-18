@@ -84,6 +84,7 @@ public abstract class AbstractCollectionProperty extends AbstractProperty
 		return false;
 	}
 	
+	@Override
 	public String getItemSource() {
 		return itemSource;
 	}

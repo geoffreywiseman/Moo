@@ -21,10 +21,12 @@ public class FieldProperty extends AbstractObjectProperty {
 			field.setAccessible( true );
 	}
 
+	@Override
 	public Class<?> getType() {
 		return field.getType();
 	}
 
+	@Override
 	public void setValue(Object instance, Object value) {
 		checkValue( value );
 		try {
@@ -36,6 +38,7 @@ public class FieldProperty extends AbstractObjectProperty {
 		}
 	}
 
+	@Override
 	public Class<?> getDeclaringClass() {
 		return field.getDeclaringClass();
 	}

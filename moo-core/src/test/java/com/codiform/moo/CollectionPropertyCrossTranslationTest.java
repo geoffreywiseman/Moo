@@ -55,6 +55,7 @@ public class CollectionPropertyCrossTranslationTest {
 			return name;
 		}
 
+		@Override
 		public int compareTo(Ordinal o) {
 			return rank - o.rank;
 		}
@@ -90,6 +91,7 @@ public class CollectionPropertyCrossTranslationTest {
 			return name;
 		}
 
+		@Override
 		public int compareTo(OrdinalDto other) {
 			return rank - other.rank;
 		}

@@ -70,22 +70,27 @@ public abstract class AbstractMapProperty extends AbstractProperty implements Ma
 		return factory;
 	}
 
+	@Override
 	public Class<?> getKeyClass() {
 		return keyClass;
 	}
 
+	@Override
 	public Class<?> getValueClass() {
 		return valueClass;
 	}
 	
+	@Override
 	public String getKeySource() {
 		return keySource;
 	}
 	
+	@Override
 	public String getValueSource() {
 		return valueSource;
 	}
 	
+	@Override
 	public boolean allowNullKeys() {
 		return nullKeys;
 	}

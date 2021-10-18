@@ -39,26 +39,32 @@ public abstract class AbstractObjectProperty extends AbstractProperty {
 		return isSourceRequired( defaultSetting, optionality );
 	}
 
+	@Override
 	public boolean shouldBeTranslated() {
 		return translate;
 	}
 	
+	@Override
 	public boolean shouldUpdate() {
 		return update;
 	}
 
+	@Override
 	public Class<? extends TranslationTargetFactory> getFactory() {
 		return factory;
 	}
 	
+	@Override
 	public String getName() {
 		return name;
 	}
 
+	@Override
 	public String getSourcePropertyExpression() {
 		return sourcePropertyExpression;
 	}
 
+	@Override
 	public boolean isExplicit() {
 		return explicit;
 	}

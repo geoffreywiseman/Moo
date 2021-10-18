@@ -46,6 +46,7 @@ public class CompositeSourcePropertyFactory implements SourcePropertyFactory {
 	}
 
 
+	@Override
 	public SourceProperty getSourceProperty( String expression ) {
 		String prefix = getPrefix( expression );
 		if ( prefix == null ) {

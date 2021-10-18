@@ -21,14 +21,15 @@ public class MethodPropertyTest {
 
 	@Test
 	public void testToString() throws SecurityException, NoSuchMethodException {
-		Method method = getClass().getDeclaredMethod( "setObjectValue", new Class[] { Integer.class } );
+		Method method = getClass().getDeclaredMethod( "setObjectValue", Integer.class );
 		Property property = PropertyFactory.createProperty( method, AccessMode.METHOD );
+		assertNotNull( property );
 		assertEquals( "MethodProperty<objectValue>", property.toString() );
 	}
 
 	@Test
 	public void testObjectFieldPropertySupportsNull() throws NoSuchMethodException, SecurityException {
-		Method field = getClass().getDeclaredMethod( "setObjectValue", new Class[] { Integer.class } );
+		Method field = getClass().getDeclaredMethod( "setObjectValue", Integer.class );
 		Property property = PropertyFactory.createProperty( field, AccessMode.METHOD );
 		assertNotNull( property );
 		assertTrue( property.canSupportNull() );
@@ -36,7 +37,7 @@ public class MethodPropertyTest {
 	
 	@Test
 	public void testPrimitiveFieldPropertyDoesNotSupportNull() throws NoSuchMethodException, SecurityException {
-		Method field = getClass().getDeclaredMethod( "setPrimitiveValue", new Class[] { int.class } );
+		Method field = getClass().getDeclaredMethod( "setPrimitiveValue", int.class );
 		Property property = PropertyFactory.createProperty( field, AccessMode.METHOD );
 		assertNotNull( property );
 		assertFalse( property.canSupportNull() );

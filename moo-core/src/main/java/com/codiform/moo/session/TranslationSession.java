@@ -56,10 +56,12 @@ public class TranslationSession implements TranslationSource {
 		this.variables = variables;
 	}
 
+	@Override
 	public <T> T getTranslation( Object source, Class<T> destinationClass ) {
 		return getTranslation( source, DefaultObjectTargetFactory.class, destinationClass );
 	}
 
+	@Override
 	public <T> T getTranslation( Object source, Class<? extends TranslationTargetFactory> factory, Class<T> destinationClass ) {
 		T translated = translationCache.getTranslation( source, destinationClass );
 		if ( translated == null )
@@ -119,6 +121,7 @@ public class TranslationSession implements TranslationSource {
 		return target;
 	}
 
+	@Override
 	public TranslationTargetFactory getTranslationTargetFactory( Class<? extends TranslationTargetFactory> factoryType ) {
 		if ( translationTargetFactoryCache.containsKey( factoryType ) )
 			return translationTargetFactoryCache.get( factoryType );

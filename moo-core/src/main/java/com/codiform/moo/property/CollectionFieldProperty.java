@@ -28,18 +28,22 @@ public class CollectionFieldProperty extends AbstractCollectionProperty {
 			field.setAccessible( true );
 	}
 
+	@Override
 	public String getName() {
 		return name;
 	}
 
+	@Override
 	public String getSourcePropertyExpression() {
 		return expression;
 	}
 
+	@Override
 	public Class<?> getType() {
 		return field.getType();
 	}
 
+	@Override
 	public void setValue(Object instance, Object value) {
 		checkValue( value );
 		try {
@@ -50,14 +54,17 @@ public class CollectionFieldProperty extends AbstractCollectionProperty {
 		}
 	}
 
+	@Override
 	public boolean canSupportNull() {
 		return true;
 	}
 
+	@Override
 	public Class<?> getDeclaringClass() {
 		return field.getDeclaringClass();
 	}
 
+	@Override
 	public boolean isExplicit() {
 		return explicit;
 	}

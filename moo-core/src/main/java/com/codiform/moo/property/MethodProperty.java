@@ -70,10 +70,12 @@ public class MethodProperty extends AbstractObjectProperty {
 		return getter;
 	}
 
+	@Override
 	public Class<?> getType() {
 		return type;
 	}
 
+	@Override
 	public void setValue(Object instance, Object value) {
 		checkValue( value );
 		try {
@@ -84,6 +86,7 @@ public class MethodProperty extends AbstractObjectProperty {
 		}
 	}
 
+	@Override
 	public Class<?> getDeclaringClass() {
 		return setter.getDeclaringClass();
 	}
