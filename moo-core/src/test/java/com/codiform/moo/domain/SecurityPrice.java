@@ -14,6 +14,7 @@ class SecurityPrice {
 	@Property( source = "pricingDate" )
 	private ZonedDateTime dateOfPrice;
 
+	@Override
 	public String toString() {
 		return "$" + price + " at " + format.format( dateOfPrice );
 	}

@@ -42,6 +42,7 @@ public class ValueTypeTranslationTest {
 			this.replacement = replacement;
 		}
 
+		@Override
 		public String toString() {
 			return match + "->" + replacement;
 		}

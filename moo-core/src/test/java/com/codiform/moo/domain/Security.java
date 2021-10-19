@@ -15,6 +15,7 @@ public class Security implements Comparable<Security> {
 		this.previousSecurity = previous;
 	}
 
+	@Override
 	public String toString() {
 		return symbol;
 	}
